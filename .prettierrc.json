@@ -1,0 +1,11 @@
+{
+	"arrowParens": "avoid",
+	"htmlWhitespaceSensitivity": "strict",
+	"printWidth": 130,
+	"proseWrap": "preserve",
+	"semi": true,
+	"singleQuote": true,
+	"tabWidth": 2,
+	"trailingComma": "all",
+	"useTabs": true
+}
