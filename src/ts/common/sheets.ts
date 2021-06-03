@@ -64,10 +64,10 @@ export interface Sheet {
 	layers: SheetLayer[];
 
 	masks?: {
-		name: string,
-		layerName: string,
-		mask: string,
-		reverse?: boolean,
+		name: string;
+		layerName: string;
+		mask: string;
+		reverse?: boolean;
 		maskFile?: string;
 	}[];
 
@@ -90,9 +90,7 @@ interface BodyFrame {
 export const DEFAULT_COLOR = 0xdec078ff;
 export const SPECIAL_COLOR = ORANGE;
 
-const headFrames: BodyFrame[] = [
-	{ body: 1, front: 1, back: 1, wing: 0, tail: 0 },
-];
+const headFrames: BodyFrame[] = [{ body: 1, front: 1, back: 1, wing: 0, tail: 0 }];
 
 const bodyFrames: BodyFrame[] = [
 	{ body: 0, front: 1, back: 1, wing: 0, tail: 0 },
@@ -113,10 +111,7 @@ const bodyFrames: BodyFrame[] = [
 	{ body: 15, front: 38, back: 26, wing: 0, tail: 2 },
 ];
 
-const waistFrames: BodyFrame[] = [
-	...bodyFrames,
-	{ body: 1, front: 1, back: 1, wing: 3, tail: 0 },
-];
+const waistFrames: BodyFrame[] = [...bodyFrames, { body: 1, front: 1, back: 1, wing: 3, tail: 0 }];
 
 const wingFrames: BodyFrame[] = [
 	{ body: 1, front: 1, back: 1, wing: 0, tail: 0 },
@@ -135,11 +130,31 @@ const wingFrames: BodyFrame[] = [
 ];
 
 const exampleCM = [
-	BLUE, BLUE, BLUE, BLUE, BLUE,
-	BLUE, CYAN, CYAN, CYAN, BLUE,
-	BLUE, CYAN, CYAN, CYAN, BLUE,
-	BLUE, CYAN, CYAN, CYAN, BLUE,
-	BLUE, BLUE, BLUE, BLUE, BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	CYAN,
+	CYAN,
+	CYAN,
+	BLUE,
+	BLUE,
+	CYAN,
+	CYAN,
+	CYAN,
+	BLUE,
+	BLUE,
+	CYAN,
+	CYAN,
+	CYAN,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
+	BLUE,
 ];
 
 const frontLegsCount = 39;
@@ -192,11 +207,17 @@ const headSheet = {
 };
 
 const bodyLayer: SheetLayer = {
-	name: '<body>', body: true, head: true, frontLeg: true, backLeg: true, frontFarLeg: true, backFarLeg: true,
+	name: '<body>',
+	body: true,
+	head: true,
+	frontLeg: true,
+	backLeg: true,
+	frontFarLeg: true,
+	backFarLeg: true,
 };
-const muzzleLayer: SheetLayer = { name: '<muzzle>', setup: pony => pony.nose = defaultSet() };
-const frontLegLayer: SheetLayer = { name: '<front leg>', frontLeg: true, setup: pony => pony.coatFill = SPECIAL_COLOR };
-const backLegLayer: SheetLayer = { name: '<back leg>', backLeg: true, setup: pony => pony.coatFill = SPECIAL_COLOR };
+const muzzleLayer: SheetLayer = { name: '<muzzle>', setup: pony => (pony.nose = defaultSet()) };
+const frontLegLayer: SheetLayer = { name: '<front leg>', frontLeg: true, setup: pony => (pony.coatFill = SPECIAL_COLOR) };
+const backLegLayer: SheetLayer = { name: '<back leg>', backLeg: true, setup: pony => (pony.coatFill = SPECIAL_COLOR) };
 
 export const sheets: (Sheet | Spacer)[] = [
 	// front legs
@@ -206,13 +227,15 @@ export const sheets: (Sheet | Spacer)[] = [
 		file: 'front-legs',
 		frame: (_pony, state, _options, _x, y) => {
 			if (y > 0) {
-				state.animation.frames.forEach(f => f.frontLeg = 0);
+				state.animation.frames.forEach(f => (f.frontLeg = 0));
 			}
 		},
 		layers: [
 			{ ...bodyLayer, frontLeg: false },
 			{
-				name: 'front', set: 'frontLegs', frontLeg: true,
+				name: 'front',
+				set: 'frontLegs',
+				frontLeg: true,
 				frame: (pony, _state, _options, _x, _y, pattern) => {
 					pony.coatFill = pattern === 0 ? RED : WHITE;
 					pony.coatOutline = pattern === 0 ? RED : WHITE;
@@ -229,8 +252,11 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ ...bodyLayer, frontLeg: false },
 			frontLegLayer,
 			{
-				name: 'front', set: 'frontLegHooves', frontLeg: true, options: { useAllHooves: true },
-				setup: pony => pony.coatFill = BLACK
+				name: 'front',
+				set: 'frontLegHooves',
+				frontLeg: true,
+				options: { useAllHooves: true },
+				setup: pony => (pony.coatFill = BLACK),
 			},
 		],
 	},
@@ -242,7 +268,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		layers: [
 			{ ...bodyLayer, frontLeg: false },
 			frontLegLayer,
-			{ name: 'front', set: 'frontLegAccessories', frontLeg: true, setup: pony => pony.coatFill = BLACK },
+			{ name: 'front', set: 'frontLegAccessories', frontLeg: true, setup: pony => (pony.coatFill = BLACK) },
 		],
 	},
 	{
@@ -254,10 +280,14 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ ...bodyLayer, frontLeg: false },
 			frontLegLayer,
 			{
-				name: 'front', set: 'frontLegSleeves', frontLeg: true, options: { no: NoDraw.FarSleeves }, setup: pony => {
+				name: 'front',
+				set: 'frontLegSleeves',
+				frontLeg: true,
+				options: { no: NoDraw.FarSleeves },
+				setup: pony => {
 					pony.chestAccessory = ignoreSet(2);
 					pony.coatFill = BLACK;
-				}
+				},
 			},
 		],
 	},
@@ -277,14 +307,16 @@ export const sheets: (Sheet | Spacer)[] = [
 		],
 		frame: (_pony, state, _options, _x, y) => {
 			if (y > 0) {
-				state.animation.frames.forEach(f => f.backLeg = 0);
+				state.animation.frames.forEach(f => (f.backLeg = 0));
 			}
 		},
 		layers: [
 			// TODO: mask layer
 			{ ...bodyLayer, backLeg: false },
 			{
-				name: 'front', set: 'backLegs', backLeg: true,
+				name: 'front',
+				set: 'backLegs',
+				backLeg: true,
 				frame: (pony, _state, _options, _x, _y, pattern) => {
 					pony.coatFill = pattern === 0 ? RED : WHITE;
 					pony.coatOutline = pattern === 0 ? RED : WHITE;
@@ -308,7 +340,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		layers: [
 			{ ...bodyLayer, backLeg: false },
 			backLegLayer,
-			{ name: 'front', set: 'backLegHooves', backLeg: true, setup: pony => pony.coatFill = BLACK },
+			{ name: 'front', set: 'backLegHooves', backLeg: true, setup: pony => (pony.coatFill = BLACK) },
 		],
 	},
 	{
@@ -327,7 +359,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		layers: [
 			{ ...bodyLayer, backLeg: false },
 			backLegLayer,
-			{ name: 'front', set: 'backLegAccessories', backLeg: true, setup: pony => pony.coatFill = BLACK },
+			{ name: 'front', set: 'backLegAccessories', backLeg: true, setup: pony => (pony.coatFill = BLACK) },
 		],
 	},
 	{
@@ -348,9 +380,12 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ ...bodyLayer, backLeg: false },
 			backLegLayer,
 			{
-				name: 'front', set: 'backLegSleeves', setOverride: 'backAccessories', patterns: 2,
+				name: 'front',
+				set: 'backLegSleeves',
+				setOverride: 'backAccessories',
+				patterns: 2,
 				options: { no: NoDraw.BackAccessory | NoDraw.FarSleeves },
-				setup: pony => pony.coatFill = BLACK,
+				setup: pony => (pony.coatFill = BLACK),
 				frameSet: (set, _x, y, pattern) => {
 					set.type = y === 0 ? 5 : -1;
 					set.pattern = pattern;
@@ -373,7 +408,9 @@ export const sheets: (Sheet | Spacer)[] = [
 		layers: [
 			{ name: '<far legs>', frontFarLeg: true, backFarLeg: true },
 			{
-				name: 'body', body: true, set: 'body',
+				name: 'body',
+				body: true,
+				set: 'body',
 				frame: (pony, _state, _options, _x, _y, pattern) => {
 					pony.coatFill = pattern === 0 ? RED : WHITE;
 					pony.coatOutline = pattern === 0 ? RED : WHITE;
@@ -393,10 +430,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		offset: 70,
 		offsetY: 10,
 		state: stateFromFrames(wingFrames),
-		layers: [
-			bodyLayer,
-			{ name: 'front', set: 'wings', options: { no: NoDraw.Behind } },
-		],
+		layers: [bodyLayer, { name: 'front', set: 'wings', options: { no: NoDraw.Behind } }],
 		importOffsets: [1, 6, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(i => offsets.wingOffsets[i]),
 	},
 	{
@@ -408,10 +442,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		offset: 70,
 		padLeft: 20,
 		state: stateFromFrames([1, 5, 9].map(i => bodyFrames[i])),
-		layers: [
-			{ name: 'behind-body', set: 'tails' },
-			bodyLayer,
-		],
+		layers: [{ name: 'behind-body', set: 'tails' }, bodyLayer],
 		importOffsets: [1, 5, 9].map(i => offsets.tailOffsets[i]),
 	},
 	{
@@ -448,10 +479,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		// 	{ name: 'backAccessories1', layerName: 'front', mask: 'mask' },
 		// 	{ name: 'backAccessories2', layerName: 'front', mask: 'mask', reverse: true },
 		// ],
-		layers: [
-			bodyLayer,
-			{ name: 'front', set: 'backAccessories', options: { no: NoDraw.Sleeves } },
-		],
+		layers: [bodyLayer, { name: 'front', set: 'backAccessories', options: { no: NoDraw.Sleeves } }],
 		importOffsets: offsets.backAccessoryOffsets,
 	},
 	{
@@ -463,7 +491,9 @@ export const sheets: (Sheet | Spacer)[] = [
 			bodyLayer,
 			{ name: 'front', set: 'waistAccessories' },
 			{
-				name: '<wing>', options: { no: NoDraw.Behind }, frame: (pony, _state, _options, x) => {
+				name: '<wing>',
+				options: { no: NoDraw.Behind },
+				frame: (pony, _state, _options, x) => {
 					pony.wings = x === 16 ? specialSet(1) : ignoreSet();
 				},
 			},
@@ -494,12 +524,20 @@ export const sheets: (Sheet | Spacer)[] = [
 		paletteOffsetY: 30,
 		layers: [
 			{
-				name: 'behind', set: 'earsFar', head: true, noFace: true, drawBlack: false,
-				options: { no: NoDraw.CloseEar | NoDraw.FarEarShade }
+				name: 'behind',
+				set: 'earsFar',
+				head: true,
+				noFace: true,
+				drawBlack: false,
+				options: { no: NoDraw.CloseEar | NoDraw.FarEarShade },
 			},
 			{ ...bodyLayer, options: { no: NoDraw.Ears } },
 			{
-				name: 'front', set: 'ears', head: true, noFace: true, drawBlack: false,
+				name: 'front',
+				set: 'ears',
+				head: true,
+				noFace: true,
+				drawBlack: false,
 				options: { no: NoDraw.FarEar },
 				// importMirrored: { fieldName: 'ears2', offsetX: 0 },
 			},
@@ -518,18 +556,23 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ name: 'behind', set: 'hornsBehind', options: { no: NoDraw.Front } },
 			{ ...bodyLayer, options: { no: NoDraw.Ears } },
 			{
-				...bodyLayer, name: '<body with mane>', options: { no: NoDraw.Ears | NoDraw.FrontMane },
+				...bodyLayer,
+				name: '<body with mane>',
+				options: { no: NoDraw.Ears | NoDraw.FrontMane },
 				setup: pony => {
 					pony.mane = specialSet(1);
 					pony.backMane = specialSet(1);
-				}
+				},
 			},
 			{ name: 'front', set: 'horns', options: { no: NoDraw.Behind } },
 			{ name: '<ear>', head: true, noFace: true, drawBlack: false, options: { no: NoDraw.FarEar } },
 			{
-				name: '<front mane>', head: true, noFace: true, drawBlack: false,
+				name: '<front mane>',
+				head: true,
+				noFace: true,
+				drawBlack: false,
 				options: { no: NoDraw.Ears | NoDraw.Behind | NoDraw.TopMane },
-				setup: pony => pony.mane = specialSet(1),
+				setup: pony => (pony.mane = specialSet(1)),
 			},
 		],
 	},
@@ -552,7 +595,7 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ ...bodyLayer, options: { no: NoDraw.CloseEar } },
 			{ name: 'back', set: 'backFrontManes', fieldName: 'backMane', options: { no: NoDraw.Behind } },
 			{ name: 'top', set: 'topManes', options: { no: NoDraw.FrontMane | NoDraw.Behind } },
-			{ name: '<horn>', setup: pony => pony.horn = specialSet(1) },
+			{ name: '<horn>', setup: pony => (pony.horn = specialSet(1)) },
 			{ name: '<ear>', head: true, noFace: true, drawBlack: false, options: { no: NoDraw.FarEar } },
 			{ name: 'front', set: 'frontManes', options: { no: NoDraw.TopMane | NoDraw.Behind } },
 		],
@@ -597,10 +640,14 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ name: 'behind', set: 'headAccessoriesBehind' },
 			{ ...bodyLayer, options: { no: NoDraw.FarEar } },
 			{
-				...bodyLayer, name: '<body with mane>', shiftY: 5, options: { no: NoDraw.FarEar }, setup: pony => {
+				...bodyLayer,
+				name: '<body with mane>',
+				shiftY: 5,
+				options: { no: NoDraw.FarEar },
+				setup: pony => {
 					pony.mane = specialSet(1);
 					pony.backMane = specialSet(1);
-				}
+				},
 			},
 			{ name: 'front', set: 'headAccessories' },
 		],
@@ -619,7 +666,7 @@ export const sheets: (Sheet | Spacer)[] = [
 			{ name: '<ear>', head: true, noFace: true, drawBlack: false, options: { no: NoDraw.FarEar } },
 			{ name: 'front-2', set: 'faceAccessories2', options: { no: NoDraw.FaceAccessory1 } },
 			muzzleLayer,
-			{ name: '<horn>', setup: pony => pony.horn = specialSet(1) },
+			{ name: '<horn>', setup: pony => (pony.horn = specialSet(1)) },
 		],
 	},
 	{
@@ -632,18 +679,23 @@ export const sheets: (Sheet | Spacer)[] = [
 		paletteOffsetY: 45,
 		layers: [
 			{
-				name: 'behind', set: 'extraAccessoriesBehind', options: { extra: true, no: NoDraw.Front },
-				setup: pony => pony.mane = ignoreSet(1)
+				name: 'behind',
+				set: 'extraAccessoriesBehind',
+				options: { extra: true, no: NoDraw.Front },
+				setup: pony => (pony.mane = ignoreSet(1)),
 			},
 			{
-				...bodyLayer, setup: pony => {
+				...bodyLayer,
+				setup: pony => {
 					pony.mane = specialSet(1);
 					pony.backMane = specialSet(1);
-				}
+				},
 			},
 			{
-				name: 'front', set: 'extraAccessories', options: { extra: true, no: NoDraw.Behind },
-				setup: pony => pony.mane = ignoreSet(1)
+				name: 'front',
+				set: 'extraAccessories',
+				options: { extra: true, no: NoDraw.Behind },
+				setup: pony => (pony.mane = ignoreSet(1)),
 			},
 		],
 	},
@@ -672,10 +724,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		name: 'offset - wings',
 		fieldName: 'wings',
 		offsets: offsets.wingOffsets,
-		layers: [
-			bodyLayer,
-			{ name: 'front', set: 'wings', options: { no: NoDraw.Behind } },
-		],
+		layers: [bodyLayer, { name: 'front', set: 'wings', options: { no: NoDraw.Behind } }],
 		duplicateFirstFrame: bodyFrames.length,
 	},
 	{
@@ -686,10 +735,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		name: 'offset - tails',
 		fieldName: 'tail',
 		offsets: offsets.tailOffsets,
-		layers: [
-			{ name: 'behindBody', set: 'tails' },
-			bodyLayer,
-		],
+		layers: [{ name: 'behindBody', set: 'tails' }, bodyLayer],
 		duplicateFirstFrame: bodyFrames.length,
 	},
 	{
@@ -702,9 +748,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		...bodySheet,
 		name: 'offset - cm',
 		offsets: offsets.cmOffsets,
-		layers: [
-			{ ...bodyLayer, setup: pony => pony.cm = exampleCM },
-		],
+		layers: [{ ...bodyLayer, setup: pony => (pony.cm = exampleCM) }],
 	},
 	{
 		...bodySheet,
@@ -738,7 +782,9 @@ export const sheets: (Sheet | Spacer)[] = [
 			bodyLayer,
 			{ name: 'front', set: 'waistAccessories' },
 			{
-				name: '<wing>', options: { no: NoDraw.Behind }, frame: (pony, _state, _options, x) => {
+				name: '<wing>',
+				options: { no: NoDraw.Behind },
+				frame: (pony, _state, _options, x) => {
 					pony.wings = x === 16 ? specialSet(1) : ignoreSet();
 				},
 			},
@@ -750,7 +796,7 @@ export const sheets: (Sheet | Spacer)[] = [
 		fieldName: 'backAccessory',
 		offsets: offsets.backAccessoryOffsets,
 		layers: [
-			{ name: '<tail>', setup: pony => pony.tail = specialSet(2) },
+			{ name: '<tail>', setup: pony => (pony.tail = specialSet(2)) },
 			bodyLayer,
 			{ name: 'front', set: 'backAccessories' },
 		],
@@ -826,8 +872,15 @@ function stateFromFrames(frames: BodyFrame[]) {
 }
 
 function state(
-	frames: number, frontLegs?: number[], frontFarLegs?: number[], backLegs?: number[], backFarLegs?: number[],
-	head?: number[], body?: number[], wing?: (number | undefined)[], tail?: number[]
+	frames: number,
+	frontLegs?: number[],
+	frontFarLegs?: number[],
+	backLegs?: number[],
+	backFarLegs?: number[],
+	head?: number[],
+	body?: number[],
+	wing?: (number | undefined)[],
+	tail?: number[],
 ): PonyState {
 	const state = defaultPonyState();
 	state.blushColor = 0;

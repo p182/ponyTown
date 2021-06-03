@@ -66,7 +66,12 @@ export const POSITION_MIN = 0;
 export const POSITION_MAX = 100000;
 
 export function encodeMovement(
-	x: number, y: number, dir: number, flags: EntityState, time: number, camera: Rect
+	x: number,
+	y: number,
+	dir: number,
+	flags: EntityState,
+	time: number,
+	camera: Rect,
 ): [number, number, number, number, number] {
 	const pixelX = Math.floor(clamp(x, POSITION_MIN, POSITION_MAX) * tileWidth);
 	const pixelY = Math.floor(clamp(y, POSITION_MIN, POSITION_MAX) * tileHeight);
@@ -81,13 +86,7 @@ export function encodeMovement(
 	const d = (camX << 20) | (camY << 8) | (camW >>> 4);
 	const e = ((camW & 0xf) << 12) | camH;
 
-	return [
-		(a ^ SECA) >>> 0,
-		(b ^ SECB) >>> 0,
-		(c ^ SECC) >>> 0,
-		(d ^ SECD) >>> 0,
-		(e ^ SECE) >>> 0,
-	];
+	return [(a ^ SECA) >>> 0, (b ^ SECB) >>> 0, (c ^ SECC) >>> 0, (d ^ SECD) >>> 0, (e ^ SECE) >>> 0];
 }
 
 export function decodeMovement(a: number, b: number, c: number, d: number, e: number): Movement {
@@ -115,7 +114,7 @@ export function decodeMovement(a: number, b: number, c: number, d: number, e: nu
 }
 
 export function isMovingRight(vx: number, right: boolean): boolean {
-	return vx < 0 ? false : (vx > 0 ? true : right);
+	return vx < 0 ? false : vx > 0 ? true : right;
 }
 
 export function shouldBeFacingRight(entity: Entity): boolean {

@@ -1,12 +1,26 @@
 import { resizeWriter, writeUint8, BinaryWriter, writeUint32, writeUint16 } from 'ag-sockets';
 import { encodeString } from 'ag-sockets/dist/utf8';
 import {
-	Entity, Rect, EntityState, UpdateFlags, Action, EntityOrPonyOptions, UpdateType, TileType, canWalk, setAnimationToEntityState
+	Entity,
+	Rect,
+	EntityState,
+	UpdateFlags,
+	Action,
+	EntityOrPonyOptions,
+	UpdateType,
+	TileType,
+	canWalk,
+	setAnimationToEntityState,
 } from '../common/interfaces';
 import { normalize, containsPoint, boundsIntersect, clamp, pointInXYWH, hasFlag, setFlag } from '../common/utils';
 import { ServerEntity, ServerEntityWithClient, ServerMap, EntityUpdateBase, IClient } from './serverInterfaces';
 import {
-	isCritter, isDecal, entityInRange, SIT_ON_BOUNDS_WIDTH, SIT_ON_BOUNDS_HEIGHT, SIT_ON_BOUNDS_OFFSET
+	isCritter,
+	isDecal,
+	entityInRange,
+	SIT_ON_BOUNDS_WIDTH,
+	SIT_ON_BOUNDS_HEIGHT,
+	SIT_ON_BOUNDS_OFFSET,
 } from '../common/entityUtils';
 import { pushUpdateEntityToRegion } from './serverRegion';
 import { getRegion, getRegionGlobal, getTile } from '../common/worldMap';
@@ -72,9 +86,7 @@ export function findClosest(x: number, y: number, entities: Entity[]) {
 	return closest;
 }
 
-export function moveRandomly(
-	map: ServerMap, e: ServerEntity, speed: number, randomness: number, timestamp: number
-) {
+export function moveRandomly(map: ServerMap, e: ServerEntity, speed: number, randomness: number, timestamp: number) {
 	if (Math.random() < randomness) {
 		let vx = 0;
 		let vy = 0;
@@ -255,7 +267,12 @@ export function findIntersectingEntityByBounds(map: ServerMap, entity: ServerEnt
 			const region = getRegion(map, ix, iy);
 
 			for (const e of region.entities) {
-				if (e !== entity && !isDecal(e) && !isCritter(e) && boundsIntersect(entity.x, entity.y, entity.bounds, e.x, e.y, e.bounds)) {
+				if (
+					e !== entity &&
+					!isDecal(e) &&
+					!isCritter(e) &&
+					boundsIntersect(entity.x, entity.y, entity.bounds, e.x, e.y, e.bounds)
+				) {
 					return e;
 				}
 			}
@@ -317,7 +334,7 @@ function canBeSitOn(entity: ServerEntity, by: ServerEntity) {
 		return false;
 	}
 
-	const x = by.x + (right ? -SIT_ON_BOUNDS_OFFSET : (SIT_ON_BOUNDS_OFFSET - SIT_ON_BOUNDS_WIDTH));
+	const x = by.x + (right ? -SIT_ON_BOUNDS_OFFSET : SIT_ON_BOUNDS_OFFSET - SIT_ON_BOUNDS_WIDTH);
 	const y = by.y - SIT_ON_BOUNDS_HEIGHT / 2;
 	const w = SIT_ON_BOUNDS_WIDTH;
 	const h = SIT_ON_BOUNDS_HEIGHT;
@@ -326,8 +343,7 @@ function canBeSitOn(entity: ServerEntity, by: ServerEntity) {
 
 export function canPlaceItem(map: ServerMap, entity: ServerEntity) {
 	const tile = getTile(map, entity.x, entity.y);
-	return canWalk(tile) && tile !== TileType.Water && tile !== TileType.Boat &&
-		!findIntersectingEntityByBounds(map, entity);
+	return canWalk(tile) && tile !== TileType.Water && tile !== TileType.Boat && !findIntersectingEntityByBounds(map, entity);
 }
 
 export function canBePickedByPlayer(map: ServerMap, entity: ServerEntity) {

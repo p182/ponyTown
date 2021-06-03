@@ -1,6 +1,15 @@
 import { sort } from 'timsort';
 import {
-	Entity, EntityState, BodyAnimation, Point, EntityFlags, IMap, Pony, Says, EntityPlayerState, WorldMap
+	Entity,
+	EntityState,
+	BodyAnimation,
+	Point,
+	EntityFlags,
+	IMap,
+	Pony,
+	Says,
+	EntityPlayerState,
+	WorldMap,
 } from './interfaces';
 import { hasFlag, distance, pushUniq, setFlag } from './utils';
 import { stand, sit, lie, fly, flyBug, swim } from '../client/ponyAnimations';
@@ -38,12 +47,13 @@ export function updateEntityVelocity(map: WorldMap, entity: Entity, vx: number, 
 }
 
 export function compareEntities(a: Entity, b: Entity) {
-	return (toScreenY(a.y) - toScreenY(b.y))
-		|| (a.order - b.order)
-		|| (b.id - a.id)
-		|| (toScreenX(a.x) - toScreenX(b.x))
-		|| (toScreenY(a.z) - toScreenY(b.z)
-		);
+	return (
+		toScreenY(a.y) - toScreenY(b.y) ||
+		a.order - b.order ||
+		b.id - a.id ||
+		toScreenX(a.x) - toScreenX(b.x) ||
+		toScreenY(a.z) - toScreenY(b.z)
+	);
 }
 
 export function sortEntities(entities: Entity[]) {
@@ -51,7 +61,7 @@ export function sortEntities(entities: Entity[]) {
 }
 
 export function closestEntity(point: Point, entities: Entity[]): Entity | undefined {
-	return entities.reduce((best, entity) => distance(point, entity) < distance(point, best) ? entity : best, entities[0]);
+	return entities.reduce((best, entity) => (distance(point, entity) < distance(point, best) ? entity : best), entities[0]);
 }
 
 export function getBoopRect(entity: Entity) {
@@ -85,19 +95,20 @@ export function canLie<T>(entity: Entity, map: IMap<T>) {
 }
 
 export function entityInRange(entity: Entity, player: Entity) {
-	return (!entity.interactRange || distance(player, entity) < entity.interactRange);
+	return !entity.interactRange || distance(player, entity) < entity.interactRange;
 }
 
 export function getInteractBounds(pony: Pony) {
 	const boundsWidth = 1;
 	const boundsHeight = 1;
-	const boundsOffset = 0.5 + (isPonySitting(pony) ? -0.3 : (isPonyLying(pony) ? -0.2 : 0));
+	const boundsOffset = 0.5 + (isPonySitting(pony) ? -0.3 : isPonyLying(pony) ? -0.2 : 0);
 
 	return rect(
-		toScreenX(isFacingRight(pony) ? (pony.x + boundsOffset) : (pony.x - boundsOffset - boundsWidth)),
+		toScreenX(isFacingRight(pony) ? pony.x + boundsOffset : pony.x - boundsOffset - boundsWidth),
 		toScreenY(pony.y - boundsHeight / 2),
 		toScreenX(boundsWidth),
-		toScreenY(boundsHeight));
+		toScreenY(boundsHeight),
+	);
 }
 
 export const SIT_ON_BOUNDS_WIDTH = 1.2;
@@ -107,15 +118,21 @@ export const SIT_ON_BOUNDS_OFFSET = 0.4;
 export function getSitOnBounds(pony: Pony) {
 	const width = SIT_ON_BOUNDS_WIDTH;
 	const height = SIT_ON_BOUNDS_HEIGHT;
-	const offset = isFacingRight(pony) ? -SIT_ON_BOUNDS_OFFSET : (SIT_ON_BOUNDS_OFFSET - SIT_ON_BOUNDS_WIDTH);
+	const offset = isFacingRight(pony) ? -SIT_ON_BOUNDS_OFFSET : SIT_ON_BOUNDS_OFFSET - SIT_ON_BOUNDS_WIDTH;
 	return rect(toScreenX(pony.x + offset), toScreenY(pony.y - SIT_ON_BOUNDS_HEIGHT / 2), toScreenX(width), toScreenY(height));
 }
 
 // pony state
 
 export function isIdleAnimation(animation: BodyAnimation) {
-	return animation === stand || animation === sit || animation === lie || animation === fly ||
-		animation === flyBug || animation === swim;
+	return (
+		animation === stand ||
+		animation === sit ||
+		animation === lie ||
+		animation === fly ||
+		animation === flyBug ||
+		animation === swim
+	);
 }
 
 export function isIdle(pony: Pony) {

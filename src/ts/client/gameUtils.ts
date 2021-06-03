@@ -40,7 +40,7 @@ export function markGameAsLoaded(game: PonyTownGame) {
 	if (!game.loaded) {
 		game.loaded = true;
 		game.fullyLoaded = false;
-		setTimeout(() => game.fullyLoaded = true, 300);
+		setTimeout(() => (game.fullyLoaded = true), 300);
 	}
 }
 

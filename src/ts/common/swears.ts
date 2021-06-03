@@ -79,11 +79,14 @@ function createBadWords(fast: boolean) {
 	const ś = fast ? 's' : 'sś';
 
 	function separeted(letters: string, separator = sep): string {
-		return letters.split('').map(x => `${(letter as any)[x] || x}+`).join(`${separator}*`);
+		return letters
+			.split('')
+			.map(x => `${(letter as any)[x] || x}+`)
+			.join(`${separator}*`);
 	}
 
 	function baseSeparate(letters: string, sep: string, optional?: string) {
-		return `_*${separeted(letters, sep)}${(optional ? `(?:${separeted(optional, sep)})?` : '')}_*`;
+		return `_*${separeted(letters, sep)}${optional ? `(?:${separeted(optional, sep)})?` : ''}_*`;
 	}
 
 	function separate(letters: string, optional?: string, separator = sep): string {
@@ -95,7 +98,10 @@ function createBadWords(fast: boolean) {
 	}
 
 	function alts(letters: string) {
-		return letters.split('').map(x => `${(letter as any)[x] || x}+`).join('');
+		return letters
+			.split('')
+			.map(x => `${(letter as any)[x] || x}+`)
+			.join('');
 	}
 
 	let fuckWords: string[];
@@ -227,12 +233,12 @@ function createBadWords(fast: boolean) {
 		'cum ?(?:dump(?:sters?)?|buckets?|guzzl(?:ing|ers?)|soaken|stain|huge load)',
 		//'cum', // cant use because of spanish
 		'cum (?:in(?:side)?|on) (?:your?|my|me|her)',
-		'cum (?:inside|outside|spewing|for me|harder|a ?lot|more|all|stain(?:s|ed)?|slave|on (?:yo)?ur|squirts|'
-		+ 'fills|deep|massive)',
+		'cum (?:inside|outside|spewing|for me|harder|a ?lot|more|all|stain(?:s|ed)?|slave|on (?:yo)?ur|squirts|' +
+			'fills|deep|massive)',
 		'cum for(?!ç)',
-		`(?:m[ey]|your?|i|h+is|warm|makes? u|me to|g[ou]nna|to not|more|make her|please|daddys|stallion`
-		+ `|will|they|can|swallows|salty|of|some|with|licks?|leaks|pls|in|from|sticky|the|her|its|spurt(?:s|ing)`
-		+ `|(?:going|start(?:ed|s)?|ready|about|get|want) (?:t-)?to|what|yes|did|don'?t|let'?s|say|i'?ll|zebra|and) cum`,
+		`(?:m[ey]|your?|i|h+is|warm|makes? u|me to|g[ou]nna|to not|more|make her|please|daddys|stallion` +
+			`|will|they|can|swallows|salty|of|some|with|licks?|leaks|pls|in|from|sticky|the|her|its|spurt(?:s|ing)` +
+			`|(?:going|start(?:ed|s)?|ready|about|get|want) (?:t-)?to|what|yes|did|don'?t|let'?s|say|i'?ll|zebra|and) cum`,
 		'cum cum',
 		'gonna c-cum',
 		'i camm+e+',
@@ -374,8 +380,8 @@ function createBadWords(fast: boolean) {
 			'fy+c+king',
 			'(?:faq|f\\.\\.k) *(?:ing|er|this|dis|u|you|yoursel(?:f|ves))',
 			'(?:fyuck|fcuk)(?:ing|er)?',
-			'(?:brony|furry?|gay|horse|pony|nigg?er|butt|mother ?|mo|mutha|da|de)?'
-			+ 'f+[ou*8&%$#@]+[ck]+(?:ed|ers?|in[9g]?|able|faces?|balls?|toys?|ta+rds?|bo[iy]s?)?', // motherfucker
+			'(?:brony|furry?|gay|horse|pony|nigg?er|butt|mother ?|mo|mutha|da|de)?' +
+				'f+[ou*8&%$#@]+[ck]+(?:ed|ers?|in[9g]?|able|faces?|balls?|toys?|ta+rds?|bo[iy]s?)?', // motherfucker
 			'm[o0]therf\\S*',
 			'm[uao](?:th|d)?af[au]c?k(?:as?|in)?',
 			'moderfocke+r',
@@ -1015,9 +1021,11 @@ function createBadWords(fast: boolean) {
 		'muie', // blowjob
 		`s[${ă}] ?te ?fut`, // fuck you
 		`futu-?[${ț}]i ?pizda`, // fuck your pussy
-		...(fast ? [] : [
-			'pulă', // dick
-		]),
+		...(fast
+			? []
+			: [
+					'pulă', // dick
+			  ]),
 		// polish
 		`ci+p(?:a{2,}|ę|ą|k(?:ami|[${ą}]|[${ę}]|i|owate|o)|ek|eczka|usie[${ń}]ka|ule[${ń}]ka)`, // pussy
 		'chu{2,}j', // dick
@@ -1048,18 +1056,20 @@ function createBadWords(fast: boolean) {
 		`(?:s|za|wy?)pier?(?:[d*]a|[da*])la(?:jcie|j[${ą}]?|my?|cie|[${ć}])?`, // fuck
 		`(?:s|za|wy?)pieprza(j|[${ć}]|j[${ą}]|jmy)`, // fuck
 		`z?g[wf]a[u${ł}](?:t|tem|ty|tów|tami|cenie?|ceni|con[aey]|c[eoąi]|[${ć}]my|ci[${ć}]|ci[${ł}]+[iay]|cimy?)`, // rape
-		'(?:za|wy|z|u|na|prze|po|roz|przy)?'
-		+ `je+[b*](?:ie(?:sz|my)?|i[${ą}]|a+[*]?n[yaei]+(?:mi|m|go)?|a[${ł}][aeiyo][m${ś}]?|a+[${ć}${ł}]|a[${ń}]ce)`, // fuck
+		'(?:za|wy|z|u|na|prze|po|roz|przy)?' +
+			`je+[b*](?:ie(?:sz|my)?|i[${ą}]|a+[*]?n[yaei]+(?:mi|m|go)?|a[${ł}][aeiyo][m${ś}]?|a+[${ć}${ł}]|a[${ń}]ce)`, // fuck
 		`jeb(?: ma[${ł}]e)? dzieci`,
 		`(?:wy)?r${sep2OrNum}*ucha(?:my?|jmy|jcie|j[${ą}]?|[${ć}]|nym?|n[ae]|nie?)`, // fucks
 		'peda(?:le|lsk(?:ie|im|i|a)?)', // fag
-		...(fast ? [] : [
-			`pe[d*]ał(?:y|a|em|ami|[${ó}*]w)?`, // fag
-			'gówn(?:o|a|iaki?)', // shit
-			'suką+', // bitch
-			'żesz chuj', // oh fuck
-			'fapać', // fap
-		]),
+		...(fast
+			? []
+			: [
+					`pe[d*]ał(?:y|a|em|ami|[${ó}*]w)?`, // fag
+					'gówn(?:o|a|iaki?)', // shit
+					'suką+', // bitch
+					'żesz chuj', // oh fuck
+					'fapać', // fap
+			  ]),
 		's *p *i *e *r *d *a *l *a *j', // fuck off
 		'p *i *e *r *d *o *l *e', // fuck
 		'j *e *b *a *n *[aeyi]', // fucking
@@ -1074,26 +1084,32 @@ function createBadWords(fast: boolean) {
 		's[.]*u[.]*k[.]*k+a+', // bitch
 		'su ka', // bitch
 		// spanish
-		...(fast ? [] : [
-			'coño+', // pussy
-		]),
+		...(fast
+			? []
+			: [
+					'coño+', // pussy
+			  ]),
 		// czech
-		...(fast ? [] : [
-			'srát', // shit
-			'piča', // cunt
-		]),
+		...(fast
+			? []
+			: [
+					'srát', // shit
+					'piča', // cunt
+			  ]),
 		// turkish
 		'sikiyimmi(?: seni)?', // fuck
-		...(fast ? [] : [
-			'göt(?: ?k[ıI]l[ıI]| ?veren)?', // ass (hole, giver)
-			'orospu(?: ?çocuğu)?', // bitch (son of a)
-			'(?:anan[ıI] ?|ecdad[ıI]n[ıI] ?)?sikiyim', // fuck
-			'ana?nı sikim', // fuck
-			'am[ıI]na ?koyayim', // fuck
-			'amc[ıI]k', // cunt
-			'yarra[ğg][ıI]m[ıI](?: ?ye)?', // eat my dick
-			'sikiş', // porn
-		]),
+		...(fast
+			? []
+			: [
+					'göt(?: ?k[ıI]l[ıI]| ?veren)?', // ass (hole, giver)
+					'orospu(?: ?çocuğu)?', // bitch (son of a)
+					'(?:anan[ıI] ?|ecdad[ıI]n[ıI] ?)?sikiyim', // fuck
+					'ana?nı sikim', // fuck
+					'am[ıI]na ?koyayim', // fuck
+					'amc[ıI]k', // cunt
+					'yarra[ğg][ıI]m[ıI](?: ?ye)?', // eat my dick
+					'sikiş', // porn
+			  ]),
 		'seni ?sikerim', // fuck
 		'sikiyim', // fuck
 		'siktir(?: ?git)?', // fuck
@@ -1116,127 +1132,129 @@ function createBadWords(fast: boolean) {
 		'(?:cyka)+',
 		'c ?ica blia', // cyka blyat misspelled
 		'govno+', // shit
-		...(fast ? [] : [
-			'б/?\\\\yat',
-			'суда вручат', // cyka blyat misspelled
-			'анал(?:ьные)?', // anal
-			'а +н +а +л',
-			'бля(?:ть)?ъ', // fuck
-			`(?!бл ять|б лять)${separate('блять')}э?`,
-			'[cс][yу][0-9]*[kк][aа]+',
-			separate('сука'), // cyka
-			'су\\dка',
-			'су[57]+а',
-			`с${sep2}+ч?ка|су${sep2}+а|сук${sep2.replace(/[.,!?"'()]/g, '')}+`, // bitch
-			'[сc][*]{2,}[аa]', // bitch
-			'с[*]{3,}', // bitch
-			'сцука+', // cyka (misspelled)
-			'Сюка', // bitch
-			'[*]+ка', // bitch
-			'с+у+к+и+н?', // bitch
-			'сук[оo0]+', // bitch
-			'секс(?:ам|а+|е|у|ом)?', // sex
-			'срать', // crap
-			`(?:вы|по)?е[б6]+[*]?(?:у|учая|ётесь|а?ться|а+т[ьъ]+|ало?м?ъ?|на|ались|аные|ан+ая|[*])`, // fuck
-			`(?:вы|по)?е[б6]+${sep2}(?:у|тесь|ться|ть|лись|ные|н+ая|чий|чие)`, // fuck
-			'е[б6]етс', // fucks
-			'я *ебаl', // fucked
-			'выепать', // fuck
-			'влагалища', // vagina
-			'вибратора?', // vibrator
-			`е${sep2}?[б6]${sep2}?[ёуа]${sep2}?ть?`, // fucks
-			'е[б6](?:ать?ся+|ёнок|.ть|анный|алом?ъ?|нулся|нутая|анутся)', // fuck
-			'з[б6]ать', // fuck
-			'бл[*]{2,}ь', // whore
-			'б[л*]я(?:.ь|[яа]*)', // whore
-			'(?:е|лэ)?б+[лl]+[я*]+(?:ч|т+ь+э?|т+б*|дина|ди|дь|дя)?', // fuck / whore
-			`б(?:л${sep2}|${sep2}я+|${sep2}{2})ть`, // whore
-			'бл[эая]ть', // whore
-			'б[*]+[ья]+', // whore
-			'зае[б6](али?|лся)', // fucked
-			'з[*]ебуьс',
-			'е[б6]а', // fuck
-			'е[*]б',
-			separate2('заебал'), // whore
-			separate2('бля'), // whore
-			'з[а_*]еб[а_*]ли?', // whore
-			'б *л *я', // whore
-			'вы[*]+', // fuck
-			'говно+м?', // shit
-			'мать твою', // fuck
-			'онанист', // onanist
-			'орг(?:ия|азм)', // orgy/orgasm
-			'охуительны(х|е)', // fucking
-			'о[б6]осса(на|ть)', // pee on somebody
-			'шалаву', // slut
-			`ш${sep2}?л${sep2}?ю${sep2}?(шк[аa]+|[хx]и|[хx][аa]+)`, // slut / whore
-			'ш +л +ю +(ш +к +а|х +[иа])', // slut
-			'шл[_*]ха', // slut
-			'пенис', // penis
-			'потрахались', // have sex
-			'тр[а@*]х(атьс(еб)?я|аьт|нула|алаъ)', // fuck
-			'дрочить', // masturbate
-			'порнухой', // porn
-			'изн[ак]силую', // rape
-			`у?пи[*]?[3з${emoji}]+д(?:абол(?:ка?)?|ое[б6]+учий|овать|овал|олизка|ы|а|ецъ?|е|юк|уйте|уй|ос?)`, // cunt / pussy
-			'п[_*]здец', // pussy
-			`письки`, // pussy
-			'киск[иеуа]', // pussy
-			'сперму', // sperm
-			'кончи(?:л|шь)', // cum/cumshot
-			'пид[о0]+р(ы|а[зс])?', // fag
-			`п${sep2}здуй`,
-			'ниггеров', // niggers
-			'мудак[аи]?', // asshole
-			'лохи', // fuckers
-			'соси писос', // suck dick
-			'сосу член', // suck dick
-			'члено(?:м|соса?)', // cock/cocksucker
-			'(?:иди)?на[хx]уй', // fuck
-			`[хx]${sep}ль`, // fuck
-			'[хx]ерню', // garbage
-			'(?:н[аa])?[хx][уy*]+[йи]+(?:ло|ка|э|у+|ъ+|н[ёе]й|н[юя]?)?', // garbage / prick / fucking // наxyй
-			'н[.]*а[.]*х[.]*у[.]*[йи]',
-			'(?:ху[йя])+', // fuck / dick
-			'ху[\\\\/]*ли', // fuck
-			'х[_.*]ли', // fuck
-			`ху${sep}+[йи]`,
-			`[хx]+${sep}?у+${sep}?[йия]+${sep}?у*`,
-			`[хx][${emoji}](?:[йия]|ёв)`,
-			`[хx]у[${emoji}]`,
-			`на(?:${sep2}у|х${sep2})[йи]`,
-			'(?:ни|на|ha)?хер(?:а|ней)?', // dick / fuck
-			`(?:по|идина)?х(?:у|${sep2})[йию](?:ло|лестия)?`, // dick
-			'(?:по|на)\\)\\(у[йию]', // dick
-			'мастурбация', // masturbation
-			`[хx] *${sep2}+ *у *${sep2}+ *й`,
-			`п(?:а|${sep2})дика`, // fagot
-			'насил(?:ьник|уют)', // rapist
-			'ни[хx]уя', // fucking
-			'на[*]+й', // dick
-			'н[*]{3,}й', // dick
-			'насрать', // shit
-			'дерьмо', // shit
-			'дебилы?', // moron
-			'ты еб', // you fuck
-			// 'дохуя', // f*cking much (shitload)
-			'\\bхуе\\b', // dick
-			'за(?:сранец|лупа|дницу)', // dickhead / ass
-			'гавном?', // shit
-			`т${sep2}?р${sep2}?а+${sep2}?[хx](?:ни(?:те)?|нуть|ну|ает|а+ть)?(?: (?:тебя|меня))?`, // poke / fuck (you|me)
-			'жоп(?:у|ай?)', // ass(hole)
-			`про[е${emoji}]бал(?:ся)?`, // fucked
-			'анал', // anal
-			'3===+э',
-			'зиг ха[ий]?ль', // seig hail
-			'(?:на|г|б)[*]{2,}',
-			'(?:наша|нас|моя|моей) ?(?:территори[яи]|терра)', // our|my territory
-			'кунт', // cunt (phonetic)
-			'х[*]{2,}',
-			'[Ъb][*іi][тt][cc][нh]', // bitch
-			`\\)\\(${sep}?у+${sep}?[йия]+${sep}?у*`,
-			'fuск\\S*',
-		]),
+		...(fast
+			? []
+			: [
+					'б/?\\\\yat',
+					'суда вручат', // cyka blyat misspelled
+					'анал(?:ьные)?', // anal
+					'а +н +а +л',
+					'бля(?:ть)?ъ', // fuck
+					`(?!бл ять|б лять)${separate('блять')}э?`,
+					'[cс][yу][0-9]*[kк][aа]+',
+					separate('сука'), // cyka
+					'су\\dка',
+					'су[57]+а',
+					`с${sep2}+ч?ка|су${sep2}+а|сук${sep2.replace(/[.,!?"'()]/g, '')}+`, // bitch
+					'[сc][*]{2,}[аa]', // bitch
+					'с[*]{3,}', // bitch
+					'сцука+', // cyka (misspelled)
+					'Сюка', // bitch
+					'[*]+ка', // bitch
+					'с+у+к+и+н?', // bitch
+					'сук[оo0]+', // bitch
+					'секс(?:ам|а+|е|у|ом)?', // sex
+					'срать', // crap
+					`(?:вы|по)?е[б6]+[*]?(?:у|учая|ётесь|а?ться|а+т[ьъ]+|ало?м?ъ?|на|ались|аные|ан+ая|[*])`, // fuck
+					`(?:вы|по)?е[б6]+${sep2}(?:у|тесь|ться|ть|лись|ные|н+ая|чий|чие)`, // fuck
+					'е[б6]етс', // fucks
+					'я *ебаl', // fucked
+					'выепать', // fuck
+					'влагалища', // vagina
+					'вибратора?', // vibrator
+					`е${sep2}?[б6]${sep2}?[ёуа]${sep2}?ть?`, // fucks
+					'е[б6](?:ать?ся+|ёнок|.ть|анный|алом?ъ?|нулся|нутая|анутся)', // fuck
+					'з[б6]ать', // fuck
+					'бл[*]{2,}ь', // whore
+					'б[л*]я(?:.ь|[яа]*)', // whore
+					'(?:е|лэ)?б+[лl]+[я*]+(?:ч|т+ь+э?|т+б*|дина|ди|дь|дя)?', // fuck / whore
+					`б(?:л${sep2}|${sep2}я+|${sep2}{2})ть`, // whore
+					'бл[эая]ть', // whore
+					'б[*]+[ья]+', // whore
+					'зае[б6](али?|лся)', // fucked
+					'з[*]ебуьс',
+					'е[б6]а', // fuck
+					'е[*]б',
+					separate2('заебал'), // whore
+					separate2('бля'), // whore
+					'з[а_*]еб[а_*]ли?', // whore
+					'б *л *я', // whore
+					'вы[*]+', // fuck
+					'говно+м?', // shit
+					'мать твою', // fuck
+					'онанист', // onanist
+					'орг(?:ия|азм)', // orgy/orgasm
+					'охуительны(х|е)', // fucking
+					'о[б6]осса(на|ть)', // pee on somebody
+					'шалаву', // slut
+					`ш${sep2}?л${sep2}?ю${sep2}?(шк[аa]+|[хx]и|[хx][аa]+)`, // slut / whore
+					'ш +л +ю +(ш +к +а|х +[иа])', // slut
+					'шл[_*]ха', // slut
+					'пенис', // penis
+					'потрахались', // have sex
+					'тр[а@*]х(атьс(еб)?я|аьт|нула|алаъ)', // fuck
+					'дрочить', // masturbate
+					'порнухой', // porn
+					'изн[ак]силую', // rape
+					`у?пи[*]?[3з${emoji}]+д(?:абол(?:ка?)?|ое[б6]+учий|овать|овал|олизка|ы|а|ецъ?|е|юк|уйте|уй|ос?)`, // cunt / pussy
+					'п[_*]здец', // pussy
+					`письки`, // pussy
+					'киск[иеуа]', // pussy
+					'сперму', // sperm
+					'кончи(?:л|шь)', // cum/cumshot
+					'пид[о0]+р(ы|а[зс])?', // fag
+					`п${sep2}здуй`,
+					'ниггеров', // niggers
+					'мудак[аи]?', // asshole
+					'лохи', // fuckers
+					'соси писос', // suck dick
+					'сосу член', // suck dick
+					'члено(?:м|соса?)', // cock/cocksucker
+					'(?:иди)?на[хx]уй', // fuck
+					`[хx]${sep}ль`, // fuck
+					'[хx]ерню', // garbage
+					'(?:н[аa])?[хx][уy*]+[йи]+(?:ло|ка|э|у+|ъ+|н[ёе]й|н[юя]?)?', // garbage / prick / fucking // наxyй
+					'н[.]*а[.]*х[.]*у[.]*[йи]',
+					'(?:ху[йя])+', // fuck / dick
+					'ху[\\\\/]*ли', // fuck
+					'х[_.*]ли', // fuck
+					`ху${sep}+[йи]`,
+					`[хx]+${sep}?у+${sep}?[йия]+${sep}?у*`,
+					`[хx][${emoji}](?:[йия]|ёв)`,
+					`[хx]у[${emoji}]`,
+					`на(?:${sep2}у|х${sep2})[йи]`,
+					'(?:ни|на|ha)?хер(?:а|ней)?', // dick / fuck
+					`(?:по|идина)?х(?:у|${sep2})[йию](?:ло|лестия)?`, // dick
+					'(?:по|на)\\)\\(у[йию]', // dick
+					'мастурбация', // masturbation
+					`[хx] *${sep2}+ *у *${sep2}+ *й`,
+					`п(?:а|${sep2})дика`, // fagot
+					'насил(?:ьник|уют)', // rapist
+					'ни[хx]уя', // fucking
+					'на[*]+й', // dick
+					'н[*]{3,}й', // dick
+					'насрать', // shit
+					'дерьмо', // shit
+					'дебилы?', // moron
+					'ты еб', // you fuck
+					// 'дохуя', // f*cking much (shitload)
+					'\\bхуе\\b', // dick
+					'за(?:сранец|лупа|дницу)', // dickhead / ass
+					'гавном?', // shit
+					`т${sep2}?р${sep2}?а+${sep2}?[хx](?:ни(?:те)?|нуть|ну|ает|а+ть)?(?: (?:тебя|меня))?`, // poke / fuck (you|me)
+					'жоп(?:у|ай?)', // ass(hole)
+					`про[е${emoji}]бал(?:ся)?`, // fucked
+					'анал', // anal
+					'3===+э',
+					'зиг ха[ий]?ль', // seig hail
+					'(?:на|г|б)[*]{2,}',
+					'(?:наша|нас|моя|моей) ?(?:территори[яи]|терра)', // our|my territory
+					'кунт', // cunt (phonetic)
+					'х[*]{2,}',
+					'[Ъb][*іi][тt][cc][нh]', // bitch
+					`\\)\\(${sep}?у+${sep}?[йия]+${sep}?у*`,
+					'fuск\\S*',
+			  ]),
 		// en
 		'b[i!]tc\\|-\\|',
 		'di(?:l|\\|_)d(?:o|\\(\\))', // dildo
@@ -1383,11 +1401,13 @@ function createBadWords(fast: boolean) {
 		'suicidate', // commit suicide
 		// portuguese
 		'^[* ]*chupando[* ]*$', // sucking
-		...(fast ? [] : [
-			'(?:^| )6+ля(?: |$)', // fuck
-			'(?:^| )6лять(?: |$)', // fuck
-			'(?<!бар)с+[у*]+ч*к+а+', // bitch (except: барсука // badger)
-		]),
+		...(fast
+			? []
+			: [
+					'(?:^| )6+ля(?: |$)', // fuck
+					'(?:^| )6лять(?: |$)', // fuck
+					'(?<!бар)с+[у*]+ч*к+а+', // bitch (except: барсука // badger)
+			  ]),
 		'(?:^| )fu[(|]<(?:ing)?(?: |$)', // fu(< fu|< fu|<ing
 		`(?:^| )${alts('nigger')}(?: |$)`, // nigger
 		`(?:^|^${sep4} ?|\\S\\S | U )f+ +(?:her|him|you|of+|out|me|urself|yourself|everyone|admins|mods|moderators|my life|harder)\\b`,
@@ -1445,9 +1465,7 @@ function createBadWords(fast: boolean) {
 		// '(?:^| )ahh+~+(?: |$)',
 	];
 
-	const badWordsSpecific = [
-		'\\bgRAPE\\b',
-	];
+	const badWordsSpecific = ['\\bgRAPE\\b'];
 
 	return { all: badWords, foreign: badWordsForeign, other: badWordsOther, specific: badWordsSpecific, fuck: fuckWords };
 }
@@ -1517,14 +1535,18 @@ const regexTestSpecificFast = testRegexSpecific(ascii.specific);
 const regexTestFuck = testRegex(unicode.fuck);
 
 const regexReplaceRUSingle = tryRegex(`${unicode.foreign.join('|')}`, 'ugi');
-const regexReplacePartial = tryRegex(`${[
-	...unicode.all, ...unicode.foreign, ...unicode.other, ...unicode.specific
-].join('|')}`, 'ugi');
+const regexReplacePartial = tryRegex(
+	`${[...unicode.all, ...unicode.foreign, ...unicode.other, ...unicode.specific].join('|')}`,
+	'ugi',
+);
 
 type Replacer = (match: string) => string;
 
 const defaultReplacer: Replacer = match => repeat('*', match.length);
-const createReplacerRU = (replacer = defaultReplacer): Replacer => match => match.replace(regexReplaceRUSingle, replacer);
+const createReplacerRU =
+	(replacer = defaultReplacer): Replacer =>
+	match =>
+		match.replace(regexReplaceRUSingle, replacer);
 
 function canUseFast(text: string) {
 	return isAscii(text);
@@ -1549,23 +1571,17 @@ function fastReplace(text: string, replacer: Replacer, replacerRU: Replacer) {
 export function createFilter(replacer = defaultReplacer) {
 	const replacerRU = createReplacerRU(replacer);
 
-	return (text: string) => canUseFast(text) ?
-		fastReplace(text, replacer, replacerRU) :
-		slowReplace(text, replacer, replacerRU);
+	return (text: string) => (canUseFast(text) ? fastReplace(text, replacer, replacerRU) : slowReplace(text, replacer, replacerRU));
 }
 
 function slowTest(text: string) {
-	return regexTest.test(text) ||
-		regexTestRU.test(text) ||
-		regexTestOther.test(text) ||
-		regexTestSpecific.test(text);
+	return regexTest.test(text) || regexTestRU.test(text) || regexTestOther.test(text) || regexTestSpecific.test(text);
 }
 
 function fastTest(text: string) {
-	return regexTestFast.test(text) ||
-		regexTestRUFast.test(text) ||
-		regexTestOtherFast.test(text) ||
-		regexTestSpecificFast.test(text);
+	return (
+		regexTestFast.test(text) || regexTestRUFast.test(text) || regexTestOtherFast.test(text) || regexTestSpecificFast.test(text)
+	);
 }
 
 export function hasBadWords(text: string) {
@@ -1588,10 +1604,12 @@ export function filterBadWordsPartial(text: string, replacer = defaultReplacer):
 }
 
 export function findMatch(text: string): string | undefined {
-	return unicode.all.find(x => (tryRegex(`\\b(?:${x})\\b`, 'ui')).test(text))
-		|| unicode.foreign.find(x => (tryRegex(`${wordStartRU}(?:${x})${wordEndRU}`, 'ui')).test(text))
-		|| unicode.other.find(x => (tryRegex(`${x}`, 'u')).test(text))
-		|| unicode.specific.find(x => (tryRegex(`${x}`, 'u')).test(text));
+	return (
+		unicode.all.find(x => tryRegex(`\\b(?:${x})\\b`, 'ui').test(text)) ||
+		unicode.foreign.find(x => tryRegex(`${wordStartRU}(?:${x})${wordEndRU}`, 'ui').test(text)) ||
+		unicode.other.find(x => tryRegex(`${x}`, 'u').test(text)) ||
+		unicode.specific.find(x => tryRegex(`${x}`, 'u').test(text))
+	);
 }
 
 export function createMatchEntries() {

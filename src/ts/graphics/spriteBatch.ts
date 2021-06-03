@@ -2,8 +2,15 @@ import { Sprite, SpriteBatch as ISpriteBatch, Matrix2D } from '../common/interfa
 import { BaseSpriteBatch, getColorFloat } from './baseSpriteBatch';
 
 function vertex(
-	vertices: Float32Array, _verticesUint32: Uint32Array, index: number,
-	x: number, y: number, u: number, v: number, c: number, transform: Matrix2D
+	vertices: Float32Array,
+	_verticesUint32: Uint32Array,
+	index: number,
+	x: number,
+	y: number,
+	u: number,
+	v: number,
+	c: number,
+	transform: Matrix2D,
 ) {
 	vertices[index++] = transform[0] * x + transform[2] * y + transform[4];
 	vertices[index++] = transform[1] * x + transform[3] * y + transform[5];
@@ -24,7 +31,7 @@ export class SpriteBatch extends BaseSpriteBatch implements ISpriteBatch {
 		capacity: number,
 		buffer: ArrayBuffer,
 		vertexBuffer: WebGLBuffer,
-		indexBuffer: WebGLBuffer
+		indexBuffer: WebGLBuffer,
 	) {
 		super(gl, capacity, buffer, vertexBuffer, indexBuffer, [
 			{ name: 'position', size: 2 },
@@ -32,10 +39,7 @@ export class SpriteBatch extends BaseSpriteBatch implements ISpriteBatch {
 			{ name: 'color', size: 4, type: gl.UNSIGNED_BYTE, normalized: true },
 		]);
 	}
-	drawImage(
-		color: number, sx: number, sy: number, sw: number, sh: number,
-		dx: number, dy: number, dw: number, dh: number
-	) {
+	drawImage(color: number, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number) {
 		if (this.capacity <= this.spritesCount) {
 			this.flush();
 		}

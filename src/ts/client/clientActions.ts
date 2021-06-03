@@ -1,8 +1,22 @@
 import { NgZone } from '@angular/core';
 import { Method, SocketClient, Bin, getMethods } from 'ag-sockets/dist/browser';
 import {
-	MapInfo, WorldState, PartyMember, PartyFlags, Action, NotificationFlags, Pony, LeaveReason,
-	SayData, MapState, defaultMapState, Apply, InfoFlags, PonyData, FriendStatusData, WorldMap
+	MapInfo,
+	WorldState,
+	PartyMember,
+	PartyFlags,
+	Action,
+	NotificationFlags,
+	Pony,
+	LeaveReason,
+	SayData,
+	MapState,
+	defaultMapState,
+	Apply,
+	InfoFlags,
+	PonyData,
+	FriendStatusData,
+	WorldMap,
 } from '../common/interfaces';
 import { hasFlag, findById } from '../common/utils';
 import { isPony } from '../common/pony';
@@ -16,8 +30,16 @@ import { addNotification, removeNotification, markGameAsLoaded, resetGameFields,
 import { Model } from '../components/services/model';
 import { decodeUpdate } from '../common/encoders/updateDecoder';
 import {
-	updatePonyInfoWithPoof, subscribeRegion, handleUpdates, handleUpdateEntity, handleRemoveEntity, handleSays,
-	handleEntityInfo, handleUpdatePonies, filterEntityName, handleUpdateFriends
+	updatePonyInfoWithPoof,
+	subscribeRegion,
+	handleUpdates,
+	handleUpdateEntity,
+	handleRemoveEntity,
+	handleSays,
+	handleEntityInfo,
+	handleUpdatePonies,
+	filterEntityName,
+	handleUpdateFriends,
 } from './handlers';
 import { nameToHTML } from './emoji';
 
@@ -32,8 +54,7 @@ function findPonyById(map: WorldMap, id: number) {
 }
 
 export class ClientActions implements SocketClient {
-	constructor(private gameService: GameService, private game: PonyTownGame, private model: Model, private zone: NgZone) {
-	}
+	constructor(private gameService: GameService, private game: PonyTownGame, private model: Model, private zone: NgZone) {}
 	private apply: Apply = func => this.zone.run(func);
 	connected() {
 		resetGameFields(this.game);
@@ -43,7 +64,8 @@ export class ClientActions implements SocketClient {
 		this.apply(() => this.gameService.joined());
 
 		const supportsWasm = typeof WebAssembly !== 'undefined';
-		const info = 0 |
+		const info =
+			0 |
 			(isInIncognitoMode ? InfoFlags.Incognito : 0) |
 			(supportsWasm ? InfoFlags.SupportsWASM : 0) |
 			(supportsLetAndConst() ? InfoFlags.SupportsLetAndConst : 0);
@@ -92,7 +114,7 @@ export class ClientActions implements SocketClient {
 	@Method({ binary: [Bin.I32, Bin.I32, Bin.U8Array] })
 	mapTest(width: number, height: number, buffer: Uint8Array) {
 		const data = new Uint32Array(width * height);
-		(new Uint8Array(data.buffer)).set(buffer);
+		new Uint8Array(data.buffer).set(buffer);
 		this.game.minimap = { width, height, data };
 	}
 	@Method({ binary: [BinEntityId, Bin.Str, Bin.Str, Bin.Str, Bin.U16] })
@@ -109,7 +131,7 @@ export class ClientActions implements SocketClient {
 		}
 
 		if (this.game.party) {
-			this.game.party.members.forEach(m => m.self = m.id === id);
+			this.game.party.members.forEach(m => (m.self = m.id === id));
 			this.game.onPartyUpdate.next();
 		}
 
@@ -217,14 +239,16 @@ export class ClientActions implements SocketClient {
 	}
 	@Method({ binary: [[BinEntityId, Bin.U8]] })
 	updateParty(party: [number, PartyFlags][] | undefined) {
-		const members = party && party.map<PartyMember>(([id, flags]) => ({
-			id,
-			pony: findPonyById(this.game.map, id) || this.game.fallbackPonies.get(id),
-			self: id === this.game.playerId,
-			leader: hasFlag(flags, PartyFlags.Leader),
-			pending: hasFlag(flags, PartyFlags.Pending),
-			offline: hasFlag(flags, PartyFlags.Offline),
-		}));
+		const members =
+			party &&
+			party.map<PartyMember>(([id, flags]) => ({
+				id,
+				pony: findPonyById(this.game.map, id) || this.game.fallbackPonies.get(id),
+				self: id === this.game.playerId,
+				leader: hasFlag(flags, PartyFlags.Leader),
+				pending: hasFlag(flags, PartyFlags.Pending),
+				offline: hasFlag(flags, PartyFlags.Offline),
+			}));
 
 		if (members) {
 			const missing = members.filter(p => !p.pony).map(p => p.id);
@@ -252,21 +276,21 @@ export class ClientActions implements SocketClient {
 		handleEntityInfo(this.game, id, name, crc, nameBad);
 	}
 	@Method({ binary: [Bin.Obj] })
-	entityList(value: { name: string; x: number; y: number; }[]) {
+	entityList(value: { name: string; x: number; y: number }[]) {
 		if (DEVELOPMENT || BETA) {
 			const list = value.map(({ name, x, y }) => `${name}(${x.toFixed(2)}, ${y.toFixed(2)})`).join('\n');
 			console.log(`ENTITIES:\n${list}`);
 		}
 	}
 	@Method({ binary: [Bin.Obj] })
-	testPositions(data: { frame: number; x: number | undefined; y: number | undefined; moved: boolean; }[]) {
+	testPositions(data: { frame: number; x: number | undefined; y: number | undefined; moved: boolean }[]) {
 		if (DEVELOPMENT) {
 			const round = (x: number) => Math.round(x * 100);
 			const same = (ax = 0, ay = 0, bx = 0, by = 0) => round(ax) === round(bx) && round(ay) === round(by);
 			const fmt = (x: number | undefined) => (x === undefined ? '-' : x.toFixed(2)).padStart(5);
 
 			for (let i = 1; i < data.length; i++) {
-				if (data[i - 1].frame !== (data[i].frame - 1)) {
+				if (data[i - 1].frame !== data[i].frame - 1) {
 					data.splice(i, 0, { frame: data[i - 1].frame + 1, x: undefined, y: undefined, moved: false });
 				}
 			}
@@ -280,18 +304,20 @@ export class ClientActions implements SocketClient {
 				return { frame: p.frame, ax: p.x, ay: p.y, bx: pt.x, by: pt.y, serverMoved: p.moved, clientMoved: pt.moved };
 			});
 
-			const log = dat.map(({ frame, ax, ay, bx, by, serverMoved, clientMoved }, i) =>
-				`${frame.toString().padStart(7)} | ` +
-				`${fmt(ax)}, ${fmt(ay)} ${serverMoved ? 'M' : ' '} | ` +
-				`${fmt(bx)}, ${fmt(by)} ${clientMoved ? 'M' : ' '} | ` +
-				`${same(ax, ay, bx, by) ? '= ' : '  '} ` +
-				`${i > 0 && dat[i - 1].frame !== (frame - 1) ? 'I ' : '  '}`)
+			const log = dat
+				.map(
+					({ frame, ax, ay, bx, by, serverMoved, clientMoved }, i) =>
+						`${frame.toString().padStart(7)} | ` +
+						`${fmt(ax)}, ${fmt(ay)} ${serverMoved ? 'M' : ' '} | ` +
+						`${fmt(bx)}, ${fmt(by)} ${clientMoved ? 'M' : ' '} | ` +
+						`${same(ax, ay, bx, by) ? '= ' : '  '} ` +
+						`${i > 0 && dat[i - 1].frame !== frame - 1 ? 'I ' : '  '}`,
+				)
 				.join('\n');
 
 			console.log(
-				`  frame |     server     |     client     |    \n` +
-				`-----------------------------------------------\n` +
-				`${log}`);
+				`  frame |     server     |     client     |    \n` + `-----------------------------------------------\n` + `${log}`,
+			);
 		}
 	}
 }

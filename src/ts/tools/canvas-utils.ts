@@ -48,11 +48,13 @@ export function mirrorCanvas(canvas: ExtCanvas, offsetX = 0) {
 }
 
 export function padCanvas(canvas: ExtCanvas, left: number, top: number, right = 0, bottom = 0, bg?: string) {
-	if (left === 0 && top === 0 && right === 0 && bottom === 0)
-		return canvas;
+	if (left === 0 && top === 0 && right === 0 && bottom === 0) return canvas;
 
 	const result = createExtCanvas(
-		canvas.width + left + right, canvas.height + top + bottom, `${canvas.info} (pad ${left} ${top} ${right} ${bottom})`);
+		canvas.width + left + right,
+		canvas.height + top + bottom,
+		`${canvas.info} (pad ${left} ${top} ${right} ${bottom})`,
+	);
 	const context = result.getContext('2d')!;
 
 	if (bg) {
@@ -80,8 +82,7 @@ export function mergeCanvases(...canvases: (ExtCanvas | undefined)[]): ExtCanvas
 export function reverseMaskCanvas(canvas: ExtCanvas): ExtCanvas;
 export function reverseMaskCanvas(canvas: ExtCanvas | undefined): ExtCanvas | undefined;
 export function reverseMaskCanvas(canvas: ExtCanvas | undefined) {
-	if (!canvas)
-		return undefined;
+	if (!canvas) return undefined;
 
 	const result = createExtCanvas(canvas.width, canvas.height, `${canvas.info} reversed mask`);
 	const context = result.getContext('2d')!;
@@ -95,8 +96,7 @@ export function reverseMaskCanvas(canvas: ExtCanvas | undefined) {
 export function maskCanvas(canvas: ExtCanvas, mask: ExtCanvas): ExtCanvas;
 export function maskCanvas(canvas: ExtCanvas | undefined, mask: ExtCanvas | undefined): ExtCanvas | undefined;
 export function maskCanvas(canvas: ExtCanvas | undefined, mask: ExtCanvas | undefined) {
-	if (!canvas || !mask)
-		return undefined;
+	if (!canvas || !mask) return undefined;
 
 	const result = createExtCanvas(canvas.width, canvas.height, `${canvas.info} masked by ${mask.info}`);
 	const context = result.getContext('2d')!;
@@ -124,8 +124,7 @@ export function colorCanvas(canvas: ExtCanvas | undefined, color: string): ExtCa
 export function copyCanvas(canvas: ExtCanvas): ExtCanvas;
 export function copyCanvas(canvas: ExtCanvas | undefined): ExtCanvas | undefined;
 export function copyCanvas(canvas: ExtCanvas | undefined): ExtCanvas | undefined {
-	if (!canvas)
-		return undefined;
+	if (!canvas) return undefined;
 
 	const newCanvas = createExtCanvas(canvas.width, canvas.height, `${canvas.info} (copy)`);
 	newCanvas.getContext('2d')!.drawImage(canvas, 0, 0);
@@ -178,14 +177,16 @@ export function forEachPixel(canvas: ExtCanvas, action: (color: number, x: numbe
 	const data = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
 
 	for (let y = 0, i = 0; y < data.height; y++) {
-		for (let x = 0; x < data.width; x++ , i += 4) {
+		for (let x = 0; x < data.width; x++, i += 4) {
 			action(getColorAt(data.data, i), x, y);
 		}
 	}
 }
 
 export function forEachPixelOf2Canvases(
-	canvas1: ExtCanvas, canvas2: ExtCanvas, action: (color1: number, color2: number, x: number, y: number) => void
+	canvas1: ExtCanvas,
+	canvas2: ExtCanvas,
+	action: (color1: number, color2: number, x: number, y: number) => void,
 ) {
 	if (canvas1.width !== canvas2.width || canvas1.height !== canvas2.height) {
 		throw new Error('Canvas not the same size');
@@ -195,7 +196,7 @@ export function forEachPixelOf2Canvases(
 	const data2 = canvas2.getContext('2d')!.getImageData(0, 0, canvas2.width, canvas2.height);
 
 	for (let y = 0, i = 0; y < data1.height; y++) {
-		for (let x = 0; x < data1.width; x++ , i += 4) {
+		for (let x = 0; x < data1.width; x++, i += 4) {
 			action(getColorAt(data1.data, i), getColorAt(data2.data, i), x, y);
 		}
 	}
@@ -209,7 +210,7 @@ export function mapEachPixel(canvas: ExtCanvas, action: MapColor) {
 	const d = data.data;
 
 	for (let y = 0, i = 0; y < data.height; y++) {
-		for (let x = 0; x < data.width; x++ , i += 4) {
+		for (let x = 0; x < data.width; x++, i += 4) {
 			const c = ((d[i] << 24) | (d[i + 1] << 16) | (d[i + 2] << 8) | d[i + 3]) >>> 0;
 			const out = action(c, x, y);
 			d[i] = (out >>> 24) & 0xff;
@@ -273,7 +274,14 @@ export type CanvasGetter = (Canvas: ExtCanvas, col: number, row: number) => ExtC
 export type ByIndexGetter = (Canvas: ExtCanvas, index: number) => ExtCanvas;
 
 export function cropAndPadByColRow(
-	x: number, y: number, w: number, h: number, dx: number, dy: number, padLeft = 0, padTop = 0
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	dx: number,
+	dy: number,
+	padLeft = 0,
+	padTop = 0,
 ): CanvasGetter {
 	return (canvas, col, row) => padCanvas(cropCanvas(canvas, x + dx * col, y + dy * row, w, h), padLeft, padTop);
 }

@@ -82,7 +82,7 @@ export function timingCollate(): TimingResult[] {
 				}
 
 				listing.count++;
-				listing.selfTime += (time - start.excludedTime);
+				listing.selfTime += time - start.excludedTime;
 				listing.totalTime += time;
 
 				if (startStack.length) {
@@ -96,8 +96,8 @@ export function timingCollate(): TimingResult[] {
 		const totalTime = lastTime - firstTime;
 
 		for (const listing of listings) {
-			listing.selfPercent = 100 * listing.selfTime / totalTime;
-			listing.totalPercent = 100 * listing.totalTime / totalTime;
+			listing.selfPercent = (100 * listing.selfTime) / totalTime;
+			listing.totalPercent = (100 * listing.totalTime) / totalTime;
 		}
 
 		return listings.sort((a, b) => b.selfTime - a.selfTime);

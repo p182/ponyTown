@@ -23,85 +23,81 @@ export type Move = ReturnType<typeof createMove>;
 
 export const createMove =
 	(teleportCounter: CounterService<void>) =>
-		(client: IClient, now: number, a: number, b: number, c: number, d: number, e: number, settings: GameServerSettings) => {
-			if (client.loading || client.fixingPosition || client.isSwitchingMap)
-				return;
+	(client: IClient, now: number, a: number, b: number, c: number, d: number, e: number, settings: GameServerSettings) => {
+		if (client.loading || client.fixingPosition || client.isSwitchingMap) return;
 
-			const connectionDuration = (now - client.connectedTime) >>> 0;
-			const pony = client.pony;
-			const { x, y, dir, flags, time, camera } = decodeMovement(a, b, c, d, e);
-			const v = dirToVector(dir);
-			const speed = flagsToSpeed(flags);
+		const connectionDuration = (now - client.connectedTime) >>> 0;
+		const pony = client.pony;
+		const { x, y, dir, flags, time, camera } = decodeMovement(a, b, c, d, e);
+		const v = dirToVector(dir);
+		const speed = flagsToSpeed(flags);
 
-			if (checkOutsideMap(client, x, y))
-				return;
+		if (checkOutsideMap(client, x, y)) return;
 
-			setupCamera(client.camera, camera.x, camera.y, camera.w, camera.h, client.map);
+		setupCamera(client.camera, camera.x, camera.y, camera.w, camera.h, client.map);
 
-			if (checkLagging(client, time, connectionDuration, settings))
-				return;
+		if (checkLagging(client, time, connectionDuration, settings)) return;
 
-			if (checkTeleporting(client, x, y, time, settings, teleportCounter))
-				return;
+		if (checkTeleporting(client, x, y, time, settings, teleportCounter)) return;
 
-			if (!isStaticCollision(pony, client.map, true)) {
-				client.safeX = pony.x;
-				client.safeY = pony.y;
-			}
+		if (!isStaticCollision(pony, client.map, true)) {
+			client.safeX = pony.x;
+			client.safeY = pony.y;
+		}
 
-			pony.x = x;
-			pony.y = y;
+		pony.x = x;
+		pony.y = y;
 
-			if (isStaticCollision(pony, client.map)) {
-				pony.x = client.safeX;
-				pony.y = client.safeY;
+		if (isStaticCollision(pony, client.map)) {
+			pony.x = client.safeX;
+			pony.y = client.safeY;
 
-				if (!isStaticCollision(pony, client.map)) {
-					if (settings.logFixingPosition) {
-						client.reporter.systemLog(`Fixed colliding (${x} ${y}) -> (${pony.x} ${pony.y})`);
-					}
-
-					DEVELOPMENT && !TESTS && logger.warn(`Fixing position due to collision`);
-					fixPosition(pony, client.map, client.safeX, client.safeY, false);
-				} else {
-					pony.x = x;
-					pony.y = y;
+			if (!isStaticCollision(pony, client.map)) {
+				if (settings.logFixingPosition) {
+					client.reporter.systemLog(`Fixed colliding (${x} ${y}) -> (${pony.x} ${pony.y})`);
 				}
+
+				DEVELOPMENT && !TESTS && logger.warn(`Fixing position due to collision`);
+				fixPosition(pony, client.map, client.safeX, client.safeY, false);
+			} else {
+				pony.x = x;
+				pony.y = y;
 			}
+		}
 
-			pony.vx = v.x * speed;
-			pony.vy = v.y * speed;
+		pony.vx = v.x * speed;
+		pony.vy = v.y * speed;
 
-			let ponyState = pony.state || 0;
+		let ponyState = pony.state || 0;
 
-			const facingRight = hasFlag(ponyState, EntityState.FacingRight);
-			const right = isMovingRight(pony.vx, facingRight);
+		const facingRight = hasFlag(ponyState, EntityState.FacingRight);
+		const right = isMovingRight(pony.vx, facingRight);
 
-			if (facingRight !== right) {
-				ponyState = setFlag(ponyState, EntityState.FacingRight, right);
-				ponyState = setFlag(ponyState, EntityState.HeadTurned, false);
-			}
+		if (facingRight !== right) {
+			ponyState = setFlag(ponyState, EntityState.FacingRight, right);
+			ponyState = setFlag(ponyState, EntityState.HeadTurned, false);
+		}
 
-			if ((pony.vx || pony.vy) && (isSittingState(ponyState) || isLyingState(ponyState))) {
-				ponyState = setPonyState(ponyState, EntityState.PonyStanding);
-			}
+		if ((pony.vx || pony.vy) && (isSittingState(ponyState) || isLyingState(ponyState))) {
+			ponyState = setPonyState(ponyState, EntityState.PonyStanding);
+		}
 
-			pony.state = ponyState;
+		pony.state = ponyState;
 
-			updateEntity(pony, false);
+		updateEntity(pony, false);
 
-			if (pony.exprCancellable) {
-				setEntityExpression(pony, undefined);
-			}
+		if (pony.exprCancellable) {
+			setEntityExpression(pony, undefined);
+		}
 
-			pony.timestamp = now / 1000;
+		pony.timestamp = now / 1000;
 
-			client.lastX = pony.x;
-			client.lastY = pony.y;
-			client.lastTime = time;
-			client.lastVX = pony.vx;
-			client.lastVY = pony.vy;
-		};
+		client.lastX = pony.x;
+		client.lastY = pony.y;
+		client.lastTime = time;
+		client.lastVX = pony.vx;
+		client.lastVY = pony.vy;
+	};
 
 function checkOutsideMap(client: IClient, x: number, y: number): boolean {
 	if (isOutsideMap(x, y, client.map)) {
@@ -120,7 +116,7 @@ function checkOutsideMap(client: IClient, x: number, y: number): boolean {
 
 function checkLagging(client: IClient, time: number, connectionTime: number, settings: GameServerSettings): boolean {
 	const dt = time - connectionTime;
-	const lagging = (dt > maxLagLimit) || (dt < -maxLagLimit);
+	const lagging = dt > maxLagLimit || dt < -maxLagLimit;
 
 	if (lagging) {
 		if (settings.logLagging) {
@@ -140,10 +136,14 @@ function checkLagging(client: IClient, time: number, connectionTime: number, set
 }
 
 function checkTeleporting(
-	client: IClient, x: number, y: number, time: number, settings: GameServerSettings, counter: CounterService<void>
+	client: IClient,
+	x: number,
+	y: number,
+	time: number,
+	settings: GameServerSettings,
+	counter: CounterService<void>,
 ): boolean {
-	if (!client.lastTime)
-		return false;
+	if (!client.lastTime) return false;
 
 	const pony = client.pony;
 	const borderX = 0.5;
@@ -173,10 +173,11 @@ function checkTeleporting(
 
 			logger.log(
 				`[${chalk.gray(moment().format('MMM DD HH:mm:ss'))}] [${chalk.yellow('teleport')}] ` +
-				`[${chalk.gray(client.accountId)}] (${client.account.name})\n` +
-				`\tdx: ${client.lastX.toFixed(5)} -> ${colX(x.toFixed(5))} [${minX.toFixed(5)}-${maxX.toFixed(5)}]\n` +
-				`\tdy: ${client.lastY.toFixed(5)} -> ${colY(y.toFixed(5))} [${minY.toFixed(5)}-${maxY.toFixed(5)}]\n` +
-				`\tdt: ${delta.toFixed(5)}`);
+					`[${chalk.gray(client.accountId)}] (${client.account.name})\n` +
+					`\tdx: ${client.lastX.toFixed(5)} -> ${colX(x.toFixed(5))} [${minX.toFixed(5)}-${maxX.toFixed(5)}]\n` +
+					`\tdy: ${client.lastY.toFixed(5)} -> ${colY(y.toFixed(5))} [${minY.toFixed(5)}-${maxY.toFixed(5)}]\n` +
+					`\tdt: ${delta.toFixed(5)}`,
+			);
 		}
 
 		if (settings.reportTeleporting) {

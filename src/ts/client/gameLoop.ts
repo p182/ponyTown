@@ -30,8 +30,8 @@ export function startGameLoop(game: Game, onError = (e: Error) => console.error(
 
 		frames++;
 
-		if ((now - lastFps) > 1000) {
-			fps = frames * 1000 / (now - lastFps);
+		if (now - lastFps > 1000) {
+			fps = (frames * 1000) / (now - lastFps);
 			frames = 0;
 			lastFps = now;
 		}

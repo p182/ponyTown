@@ -47,17 +47,17 @@ export const createIsSuspiciousMessage = (general: GeneralSettings) => {
 	const testWholeInstant = createCachedTest(true);
 
 	return (text: string, { filterSwears }: GameServerSettings): Suspicious => {
-		if (test(general.suspiciousMessages, text))
-			return Suspicious.Very;
+		if (test(general.suspiciousMessages, text)) return Suspicious.Very;
 
 		if (filterSwears) {
-			if (testSafeInstant(general.suspiciousSafeInstantMessages, text) ||
-				testWholeInstant(general.suspiciousSafeInstantWholeMessages, text)) {
+			if (
+				testSafeInstant(general.suspiciousSafeInstantMessages, text) ||
+				testWholeInstant(general.suspiciousSafeInstantWholeMessages, text)
+			) {
 				return Suspicious.Very;
 			}
 
-			if (testSafe(general.suspiciousSafeMessages, text) ||
-				testWhole(general.suspiciousSafeWholeMessages, text)) {
+			if (testSafe(general.suspiciousSafeMessages, text) || testWhole(general.suspiciousSafeWholeMessages, text)) {
 				return Suspicious.Yes;
 			}
 		}
@@ -66,19 +66,16 @@ export const createIsSuspiciousMessage = (general: GeneralSettings) => {
 	};
 };
 
-export const createIsSuspiciousName =
-	(settings: GeneralSettings) => {
-		const test = createCachedTest();
-		return (name: string) => test(settings.suspiciousNames, name);
-	};
+export const createIsSuspiciousName = (settings: GeneralSettings) => {
+	const test = createCachedTest();
+	return (name: string) => test(settings.suspiciousNames, name);
+};
 
-export const createIsSuspiciousAuth =
-	(settings: GeneralSettings) => {
-		const test = createCachedTest();
-		return ({ name, emails = [] }: AuthBase<any>) =>
-			test(settings.suspiciousAuths, name) ||
-			emails.some(email => test(settings.suspiciousAuths, email));
-	};
+export const createIsSuspiciousAuth = (settings: GeneralSettings) => {
+	const test = createCachedTest();
+	return ({ name, emails = [] }: AuthBase<any>) =>
+		test(settings.suspiciousAuths, name) || emails.some(email => test(settings.suspiciousAuths, email));
+};
 
 // pony
 
@@ -91,15 +88,18 @@ function tryParseJSON(value: string): any {
 }
 
 function createMatchesFromList(list: string | undefined): Partial<PonyInfo>[] {
-	return compact((list || '').split(/\n/g).map(x => x.trim()).map(tryParseJSON));
+	return compact(
+		(list || '')
+			.split(/\n/g)
+			.map(x => x.trim())
+			.map(tryParseJSON),
+	);
 }
 
-export const createIsSuspiciousPony =
-	(settings: GeneralSettings) =>
-		(info: PonyInfoNumber) => {
-			const matches = createMatchesFromList(settings.suspiciousPonies);
-			return matches.some(match => matchPony(info, match));
-		};
+export const createIsSuspiciousPony = (settings: GeneralSettings) => (info: PonyInfoNumber) => {
+	const matches = createMatchesFromList(settings.suspiciousPonies);
+	return matches.some(match => matchPony(info, match));
+};
 
 function matchPony(info: PonyInfoNumber, match: Partial<PonyInfo>) {
 	return isMatchWith(info, match, comparePonyInfoFields);

@@ -6,12 +6,32 @@ import * as entities from '../common/entities';
 import { isShadowed, isMuted, supporterLevel } from '../common/adminUtils';
 import { handlePromiseDefault } from './serverUtils';
 import {
-	removeItem, hasFlag, distance, toInt, includes, array, flatten, containsPointWitBorder, distanceXY, setFlag, invalidEnum
+	removeItem,
+	hasFlag,
+	distance,
+	toInt,
+	includes,
+	array,
+	flatten,
+	containsPointWitBorder,
+	distanceXY,
+	setFlag,
+	invalidEnum,
 } from '../common/utils';
 import { CharacterState, ServerConfig, AccountState, CharacterStateFlags, GameServerSettings } from '../common/adminInterfaces';
 import {
-	EntityState, Expression, PonyOptions, Action, ExpressionExtra, Eye, Muzzle, CLOSED_MUZZLES,
-	isExpressionAction, EntityPlayerState, UpdateFlags, InteractAction
+	EntityState,
+	Expression,
+	PonyOptions,
+	Action,
+	ExpressionExtra,
+	Eye,
+	Muzzle,
+	CLOSED_MUZZLES,
+	isExpressionAction,
+	EntityPlayerState,
+	UpdateFlags,
+	InteractAction,
 } from '../common/interfaces';
 import { encodeExpression, EMPTY_EXPRESSION, decodeExpression } from '../common/encoders/expressionEncoder';
 import { EXPRESSION_TIMEOUT, DAY, FLY_DELAY, SECOND, PONY_TYPE } from '../common/constants';
@@ -25,13 +45,28 @@ import { isMod } from '../common/accountUtils';
 import { getOriginFromHTTP } from './originUtils';
 import { createPony, getAndFixCharacterState, updateCharacterState } from './characterUtils';
 import {
-	updateEntityOptions, canBoopEntity, findPlayersThetCanBeSitOn, updateEntityState, updateEntityExpression,
-	sendAction, pushUpdateEntityToClient, fixPosition, isHoldingGrapes
+	updateEntityOptions,
+	canBoopEntity,
+	findPlayersThetCanBeSitOn,
+	updateEntityState,
+	updateEntityExpression,
+	sendAction,
+	pushUpdateEntityToClient,
+	fixPosition,
+	isHoldingGrapes,
 } from './entityUtils';
 import { replaceEmojis } from '../client/emoji';
 import { expression, parseExpression } from '../common/expressionUtils';
 import {
-	canBoop2, isPonySitting, isPonyStanding, getBoopRect, canStand, isPonyFlying, setPonyState, canSit, canLie
+	canBoop2,
+	isPonySitting,
+	isPonyStanding,
+	getBoopRect,
+	canStand,
+	isPonyFlying,
+	setPonyState,
+	canSit,
+	canLie,
 } from '../common/entityUtils';
 import { withBorder } from '../common/rect';
 import { isOnlineFriend } from './services/friends';
@@ -56,7 +91,12 @@ export function getCounter(client: IClient, key: keyof AccountState) {
 }
 
 export function createClientAndPony(
-	client: IClient, friends: string[], hides: string[], server: ServerConfig, world: World, states: CounterService<CharacterState>
+	client: IClient,
+	friends: string[],
+	hides: string[],
+	server: ServerConfig,
+	world: World,
+	states: CounterService<CharacterState>,
 ) {
 	const { account, character } = client.tokenData as TokenData;
 	const origin = client.originalRequest && getOriginFromHTTP(client.originalRequest);
@@ -76,13 +116,20 @@ export function updateClientCharacter(client: IClient, character: ICharacter) {
 }
 
 export function createClient(
-	client: IClient, account: IAccount, friends: string[], hides: string[], character: ICharacter, pony: ServerEntity,
-	defaultMap: ServerMap, reporter: Reporter, origin: IOriginInfo | undefined
+	client: IClient,
+	account: IAccount,
+	friends: string[],
+	hides: string[],
+	character: ICharacter,
+	pony: ServerEntity,
+	defaultMap: ServerMap,
+	reporter: Reporter,
+	origin: IOriginInfo | undefined,
 ): IClient {
 	updateClientCharacter(client, character);
 
-	client.ip = origin && origin.ip || '';
-	client.country = origin && origin.country || '??';
+	client.ip = (origin && origin.ip) || '';
+	client.country = (origin && origin.country) || '??';
 	client.userAgent = client.originalRequest && client.originalRequest.headers['user-agent'];
 
 	client.accountId = account._id.toString();
@@ -107,7 +154,7 @@ export function createClient(
 	client.regions = [];
 
 	client.shadowed = isShadowed(account);
-	client.country = origin && origin.country || '??';
+	client.country = (origin && origin.country) || '??';
 
 	client.camera = createCamera();
 	client.camera.w = 800;
@@ -209,30 +256,31 @@ export function removeIgnore(target: IClient, accountId: string) {
 
 export const createIgnorePlayer =
 	(updateAccount: UpdateAccount, handlePromise = handlePromiseDefault) =>
-		(client: IClient, target: IClient, ignored: boolean) => {
-			if (target.accountId === client.accountId)
-				return;
+	(client: IClient, target: IClient, ignored: boolean) => {
+		if (target.accountId === client.accountId) return;
 
-			const id = client.accountId;
-			const is = isIgnored(client, target);
+		const id = client.accountId;
+		const is = isIgnored(client, target);
 
-			if (ignored === is)
-				return;
+		if (ignored === is) return;
 
-			if (ignored) {
-				addIgnore(target, id);
-			} else {
-				removeIgnore(target, id);
-			}
+		if (ignored) {
+			addIgnore(target, id);
+		} else {
+			removeIgnore(target, id);
+		}
 
-			handlePromise(updateAccount(target.accountId, { [ignored ? '$push' : '$pull']: { ignores: id } })
+		handlePromise(
+			updateAccount(target.accountId, { [ignored ? '$push' : '$pull']: { ignores: id } })
 				.then(() => updateEntityPlayerState(client, target.pony))
 				.then(() => {
 					const { accountId, account, character } = target;
 					const message = `${ignored ? 'ignored' : 'unignored'} ${character.name} (${account.name}) [${accountId}]`;
 					client.reporter.systemLog(message);
-				}), client.reporter.error);
-		};
+				}),
+			client.reporter.error,
+		);
+	};
 
 export function findClientByEntityId(self: IClient, entityId: number): IClient | undefined {
 	const selected = self.selected;
@@ -241,7 +289,8 @@ export function findClientByEntityId(self: IClient, entityId: number): IClient |
 		return selected.client;
 	}
 
-	if (self.party) { // TODO: remove ?
+	if (self.party) {
+		// TODO: remove ?
 		const client = self.party.clients.find(c => c.pony.id === entityId);
 
 		if (client) {
@@ -274,7 +323,10 @@ export function cancelEntityExpression(entity: ServerEntity) {
 }
 
 export function setEntityExpression(
-	entity: ServerEntity, expression: Expression | undefined, timeout = EXPRESSION_TIMEOUT, cancellable = false
+	entity: ServerEntity,
+	expression: Expression | undefined,
+	timeout = EXPRESSION_TIMEOUT,
+	cancellable = false,
 ) {
 	expression = expression || entity.exprPermanent;
 	const expr = encodeExpression(expression);
@@ -300,8 +352,10 @@ export function playerBlush(pony: ServerEntity, args = '') {
 }
 
 export function parseOrCurrentExpression(pony: ServerEntity, message: string) {
-	return parseExpression(message)
-		|| decodeExpression((!pony.options || pony.options.expr == null) ? EMPTY_EXPRESSION : pony.options.expr);
+	return (
+		parseExpression(message) ||
+		decodeExpression(!pony.options || pony.options.expr == null ? EMPTY_EXPRESSION : pony.options.expr)
+	);
 }
 
 export function playerSleep(pony: ServerEntity, args = '') {
@@ -337,8 +391,11 @@ export function interactWith(client: IClient, target: ServerEntity | undefined) 
 			if (containsPointWitBorder(target.x, target.y, target.triggerBounds, pony.x, pony.y, 3)) {
 				target.trigger(target, client);
 			} else {
-				DEVELOPMENT && console.warn(`outside trigger bounds ` +
-					`(bounds: ${target.x} ${target.y} ${JSON.stringify(target.triggerBounds)} point: ${pony.x} ${pony.y})`);
+				DEVELOPMENT &&
+					console.warn(
+						`outside trigger bounds ` +
+							`(bounds: ${target.x} ${target.y} ${JSON.stringify(target.triggerBounds)} point: ${pony.x} ${pony.y})`,
+					);
 			}
 		} else if (target.interactAction) {
 			switch (target.interactAction) {
@@ -439,7 +496,7 @@ export function boop(client: IClient, now: number) {
 						if (index !== -1) {
 							holdItem(client.pony, grapePurple.type);
 
-							if (index === (purpleGrapeTypes.length - 1)) {
+							if (index === purpleGrapeTypes.length - 1) {
 								unholdItem(entity);
 							} else {
 								holdItem(entity, purpleGrapeTypes[index + 1]);
@@ -450,7 +507,7 @@ export function boop(client: IClient, now: number) {
 							if (index !== -1) {
 								holdItem(client.pony, grapeGreen.type);
 
-								if (index === (greenGrapeTypes.length - 1)) {
+								if (index === greenGrapeTypes.length - 1) {
 									unholdItem(entity);
 								} else {
 									holdItem(entity, greenGrapeTypes[index + 1]);
@@ -485,7 +542,7 @@ function checkSuspiciousSitting(client: IClient) {
 	const { x, y } = client.pony;
 	const dist = distanceXY(x, y, client.lastSitX, client.lastSitY);
 
-	if ((now - client.lastSitTime) < SIT_MAX_TIME && dist < SIT_MAX_DIST && findPlayersThetCanBeSitOn(client.map, client.pony)) {
+	if (now - client.lastSitTime < SIT_MAX_TIME && dist < SIT_MAX_DIST && findPlayersThetCanBeSitOn(client.map, client.pony)) {
 		client.sitCount++;
 
 		if (client.sitCount > SIT_MAX_COUNT) {
@@ -612,7 +669,7 @@ const toys = [
 	{ type: 0, multiplier: 5 },
 ];
 
-toys.forEach((toy, i) => toy.type = i + 1);
+toys.forEach((toy, i) => (toy.type = i + 1));
 
 const toyTypes = flatten(toys.map(x => array(x.multiplier, x.type)));
 
@@ -631,7 +688,7 @@ export function getCollectedToysCount(client: IClient) {
 	const total = toys.length;
 	let collected = 0;
 
-	for (let i = 0, bit = 1; i < total; i++ , bit <<= 1) {
+	for (let i = 0, bit = 1; i < total; i++, bit <<= 1) {
 		if (stateToys & bit) {
 			collected++;
 		}
@@ -690,8 +747,7 @@ export function isGift(type: number | undefined) {
 }
 
 export function isHiddenBy(a: IClient, b: IClient) {
-	return a.hides.has(b.accountId) || b.hides.has(a.accountId) ||
-		a.permaHides.has(b.accountId) || b.permaHides.has(a.accountId);
+	return a.hides.has(b.accountId) || b.hides.has(a.accountId) || a.permaHides.has(b.accountId) || b.permaHides.has(a.accountId);
 }
 
 export function getPlayerState(client: IClient, entity: ServerEntity): EntityPlayerState {
@@ -796,7 +852,7 @@ export function switchTool(client: IClient, reverse: boolean) {
 	if (index === unholdIndex) {
 		unholdItem(client.pony);
 	} else {
-		const newIndex = reverse ? (index === -1 ? tools.length - 1 : index - 1) : ((index + 1) % tools.length);
+		const newIndex = reverse ? (index === -1 ? tools.length - 1 : index - 1) : (index + 1) % tools.length;
 		const tool = tools[newIndex];
 		holdItem(client.pony, tool.type);
 		saySystem(client, tool.text);

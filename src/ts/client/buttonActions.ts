@@ -1,8 +1,23 @@
 import { compact } from 'lodash';
 import {
-	Expression, ExpressionButtonAction, CommandButtonAction, ActionButtonAction, ItemButtonAction,
-	ColorShadow, Eye, Muzzle, Iris, ButtonActionSlot, ExpressionExtra, ButtonAction, ChatType, BodyAnimation,
-	Action, isPartyChat, EntityButtonAction, defaultDrawOptions
+	Expression,
+	ExpressionButtonAction,
+	CommandButtonAction,
+	ActionButtonAction,
+	ItemButtonAction,
+	ColorShadow,
+	Eye,
+	Muzzle,
+	Iris,
+	ButtonActionSlot,
+	ExpressionExtra,
+	ButtonAction,
+	ChatType,
+	BodyAnimation,
+	Action,
+	isPartyChat,
+	EntityButtonAction,
+	defaultDrawOptions,
 } from '../common/interfaces';
 import * as sprites from '../generated/sprites';
 import { createExpression } from './clientUtils';
@@ -14,8 +29,18 @@ import { cloneDeep, hasFlag } from '../common/utils';
 import { boop, defaultHeadFrame, stand, sneeze, yawn, lie, sit, fly, laugh } from './ponyAnimations';
 import { createDefaultPony, syncLockedPonyInfo, toPalette, mockPaletteManager } from '../common/ponyInfo';
 import {
-	ACTION_EXPRESSION_EYE_COLOR, ACTION_EXPRESSION_BG, ACTION_ACTION_COAT_COLOR, WHITE, HEARTS_COLOR,
-	ACTION_COMMAND_BG, BLACK, ACTION_ACTION_BG, ACTION_ITEM_BG, blushColor, ENTITY_ITEM_BG, TRANSPARENT
+	ACTION_EXPRESSION_EYE_COLOR,
+	ACTION_EXPRESSION_BG,
+	ACTION_ACTION_COAT_COLOR,
+	WHITE,
+	HEARTS_COLOR,
+	ACTION_COMMAND_BG,
+	BLACK,
+	ACTION_ACTION_BG,
+	ACTION_ITEM_BG,
+	blushColor,
+	ENTITY_ITEM_BG,
+	TRANSPARENT,
 } from '../common/colors';
 import { resizeCanvasWithRatio, getPixelRatio, disableImageSmoothing } from './canvasUtils';
 import { drawCanvas, ContextSpriteBatch } from '../graphics/contextSpriteBatch';
@@ -132,9 +157,7 @@ const commandActions = [
 	commandButtonAction('/eggs', '🥚'),
 ];
 
-const additionalActionsActions = [
-	expressionButtonAction(undefined),
-];
+const additionalActionsActions = [expressionButtonAction(undefined)];
 
 function getActionAction(action: string) {
 	return actionActions.find(a => a.action === action);
@@ -153,60 +176,72 @@ export function createButtonCommandActions() {
 }
 
 export function createDefaultButtonActions(): ButtonActionSlot[] {
-	return DEVELOPMENT ? [
-		{ action: getActionAction('boop') },
-		{ action: getActionAction('down') },
-		{ action: getActionAction('up') },
-		{ action: getActionAction('turn-head') },
-		{ action: expressionButtonAction(createExpression(Eye.Closed, Eye.Closed, Muzzle.Smile)) },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral3, Muzzle.Smile)) },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Scrunch, Iris.Forward, Iris.Up)) },
-		{ action: expressionButtonAction(createExpression(Eye.Angry, Eye.Angry, Muzzle.Scrunch)) },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral3, Eye.Neutral3, Muzzle.Flat, Iris.Left, Iris.Left)) },
-		{ action: expressionButtonAction(createExpression(Eye.X, Eye.X, Muzzle.Flat)) },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral4, Eye.Neutral4, Muzzle.Flat)) },
-		{ action: undefined },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Flat, Iris.Shocked, Iris.Shocked)) },
-		{ action: expressionButtonAction(createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left)) },
-		{ action: getCommandAction('/roll') },
-		{ action: itemButtonAction(sprites.flower_2, 14) },
-		{ action: itemButtonAction(sprites.apple_1, 5) },
-		{ action: itemButtonAction(sprites.pumpkin_default) },
-		{ action: itemButtonAction(sprites.tree_1, 2) },
-		{
-			action: expressionButtonAction(
-				createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Flat, Iris.Shocked, Iris.Shocked, ExpressionExtra.Tears))
-		},
-		{
-			action: expressionButtonAction(
-				createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Cry))
-		},
-		{
-			action: expressionButtonAction(
-				createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Hearts))
-		},
-		{
-			action: expressionButtonAction(
-				createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Zzz))
-		},
-		{
-			action: expressionButtonAction(
-				createExpression(
-					Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left,
-					ExpressionExtra.Zzz | ExpressionExtra.Cry | ExpressionExtra.Hearts | ExpressionExtra.Blush))
-		},
-	] : [
-			{ action: getActionAction('boop') },
-			{ action: getActionAction('down') },
-			{ action: getActionAction('up') },
-			{ action: getActionAction('turn-head') },
-			{ action: getActionAction('magic') },
-			{ action: expressionButtonAction(undefined) },
-			{ action: expressionButtonAction(createExpression(Eye.Closed, Eye.Closed, Muzzle.Smile)) },
-			{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral3, Muzzle.Smile)) },
-			{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Scrunch, Iris.Forward, Iris.Up)) },
-			{ action: expressionButtonAction(createExpression(Eye.Angry, Eye.Angry, Muzzle.Scrunch)) },
-		];
+	return DEVELOPMENT
+		? [
+				{ action: getActionAction('boop') },
+				{ action: getActionAction('down') },
+				{ action: getActionAction('up') },
+				{ action: getActionAction('turn-head') },
+				{ action: expressionButtonAction(createExpression(Eye.Closed, Eye.Closed, Muzzle.Smile)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral3, Muzzle.Smile)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Scrunch, Iris.Forward, Iris.Up)) },
+				{ action: expressionButtonAction(createExpression(Eye.Angry, Eye.Angry, Muzzle.Scrunch)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral3, Eye.Neutral3, Muzzle.Flat, Iris.Left, Iris.Left)) },
+				{ action: expressionButtonAction(createExpression(Eye.X, Eye.X, Muzzle.Flat)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral4, Eye.Neutral4, Muzzle.Flat)) },
+				{ action: undefined },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Flat, Iris.Shocked, Iris.Shocked)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left)) },
+				{ action: getCommandAction('/roll') },
+				{ action: itemButtonAction(sprites.flower_2, 14) },
+				{ action: itemButtonAction(sprites.apple_1, 5) },
+				{ action: itemButtonAction(sprites.pumpkin_default) },
+				{ action: itemButtonAction(sprites.tree_1, 2) },
+				{
+					action: expressionButtonAction(
+						createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Flat, Iris.Shocked, Iris.Shocked, ExpressionExtra.Tears),
+					),
+				},
+				{
+					action: expressionButtonAction(
+						createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Cry),
+					),
+				},
+				{
+					action: expressionButtonAction(
+						createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Hearts),
+					),
+				},
+				{
+					action: expressionButtonAction(
+						createExpression(Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Right, Iris.Left, ExpressionExtra.Zzz),
+					),
+				},
+				{
+					action: expressionButtonAction(
+						createExpression(
+							Eye.Neutral2,
+							Eye.Neutral2,
+							Muzzle.Flat,
+							Iris.Right,
+							Iris.Left,
+							ExpressionExtra.Zzz | ExpressionExtra.Cry | ExpressionExtra.Hearts | ExpressionExtra.Blush,
+						),
+					),
+				},
+		  ]
+		: [
+				{ action: getActionAction('boop') },
+				{ action: getActionAction('down') },
+				{ action: getActionAction('up') },
+				{ action: getActionAction('turn-head') },
+				{ action: getActionAction('magic') },
+				{ action: expressionButtonAction(undefined) },
+				{ action: expressionButtonAction(createExpression(Eye.Closed, Eye.Closed, Muzzle.Smile)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral3, Muzzle.Smile)) },
+				{ action: expressionButtonAction(createExpression(Eye.Neutral, Eye.Neutral, Muzzle.Scrunch, Iris.Forward, Iris.Up)) },
+				{ action: expressionButtonAction(createExpression(Eye.Angry, Eye.Angry, Muzzle.Scrunch)) },
+		  ];
 }
 
 export function serializeActions(slots: ButtonActionSlot[]): string {
@@ -268,7 +303,7 @@ function deserializeAction(data: any): ButtonActionSlot {
 	return { action: undefined };
 }
 
-const lastCommandCalls: { [key: string]: number; } = {};
+const lastCommandCalls: { [key: string]: number } = {};
 
 export function useAction(game: PonyTownGame, action: ButtonAction | undefined) {
 	if (action) {
@@ -314,7 +349,7 @@ export function useAction(game: PonyTownGame, action: ButtonAction | undefined) 
 				const now = performance.now();
 				const lastCall = lastCommandCalls[action.command] | 0;
 
-				if ((now - lastCall) > COMMAND_ACTION_TIME_DELAY) {
+				if (now - lastCall > COMMAND_ACTION_TIME_DELAY) {
 					lastCommandCalls[action.command] = now;
 					const chatType = isPartyChat(game.lastChatMessageType) ? ChatType.Party : ChatType.Say;
 					game.send(server => server.say(0, action.command, chatType));
@@ -371,13 +406,11 @@ export function drawAction(canvas: HTMLCanvasElement, action: ButtonAction | und
 		state.action = 0;
 	}
 
-	if (!spriteSheetsLoaded || !shouldRedrawAction(action, state, game))
-		return;
+	if (!spriteSheetsLoaded || !shouldRedrawAction(action, state, game)) return;
 
 	const context = canvas.getContext('2d');
 
-	if (!context)
-		return;
+	if (!context) return;
 
 	state.action = action;
 
@@ -503,8 +536,15 @@ export function drawAction(canvas: HTMLCanvasElement, action: ButtonAction | und
 							}
 							case 'blush': {
 								const state = {
-									...createState(), expression: createExpression(
-										Eye.Neutral, Eye.Neutral, Muzzle.Smile, Iris.Forward, Iris.Forward, ExpressionExtra.Blush)
+									...createState(),
+									expression: createExpression(
+										Eye.Neutral,
+										Eye.Neutral,
+										Muzzle.Smile,
+										Iris.Forward,
+										Iris.Forward,
+										ExpressionExtra.Blush,
+									),
 								};
 								drawPony(batch, actionPony, state, 17, 40, defaultDrawPonyOptions());
 								break;
@@ -556,8 +596,7 @@ export function drawAction(canvas: HTMLCanvasElement, action: ButtonAction | und
 				const buffer = drawCanvas(bufferSize, bufferSize, sprites.paletteSpriteSheet, undefined, batch => {
 					const palette = mockPaletteManager.addArray(action.icon.palettes![0]);
 					const sprite = action.icon.color;
-					batch.drawSprite(sprite, WHITE, palette,
-						Math.round((15 - sprite.w) / 2), Math.round((15 - sprite.h) / 2) + 1);
+					batch.drawSprite(sprite, WHITE, palette, Math.round((15 - sprite.w) / 2), Math.round((15 - sprite.h) / 2) + 1);
 				});
 
 				context.fillStyle = ACTION_ITEM_BG;
@@ -632,12 +671,18 @@ function drawFlyDisabled(batch: ContextSpriteBatch) {
 
 function getDrawFuncByName(name: string) {
 	switch (name) {
-		case 'lie': return drawLie;
-		case 'sit': return drawSit;
-		case 'stand': return drawStand;
-		case 'fly': return drawFly;
-		case 'flyDisabled': return drawFlyDisabled;
-		case 'lieDisabled': return drawLieDisabled;
+		case 'lie':
+			return drawLie;
+		case 'sit':
+			return drawSit;
+		case 'stand':
+			return drawStand;
+		case 'fly':
+			return drawFly;
+		case 'flyDisabled':
+			return drawFlyDisabled;
+		case 'lieDisabled':
+			return drawLieDisabled;
 		default:
 			throw new Error(`Invalid name: ${name}`);
 	}

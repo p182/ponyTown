@@ -2,7 +2,16 @@
 /* tslint:disable */
 
 import {
-	Sprite, SpriteBorder, PonyNose, PonyEye, ColorExtra, ColorExtraSets, Shadow, ColorShadow, TileSprites, SpriteSheet
+	Sprite,
+	SpriteBorder,
+	PonyNose,
+	PonyEye,
+	ColorExtra,
+	ColorExtraSets,
+	Shadow,
+	ColorShadow,
+	TileSprites,
+	SpriteSheet,
 } from '../common/interfaces';
 import { parseSpriteColor } from '../common/utils';
 import { bitReaderCustom } from '../common/bitUtils';
@@ -31,11 +40,18 @@ const palettes: Uint32Array[] = createPalettes('/*COLORS*/', [
 export const spriteSheets: SpriteSheet[] = [
 	{
 		src: '/*SPRITE_SHEET*/',
-		data: undefined, texture: undefined, sprites: sprites, palette: false
+		data: undefined,
+		texture: undefined,
+		sprites: sprites,
+		palette: false,
 	},
 	{
-		src: '/*SPRITE_SHEET_PALETTE*/', srcA: '/*SPRITE_SHEET_PALETTE_ALPHA*/',
-		data: undefined, texture: undefined, sprites: sprites2, palette: true
+		src: '/*SPRITE_SHEET_PALETTE*/',
+		srcA: '/*SPRITE_SHEET_PALETTE_ALPHA*/',
+		data: undefined,
+		texture: undefined,
+		sprites: sprites2,
+		palette: true,
 	},
 ];
 
@@ -43,9 +59,7 @@ export const normalSpriteSheet = spriteSheets[0];
 export const paletteSpriteSheet = spriteSheets[1];
 
 export function createSprites(data: string): Sprite[] {
-	const sprites: Sprite[] = [
-		{ x: 0, y: 0, w: 0, h: 0, ox: 0, oy: 0, type: 0 },
-	];
+	const sprites: Sprite[] = [{ x: 0, y: 0, w: 0, h: 0, ox: 0, oy: 0, type: 0 }];
 
 	let offset = 0;
 	const read = bitReaderCustom(() => {
@@ -70,7 +84,7 @@ export function createSprites(data: string): Sprite[] {
 }
 
 export function createFont(sprites: Sprite[], groups: [number, number[]][]) {
-	const chars: { code: number; sprite: Sprite; }[] = [];
+	const chars: { code: number; sprite: Sprite }[] = [];
 
 	for (const [start, codes] of groups) {
 		for (let i = 0; i < codes.length; i++) {
@@ -84,8 +98,16 @@ export function createFont(sprites: Sprite[], groups: [number, number[]][]) {
 }
 
 export function createButton(
-	border: number, topLeft: number, top: number, topRight: number, left: number, bg: number, right: number,
-	bottomLeft: number, bottom: number, bottomRight: number
+	border: number,
+	topLeft: number,
+	top: number,
+	topRight: number,
+	left: number,
+	bg: number,
+	right: number,
+	bottomLeft: number,
+	bottom: number,
+	bottomRight: number,
 ): SpriteBorder {
 	return {
 		border,
@@ -97,7 +119,7 @@ export function createButton(
 		right: sprites[right],
 		bottomLeft: sprites[bottomLeft],
 		bottom: sprites[bottom],
-		bottomRight: sprites[bottomRight]
+		bottomRight: sprites[bottomRight],
 	};
 }
 
@@ -190,6 +212,17 @@ export function createAnimationShadow(frames: number[], shadow: number, palette:
 }
 
 export {
-	Sprite, SpriteBorder, PonyNose, PonyEye, ColorExtra, ColorExtraSets,
-	colorPal3, colorPal5, colorPal7, colorPal9, colorPal11, colorPal13, colorPal17
+	Sprite,
+	SpriteBorder,
+	PonyNose,
+	PonyEye,
+	ColorExtra,
+	ColorExtraSets,
+	colorPal3,
+	colorPal5,
+	colorPal7,
+	colorPal9,
+	colorPal11,
+	colorPal13,
+	colorPal17,
 };

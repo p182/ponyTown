@@ -142,22 +142,13 @@ export const rewardLevel1 = '2255086';
 export const rewardLevel2 = '2411886';
 export const rewardLevel3 = '2411888';
 
-const SUPPORTER_REWARDS_COMMON = [
-	`In-game supporter tag`,
-	`Supporter chat color`,
-];
+const SUPPORTER_REWARDS_COMMON = [`In-game supporter tag`, `Supporter chat color`];
 
-const SUPPORTER_REWARDS_MORE = [
-	`Access to patreon posts`,
-	`Early access to new and experimental features`,
-];
+const SUPPORTER_REWARDS_MORE = [`Access to patreon posts`, `Early access to new and experimental features`];
 
 export const SUPPORTER_REWARDS = [
 	[],
-	[
-		...SUPPORTER_REWARDS_COMMON,
-		`${ADDITIONAL_CHARACTERS_SUPPORTER1} additional slots for saving ponies`,
-	],
+	[...SUPPORTER_REWARDS_COMMON, `${ADDITIONAL_CHARACTERS_SUPPORTER1} additional slots for saving ponies`],
 	[
 		...SUPPORTER_REWARDS_COMMON,
 		...SUPPORTER_REWARDS_MORE,
@@ -176,9 +167,7 @@ export const SUPPORTER_REWARDS_LIST = [
 	`Additional slots for saving ponies`,
 ];
 
-export const PAST_SUPPORTER_REWARDS = [
-	`${ADDITIONAL_CHARACTERS_PAST_SUPPORTER} additional slots for saving ponies`,
-];
+export const PAST_SUPPORTER_REWARDS = [`${ADDITIONAL_CHARACTERS_PAST_SUPPORTER} additional slots for saving ponies`];
 
 export const GENERAL_RULES = [
 	`Be kind to others`,

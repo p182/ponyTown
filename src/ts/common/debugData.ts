@@ -1,6 +1,6 @@
 import { MessageType } from './interfaces';
 
-export const sampleMessages: { name: string; message: string; id?: number; type?: MessageType; }[] = [];
+export const sampleMessages: { name: string; message: string; id?: number; type?: MessageType }[] = [];
 
 if (DEVELOPMENT) {
 	sampleMessages.push(
@@ -29,7 +29,8 @@ if (DEVELOPMENT) {
 		{ name: 'luz(br)', message: 'pelo menos fan nao vai comer todos os lanches' },
 		{
 			message: '/help - show help\n/roll [[min-]max] - randomize a number\n/s - say\n/p - party chat\n/t - thinking baloon',
-			name: '', type: MessageType.System,
+			name: '',
+			type: MessageType.System,
 		},
 		{ name: 'Molley', message: 'Some admin message here', type: MessageType.Admin },
 		{ name: 'Dolleyert', message: 'Some moderator message here', type: MessageType.Mod },

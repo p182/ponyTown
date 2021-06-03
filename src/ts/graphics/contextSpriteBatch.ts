@@ -7,7 +7,10 @@ import { isTranslation } from '../common/mat2d';
 import { TRANSPARENT } from '../common/colors';
 
 export function drawBatch(
-	canvas: HTMLCanvasElement, sheet: SpriteSheet, bg: number | undefined, action: (batch: ContextSpriteBatch) => void
+	canvas: HTMLCanvasElement,
+	sheet: SpriteSheet,
+	bg: number | undefined,
+	action: (batch: ContextSpriteBatch) => void,
 ) {
 	const batch = new ContextSpriteBatch(canvas);
 	batch.start(sheet, bg || TRANSPARENT);
@@ -17,7 +20,11 @@ export function drawBatch(
 }
 
 export function drawCanvas(
-	width: number, height: number, sheet: SpriteSheet, bg: number | undefined, action: (batch: ContextSpriteBatch) => void
+	width: number,
+	height: number,
+	sheet: SpriteSheet,
+	bg: number | undefined,
+	action: (batch: ContextSpriteBatch) => void,
 ) {
 	return drawBatch(createCanvas(width, height), sheet, bg, action);
 }
@@ -89,39 +96,106 @@ export class ContextSpriteBatch extends BaseStateBatch implements PaletteSpriteB
 				y = x;
 				x = palette as number;
 				drawImageNormal(
-					this.sheetData, this.data, this.transform, this.globalAlpha,
-					color, s.x, s.y, s.w, s.h, x + s.ox, y + s.oy, s.w, s.h);
+					this.sheetData,
+					this.data,
+					this.transform,
+					this.globalAlpha,
+					color,
+					s.x,
+					s.y,
+					s.w,
+					s.h,
+					x + s.ox,
+					y + s.oy,
+					s.w,
+					s.h,
+				);
 			} else {
 				drawImagePalette(
-					this.sheetData, this.data, this.transform, this.globalAlpha,
-					this.ignoreColor, this.disableShading,
-					s.type, color, palette as Palette, s.x, s.y, s.w, s.h, x + s.ox, y + s.oy, s.w, s.h);
+					this.sheetData,
+					this.data,
+					this.transform,
+					this.globalAlpha,
+					this.ignoreColor,
+					this.disableShading,
+					s.type,
+					color,
+					palette as Palette,
+					s.x,
+					s.y,
+					s.w,
+					s.h,
+					x + s.ox,
+					y + s.oy,
+					s.w,
+					s.h,
+				);
 			}
 		}
 	}
-	drawImage( // SpriteBatch
-		color: number,
-		sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number
-	): void;
+	drawImage(color: number, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void; // SpriteBatch
 	drawImage( // PaletteSpriteBatch3
-		type: number, color: number, palette: Palette | undefined,
-		sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+		type: number,
+		color: number,
+		palette: Palette | undefined,
+		sx: number,
+		sy: number,
+		sw: number,
+		sh: number,
+		dx: number,
+		dy: number,
+		dw: number,
+		dh: number,
+	): void;
 	drawImage(
-		colorOrType: number, sxOrColor: number, syOrPalette: Palette | undefined | number,
-		swOrSx: number, shOrSy: number, dxOrSw: number, dyOrSh: number,
-		dwOrDx: number, dhOrDy: number, _OrDw?: number, _OrDh?: number,
+		colorOrType: number,
+		sxOrColor: number,
+		syOrPalette: Palette | undefined | number,
+		swOrSx: number,
+		shOrSy: number,
+		dxOrSw: number,
+		dyOrSh: number,
+		dwOrDx: number,
+		dhOrDy: number,
+		_OrDw?: number,
+		_OrDh?: number,
 	) {
 		if (_OrDh === undefined) {
 			drawImageNormal(
-				this.sheetData, this.data, this.transform, this.globalAlpha,
-				colorOrType, sxOrColor, syOrPalette as number,
-				swOrSx, shOrSy, dxOrSw, dyOrSh, dwOrDx, dhOrDy);
+				this.sheetData,
+				this.data,
+				this.transform,
+				this.globalAlpha,
+				colorOrType,
+				sxOrColor,
+				syOrPalette as number,
+				swOrSx,
+				shOrSy,
+				dxOrSw,
+				dyOrSh,
+				dwOrDx,
+				dhOrDy,
+			);
 		} else {
 			drawImagePalette(
-				this.sheetData, this.data, this.transform, this.globalAlpha,
-				this.ignoreColor, this.disableShading,
-				colorOrType, sxOrColor, syOrPalette as Palette | undefined,
-				swOrSx, shOrSy, dxOrSw, dyOrSh, dwOrDx, dhOrDy, _OrDw!, _OrDh!);
+				this.sheetData,
+				this.data,
+				this.transform,
+				this.globalAlpha,
+				this.ignoreColor,
+				this.disableShading,
+				colorOrType,
+				sxOrColor,
+				syOrPalette as Palette | undefined,
+				swOrSx,
+				shOrSy,
+				dxOrSw,
+				dyOrSh,
+				dwOrDx,
+				dhOrDy,
+				_OrDw!,
+				_OrDh!,
+			);
 		}
 	}
 	drawRect(color: number, x: number, y: number, w: number, h: number) {
@@ -130,28 +204,31 @@ export class ContextSpriteBatch extends BaseStateBatch implements PaletteSpriteB
 	drawBatch() {
 		throw new Error('drawBatch not supported');
 	}
-	startBatch() {
-	}
+	startBatch() {}
 	finishBatch() {
 		return undefined;
 	}
-	releaseBatch() {
-	}
+	releaseBatch() {}
 }
 
 const min = Math.min;
 const typeOffsets = [0, 2, 3, 0, 1, 2, 3];
 
 function drawRect(
-	dst: ImageData | undefined, transform: Matrix2D, globalAlpha: number,
-	color: number, x: number, y: number, w: number, h: number
+	dst: ImageData | undefined,
+	transform: Matrix2D,
+	globalAlpha: number,
+	color: number,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
 ) {
 	if (DEVELOPMENT && !isTranslation(transform)) {
 		console.error('Transform not supported');
 	}
 
-	if (!dst)
-		return;
+	if (!dst) return;
 
 	x = Math.round(x + transform[4]);
 	y = Math.round(y + transform[5]);
@@ -167,40 +244,46 @@ function drawRect(
 	w += min(0, dst.width - (x + w));
 	h += min(0, dst.height - (y + h));
 
-	if (w <= 0 && h <= 0)
-		return;
+	if (w <= 0 && h <= 0) return;
 
 	const { r, g, b, a } = colorToRGBA(color);
 	const alpha = (globalAlpha * a) | 0;
 
-	if (alpha === 0)
-		return;
+	if (alpha === 0) return;
 
 	const dstData = dst.data;
 	const dstWidth = dst.width | 0;
 
 	for (let iy = 0; iy < h; iy++) {
 		for (let ix = 0; ix < w; ix++) {
-			const dst0 = ((ix + x) + (iy + y) * dstWidth) << 2;
+			const dst0 = (ix + x + (iy + y) * dstWidth) << 2;
 			blendPrecise(dstData, dst0, r, g, b, alpha);
 		}
 	}
 }
 
 function drawImageNormal(
-	src: ImageData | undefined, dst: ImageData | undefined, transform: Matrix2D, globalAlpha: number,
-	tint: number, sx: number, sy: number, sw: number, sh: number,
-	dx: number, dy: number, dw: number, dh: number
+	src: ImageData | undefined,
+	dst: ImageData | undefined,
+	transform: Matrix2D,
+	globalAlpha: number,
+	tint: number,
+	sx: number,
+	sy: number,
+	sw: number,
+	sh: number,
+	dx: number,
+	dy: number,
+	dw: number,
+	dh: number,
 ) {
-	if (sw !== dw || sh !== dh)
-		throw new Error('Different dimentions not supported');
+	if (sw !== dw || sh !== dh) throw new Error('Different dimentions not supported');
 
 	if (DEVELOPMENT && !isTranslation(transform)) {
 		console.error('Transform not supported');
 	}
 
-	if (!src || !dst)
-		return;
+	if (!src || !dst) return;
 
 	dx = Math.round(dx + transform[4]);
 	dy = Math.round(dy + transform[5]);
@@ -221,8 +304,7 @@ function drawImageNormal(
 	w += min(0, src.width - (sx + w), dst.width - (dx + w));
 	h += min(0, src.height - (sy + h), dst.height - (dy + h));
 
-	if (w <= 0 && h <= 0)
-		return;
+	if (w <= 0 && h <= 0) return;
 
 	const { r, g, b, a } = colorToRGBA(tint);
 	const alpha = (globalAlpha * a) | 0;
@@ -233,7 +315,7 @@ function drawImageNormal(
 
 	for (let y = 0; y < h; y++) {
 		for (let x = 0; x < w; x++) {
-			const srcO = ((sx + x) + (sy + y) * srcWidth) << 2;
+			const srcO = (sx + x + (sy + y) * srcWidth) << 2;
 			const sr = srcData[srcO];
 			const sg = srcData[srcO + 1];
 			const sb = srcData[srcO + 2];
@@ -244,7 +326,7 @@ function drawImageNormal(
 				const rr = blendColor(r, sr, 255);
 				const gg = blendColor(g, sg, 255);
 				const bb = blendColor(b, sb, 255);
-				const dst0 = ((dx + x) + (dy + y) * dstWidth) << 2;
+				const dst0 = (dx + x + (dy + y) * dstWidth) << 2;
 				blendPrecise(dstData, dst0, rr, gg, bb, srcAlpha);
 			}
 		}
@@ -252,13 +334,25 @@ function drawImageNormal(
 }
 
 function drawImagePalette(
-	src: ImageData | undefined, dst: ImageData | undefined, transform: Matrix2D, globalAlpha: number,
-	ignoreColorOption: number, disableShadingOption: boolean,
-	type: number, tint: number, palette: Palette | undefined,
-	sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number
+	src: ImageData | undefined,
+	dst: ImageData | undefined,
+	transform: Matrix2D,
+	globalAlpha: number,
+	ignoreColorOption: number,
+	disableShadingOption: boolean,
+	type: number,
+	tint: number,
+	palette: Palette | undefined,
+	sx: number,
+	sy: number,
+	sw: number,
+	sh: number,
+	dx: number,
+	dy: number,
+	dw: number,
+	dh: number,
 ) {
-	if (sw !== dw || sh !== dh)
-		throw new Error('Different dimentions not supported');
+	if (sw !== dw || sh !== dh) throw new Error('Different dimentions not supported');
 
 	if (DEVELOPMENT && !isTranslation(transform)) {
 		console.error('Transform not supported');
@@ -268,8 +362,7 @@ function drawImagePalette(
 		palette = commonPalettes.defaultPalette;
 	}
 
-	if (!src || !dst)
-		return;
+	if (!src || !dst) return;
 
 	dx = Math.round(dx + transform[4]);
 	dy = Math.round(dy + transform[5]);
@@ -290,8 +383,7 @@ function drawImagePalette(
 	w += min(0, src.width - (sx + w), dst.width - (dx + w));
 	h += min(0, src.height - (sy + h), dst.height - (dy + h));
 
-	if (w <= 0 && h <= 0)
-		return;
+	if (w <= 0 && h <= 0) return;
 
 	const { r, g, b, a } = colorToRGBA(tint);
 	const alpha = (globalAlpha * a) | 0;
@@ -306,7 +398,7 @@ function drawImagePalette(
 
 	for (let y = 0; y < h; y++) {
 		for (let x = 0; x < w; x++) {
-			const srcO = ((sx + x) + (sy + y) * srcWidth) << 2;
+			const srcO = (sx + x + (sy + y) * srcWidth) << 2;
 			const index = srcData[srcO + offset];
 			const color = colors[index];
 			const srcAlpha = ignoreColor === color ? 0 : blendColor(getAlpha(color), alpha, 255);
@@ -316,7 +408,7 @@ function drawImagePalette(
 				const rr = blendColor(getR(color), r, shade);
 				const gg = blendColor(getG(color), g, shade);
 				const bb = blendColor(getB(color), b, shade);
-				const dst0 = ((dx + x) + (dy + y) * dstWidth) << 2;
+				const dst0 = (dx + x + (dy + y) * dstWidth) << 2;
 				blendPrecise(dstData, dst0, rr, gg, bb, srcAlpha);
 			}
 		}

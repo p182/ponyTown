@@ -1,17 +1,24 @@
 import {
-	PonyInfo, AccountSettings, AccountData, PonyObject, AccountCounters, ServerFeatureFlags, Dict, Subscription
+	PonyInfo,
+	AccountSettings,
+	AccountData,
+	PonyObject,
+	AccountCounters,
+	ServerFeatureFlags,
+	Dict,
+	Subscription,
 } from './interfaces';
 
 export const ITEM_LIMIT = 1000;
 
 export const ROLES = ['superadmin', 'admin', 'mod', 'dev'];
 
-export const SERVER_LABELS: { [key: string]: string; } = {
-	'dev': 'badge-test',
-	'test': 'badge-test',
-	'main': 'badge-none',
+export const SERVER_LABELS: { [key: string]: string } = {
+	dev: 'badge-test',
+	test: 'badge-test',
+	main: 'badge-none',
 	'main-ru': 'badge-none',
-	'safe': 'badge-success',
+	safe: 'badge-success',
 	'safe-ru': 'badge-success',
 	'safe-pr': 'badge-success',
 	'safe-sp': 'badge-success',
@@ -52,7 +59,7 @@ export interface GeneralSettings {
 }
 
 // NOTE: also update createLoginServerStatus()
-export const LOGIN_SERVER_SETTINGS: { id: keyof GeneralSettings; label: string; }[] = [
+export const LOGIN_SERVER_SETTINGS: { id: keyof GeneralSettings; label: string }[] = [
 	{ id: 'canCreateAccounts', label: 'Can create accounts' },
 	{ id: 'blockWebView', label: 'Block web view' },
 	{ id: 'reportPotentialDuplicates', label: 'Report potential duplicates' },
@@ -90,7 +97,7 @@ export interface Settings extends GeneralSettings {
 	servers: Dict<GameServerSettings>;
 }
 
-export const SERVER_SETTINGS: { id: keyof GameServerSettings; label: string; }[] = [
+export const SERVER_SETTINGS: { id: keyof GameServerSettings; label: string }[] = [
 	{ id: 'filterSwears', label: 'Swear filter' },
 	{ id: 'autoBanSwearing', label: 'Auto-Timeout for swearing' },
 	{ id: 'autoBanSpamming', label: 'Auto-Timeout for spam' },
@@ -355,9 +362,7 @@ export const enum SupporterFlags {
 	IgnorePastSupporter = 0x0400,
 }
 
-export const supporterFlags = [
-	{ value: SupporterFlags.IgnorePatreon, label: 'ignore data from patreon' },
-];
+export const supporterFlags = [{ value: SupporterFlags.IgnorePatreon, label: 'ignore data from patreon' }];
 
 // NOTE: also update mergeStates (merge.ts)
 export interface AccountState {
@@ -417,8 +422,7 @@ export interface AuthBase<ID> extends TimestampsBase {
 	lastUsed?: Date;
 }
 
-export interface OriginBase extends TimestampsBase, OriginInfoBase, BannedMuted {
-}
+export interface OriginBase extends TimestampsBase, OriginInfoBase, BannedMuted {}
 
 export const enum CharacterStateFlags {
 	None = 0,
@@ -445,7 +449,7 @@ export interface CharacterBase<ID> extends TimestampsBase {
 	flags: CharacterFlags;
 	lastUsed?: Date;
 	creator?: string;
-	state?: { [key: string]: CharacterState | undefined; };
+	state?: { [key: string]: CharacterState | undefined };
 }
 
 export interface EventBase<ID> extends TimestampsBase {
@@ -480,16 +484,24 @@ export interface HideRequestBase<ID> {
 }
 
 export const eventFields: (keyof Event)[] = [
-	'_id', 'updatedAt', 'createdAt', 'type', 'server', 'message', 'desc', 'count', 'origin', 'account', 'pony'
+	'_id',
+	'updatedAt',
+	'createdAt',
+	'type',
+	'server',
+	'message',
+	'desc',
+	'count',
+	'origin',
+	'account',
+	'pony',
 ];
 
 // models
 
-export interface OriginInfo extends OriginInfoBase {
-}
+export interface OriginInfo extends OriginInfoBase {}
 
-export interface Timestamps extends TimestampsBase {
-}
+export interface Timestamps extends TimestampsBase {}
 
 export interface AccountStatus {
 	online: boolean;
@@ -549,8 +561,7 @@ export interface Account extends AccountBase<string>, Document {
 	originsList?: IObservableList<OriginRef, OriginInfoBase>;
 }
 
-export interface Auth extends AuthBase<string>, Document {
-}
+export interface Auth extends AuthBase<string>, Document {}
 
 export interface Character extends CharacterBase<string>, Document {
 	ponyInfo?: PonyInfo;
@@ -577,16 +588,13 @@ export interface ChatEvent {
 	account: Account | undefined;
 }
 
-export interface SupporterInvite extends SupporterInviteBase<string>, Document {
-}
+export interface SupporterInvite extends SupporterInviteBase<string>, Document {}
 
-export interface FriendRequest extends FriendRequestBase<string>, Document {
-}
+export interface FriendRequest extends FriendRequestBase<string>, Document {}
 
 // other
 
-export interface UpdateOrigin extends OriginInfo, BannedMuted {
-}
+export interface UpdateOrigin extends OriginInfo, BannedMuted {}
 
 export interface AccountUpdate extends BannedMuted {
 	age?: number;
@@ -820,8 +828,7 @@ export interface TimingEntry {
 	name?: string;
 }
 
-export type ModelTypes =
-	'accounts' | 'auths' | 'origins' | 'ponies' | 'accountAuths' | 'accountOrigins' | 'accountPonies';
+export type ModelTypes = 'accounts' | 'auths' | 'origins' | 'ponies' | 'accountAuths' | 'accountOrigins' | 'accountPonies';
 
 export interface IAdminServerActions {
 	// subscribing
@@ -868,7 +875,7 @@ export interface IAdminServerActions {
 	getPoniesCreators(accountId: string): Promise<PonyCreator[]>;
 	getPoniesForAccount(accountId: string): Promise<Character[]>;
 	getDetailsForAccount(accountId: string): Promise<AccountDetails>;
-	findPonies(query: FindPonyQuery, page: number, skipTotalCount: boolean): Promise<{ items: string[]; totalCount: number; }>;
+	findPonies(query: FindPonyQuery, page: number, skipTotalCount: boolean): Promise<{ items: string[]; totalCount: number }>;
 	createPony(account: string, name: string, info: string): Promise<void>;
 	assignPony(ponyId: string, accountId: string): Promise<void>;
 	removePony(id: string): Promise<void>;
@@ -912,7 +919,7 @@ export interface IAdminServerActions {
 	getAccountFriends(accountId: string): Promise<string[]>;
 	removeAccount(accountId: string): Promise<void>;
 	setAlert(accountId: string, message: string, expiresIn: number): Promise<void>;
-	getIgnoresAndIgnoredBy(accountId: string): Promise<{ ignores: string[]; ignoredBy: string[]; }>;
+	getIgnoresAndIgnoredBy(accountId: string): Promise<{ ignores: string[]; ignoredBy: string[] }>;
 	getAllDuplicatesQuickInfo(accountId: string): Promise<DuplicatesInfo>;
 	getAllDuplicates(accountId: string): Promise<DuplicateResult[]>;
 	getDuplicateEntries(force: boolean): Promise<string[]>;

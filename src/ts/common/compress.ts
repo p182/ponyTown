@@ -40,7 +40,7 @@ export function compressTiles(tiles: Uint8Array): Uint8Array {
 				const value = tiles[i];
 				let count = 1;
 
-				if (i === (tiles.length - 1)) {
+				if (i === tiles.length - 1) {
 					write(count | 0b1000, bitsPerRun);
 					write(types.indexOf(value), bitsPerTile);
 				} else {
@@ -114,7 +114,7 @@ export function decompressTiles(data: Uint8Array): Uint8Array {
 		const bitsPerTile = getBitsForNumber(typesCount);
 		const bitsPerRun = 4;
 
-		for (let i = 0; i < size;) {
+		for (let i = 0; i < size; ) {
 			const value = read(bitsPerRun);
 
 			if ((value & 0b1000) === 0) {

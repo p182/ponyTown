@@ -1,13 +1,39 @@
 import {
-	Says, Rect, SpriteBatch, Sprite, SpriteBorder, MessageType, Entity, Point, Pony, SpriteBatchCommons,
-	PaletteSpriteBatch, Palette, isPartyMessage, PartyInfo, Camera, CommonPalettes, FontPalettes, PaletteManager,
-	isWhisperTo, isWhisper, isThinking, isPublicMessage
+	Says,
+	Rect,
+	SpriteBatch,
+	Sprite,
+	SpriteBorder,
+	MessageType,
+	Entity,
+	Point,
+	Pony,
+	SpriteBatchCommons,
+	PaletteSpriteBatch,
+	Palette,
+	isPartyMessage,
+	PartyInfo,
+	Camera,
+	CommonPalettes,
+	FontPalettes,
+	PaletteManager,
+	isWhisperTo,
+	isWhisper,
+	isThinking,
+	isPublicMessage,
 } from '../common/interfaces';
 import { clamp, contains, intersect, toInt, hasFlag } from '../common/utils';
 import { BLACK, WHITE, OUTLINE_COLOR, getMessageColor, PARTY_COLOR, MESSAGE_COLOR, FRIENDS_COLOR } from '../common/colors';
 import { tileWidth, tileHeight, tileElevation, PONY_TYPE } from '../common/constants';
 import {
-	HAlign, VAlign, TextOptions, lineBreak, drawTextAligned, measureText, drawText, drawOutlinedText
+	HAlign,
+	VAlign,
+	TextOptions,
+	lineBreak,
+	drawTextAligned,
+	measureText,
+	drawText,
+	drawOutlinedText,
 } from '../graphics/spriteFont';
 import * as sprites from '../generated/sprites';
 import { fontPal, fontSmallPal } from '../client/fonts';
@@ -36,7 +62,13 @@ export const commonPalettes = createCommonPalettes(mockPaletteManager);
 type AnyBatch = SpriteBatch | PaletteSpriteBatch;
 
 export function drawTaperedRect(
-	batch: AnyBatch, color: number, x: number, y: number, w: number, h: number, taper: { w: number; y: number; }[]
+	batch: AnyBatch,
+	color: number,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	taper: { w: number; y: number }[],
 ) {
 	x = Math.round(x) | 0;
 	y = Math.round(y) | 0;
@@ -75,11 +107,14 @@ function getMessagePalette(type: MessageType, palettes: FontPalettes) {
 }
 
 export function drawBaloon(
-	batch: PaletteSpriteBatch, { message, type = MessageType.Chat, timer = 1, total = 10 }: Says,
-	x: number, y: number, bounds: Rect, palettes: CommonPalettes
+	batch: PaletteSpriteBatch,
+	{ message, type = MessageType.Chat, timer = 1, total = 10 }: Says,
+	x: number,
+	y: number,
+	bounds: Rect,
+	palettes: CommonPalettes,
 ) {
-	if (!fontPal)
-		return;
+	if (!fontPal) return;
 
 	let { w, h } = measureText(message, fontPal);
 
@@ -124,8 +159,16 @@ export function drawBaloon(
 }
 
 export function drawSpeechBaloon(
-	batch: PaletteSpriteBatch, text: string, color: number, options: TextOptions, x: number, y: number, w: number, h: number,
-	alpha: number, nippleX: number,
+	batch: PaletteSpriteBatch,
+	text: string,
+	color: number,
+	options: TextOptions,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	alpha: number,
+	nippleX: number,
 ) {
 	const pad = 4;
 	const xx = x - Math.round(w / 2);
@@ -144,8 +187,16 @@ export function drawSpeechBaloon(
 }
 
 export function drawWhisperBaloon(
-	batch: PaletteSpriteBatch, text: string, color: number, options: TextOptions, x: number, y: number, w: number, h: number,
-	alpha: number, nippleX: number,
+	batch: PaletteSpriteBatch,
+	text: string,
+	color: number,
+	options: TextOptions,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	alpha: number,
+	nippleX: number,
 ) {
 	const pad = 4;
 	const xx = x - Math.round(w / 2);
@@ -170,13 +221,13 @@ export function drawWhisperBaloon(
 	const yyy = top + height + 1;
 	const right = left + width - 1;
 
-	for (let tx = nippleX - 7; (tx + 5) > (left + 1); tx -= 5) {
-		const shorten = Math.max(0, (left + 1) - tx);
+	for (let tx = nippleX - 7; tx + 5 > left + 1; tx -= 5) {
+		const shorten = Math.max(0, left + 1 - tx);
 		batch.drawRect(BLACK, tx + shorten, yyy, 4 - shorten, 1);
 	}
 
 	for (let tx = nippleX + 2; tx < right; tx += 5) {
-		const shorten = Math.max(0, (tx + 5) - right);
+		const shorten = Math.max(0, tx + 5 - right);
 		batch.drawRect(BLACK, tx, yyy, Math.min(4, 5 - shorten), 1);
 	}
 
@@ -188,8 +239,16 @@ export function drawWhisperBaloon(
 }
 
 export function drawThinkingBaloon(
-	batch: PaletteSpriteBatch, text: string, color: number, options: TextOptions, x: number, y: number, w: number, h: number,
-	alpha: number, nippleX: number,
+	batch: PaletteSpriteBatch,
+	text: string,
+	color: number,
+	options: TextOptions,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	alpha: number,
+	nippleX: number,
 ) {
 	const padX = 6;
 	const padY = 4;
@@ -226,8 +285,13 @@ function getNameColor(flags: DrawNameFlags) {
 }
 
 export function drawNamePlate(
-	batch: PaletteSpriteBatch, text: string, x: number, y: number, flags: DrawNameFlags,
-	palettes: CommonPalettes, tagId?: string,
+	batch: PaletteSpriteBatch,
+	text: string,
+	x: number,
+	y: number,
+	flags: DrawNameFlags,
+	palettes: CommonPalettes,
+	tagId?: string,
 ) {
 	const tag = getTag(tagId);
 	const size = measureText(text, fontPal);
@@ -249,8 +313,11 @@ export function drawBounds(batch: PaletteSpriteBatch, e: Entity, r: Rect | undef
 	if (r) {
 		batch.drawRect(
 			color,
-			Math.round(e.x * tileWidth + r.x), Math.round(e.y * tileHeight + r.y),
-			Math.round(r.w), Math.round(r.h));
+			Math.round(e.x * tileWidth + r.x),
+			Math.round(e.y * tileHeight + r.y),
+			Math.round(r.w),
+			Math.round(r.h),
+		);
 	}
 }
 
@@ -258,19 +325,25 @@ export function drawWorldBounds(batch: PaletteSpriteBatch, e: Entity, r: Rect | 
 	if (r) {
 		batch.drawRect(
 			color,
-			Math.round((e.x + r.x) * tileWidth), Math.round((e.y + r.y) * tileHeight),
-			Math.round(r.w * tileWidth), Math.round(r.h * tileHeight));
+			Math.round((e.x + r.x) * tileWidth),
+			Math.round((e.y + r.y) * tileHeight),
+			Math.round(r.w * tileWidth),
+			Math.round(r.h * tileHeight),
+		);
 	}
 }
-
 
 export function drawBoundsOutline(batch: PaletteSpriteBatch, e: Entity, r: Rect | undefined, color: number, thickness = 1) {
 	if (r) {
 		drawOutline(
-			batch, color,
-			Math.round(e.x * tileWidth + r.x), Math.round(e.y * tileHeight + r.y),
-			Math.round(r.w), Math.round(r.h),
-			thickness);
+			batch,
+			color,
+			Math.round(e.x * tileWidth + r.x),
+			Math.round(e.y * tileHeight + r.y),
+			Math.round(r.w),
+			Math.round(r.h),
+			thickness,
+		);
 	}
 }
 
@@ -402,8 +475,14 @@ function isPartyMember(entity: Entity, party: PartyInfo | undefined) {
 }
 
 export function drawNames(
-	batch: PaletteSpriteBatch, entities: Entity[], player: Pony | undefined, party: PartyInfo | undefined,
-	camera: Camera, hover: Point, drawHidden: boolean, palettes: CommonPalettes
+	batch: PaletteSpriteBatch,
+	entities: Entity[],
+	player: Pony | undefined,
+	party: PartyInfo | undefined,
+	camera: Camera,
+	hover: Point,
+	drawHidden: boolean,
+	palettes: CommonPalettes,
 ) {
 	sortEntities(entities);
 
@@ -416,10 +495,9 @@ export function drawNames(
 			if (chatBounds !== undefined && bounds !== undefined && contains(e.x, e.y, bounds, hover)) {
 				const { x, y } = worldToScreen(camera, e);
 				const nameOffset = nameOffsetBase - getChatHeight(e);
-				const tag = (isHidden(e) && drawHidden) ? 'hidden' : e.tag;
-				const flags = DrawNameFlags.None |
-					(isPartyMember(e, party) ? DrawNameFlags.Party : 0) |
-					(isFriend(e) ? DrawNameFlags.Friend : 0);
+				const tag = isHidden(e) && drawHidden ? 'hidden' : e.tag;
+				const flags =
+					DrawNameFlags.None | (isPartyMember(e, party) ? DrawNameFlags.Party : 0) | (isFriend(e) ? DrawNameFlags.Friend : 0);
 				drawNamePlate(batch, e.name, x, y + chatBounds.y - nameOffset, flags, palettes, tag);
 			}
 		}
@@ -432,7 +510,7 @@ export function getChatBallonXY(e: Entity, camera: Camera): Point {
 	const chatBounds = e.chatBounds || bounds;
 	const screen = worldToScreen(camera, e);
 	const nameOffset = nameOffsetBase - getChatHeight(e);
-	const offset = (nameOffset + 6) + (e.tag ? 5 : 0);
+	const offset = nameOffset + 6 + (e.tag ? 5 : 0);
 	const yy = screen.y + (chatBounds ? chatBounds.y : 0) - offset;
 	const x = screen.x + toInt(e.chatX);
 	const y = yy + toInt(e.chatY);
@@ -445,8 +523,12 @@ function drawChatBaloon(batch: PaletteSpriteBatch, entity: Entity, camera: Camer
 }
 
 export function drawChat(
-	batch: PaletteSpriteBatch, entities: Entity[], camera: Camera, drawHidden: boolean, palettes: CommonPalettes,
-	hidePublic: boolean
+	batch: PaletteSpriteBatch,
+	entities: Entity[],
+	camera: Camera,
+	drawHidden: boolean,
+	palettes: CommonPalettes,
+	hidePublic: boolean,
 ) {
 	sortEntities(entities);
 
@@ -494,8 +576,15 @@ function calcAnimation(timer: number, total: number) {
 }
 
 export function drawBox(
-	batch: SpriteBatchCommons, color: number, shadowColor: number, x: number, y: number, z: number,
-	w: number, l: number, h: number
+	batch: SpriteBatchCommons,
+	color: number,
+	shadowColor: number,
+	x: number,
+	y: number,
+	z: number,
+	w: number,
+	l: number,
+	h: number,
 ) {
 	const darker = multiplyColor(color, 0.8);
 	const left = (x - w / 2) * tileWidth;
@@ -511,7 +600,13 @@ export function drawBox(
 }
 
 export function drawSpriteBorder(
-	batch: SpriteBatch, border: SpriteBorder, color: number, x: number, y: number, w: number, h: number
+	batch: SpriteBatch,
+	border: SpriteBorder,
+	color: number,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
 ) {
 	x = Math.round(x) | 0;
 	y = Math.round(y) | 0;
@@ -546,8 +641,13 @@ function drawStretched(batch: SpriteBatch, sprite: Sprite, color: number, x: num
 }
 
 export function drawSpriteCropped(
-	batch: PaletteSpriteBatch, s: Sprite, color: number, palette: Palette | undefined, x: number, y: number,
-	maxY: number
+	batch: PaletteSpriteBatch,
+	s: Sprite,
+	color: number,
+	palette: Palette | undefined,
+	x: number,
+	y: number,
+	maxY: number,
 ) {
 	const top = y + s.oy;
 	const bottom = Math.min(top + s.h, maxY);

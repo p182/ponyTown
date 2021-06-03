@@ -13,21 +13,21 @@ interface SocketState<TServer, TClient> {
 	client: TClient;
 }
 
-export function startIPCServer<TServer, TClient extends Object>(
-	id: string, createServer: (client: TClient) => TServer
-) {
+export function startIPCServer<TServer, TClient extends Object>(id: string, createServer: (client: TClient) => TServer) {
 	ipc.config.id = id;
 	ipc.config.retry = 500;
 	ipc.config.silent = true;
 	ipc.serve(() => {
 		const sockets = new Map<any, SocketState<TServer, TClient>>();
 
-		ipc.server.on('connect', (socket) => {
+		ipc.server.on('connect', socket => {
 			console.log('server:connect');
 			const client: TClient = new Proxy<TClient>({} as any, {
-				get: (_, key) => (...args: any[]) => {
-					ipc.server.emit(socket, 'message', [key, args]);
-				},
+				get:
+					(_, key) =>
+					(...args: any[]) => {
+						ipc.server.emit(socket, 'message', [key, args]);
+					},
 			});
 			const server = createServer(client);
 			sockets.set(socket, { server, client });
@@ -44,11 +44,11 @@ export function startIPCServer<TServer, TClient extends Object>(
 			}
 		});
 
-		ipc.server.on('error', (error) => {
+		ipc.server.on('error', error => {
 			console.log('server:error', error);
 		});
 
-		ipc.server.on('disconnect', (socket) => {
+		ipc.server.on('disconnect', socket => {
 			console.log('server:disconnect');
 			sockets.delete(socket);
 		});
@@ -63,7 +63,9 @@ export function startIPCServer<TServer, TClient extends Object>(
 }
 
 export function startIPCClient<TServer extends Object, TClient>(
-	serverId: string, clientId: string, createClient: (server: TServer) => TClient
+	serverId: string,
+	clientId: string,
+	createClient: (server: TServer) => TClient,
 ) {
 	ipc.config.id = clientId;
 	ipc.config.retry = 500;
@@ -72,9 +74,11 @@ export function startIPCClient<TServer extends Object, TClient>(
 		let connected = false;
 		const socket = ipc.of[serverId];
 		const server: TServer = new Proxy<TServer>({} as any, {
-			get: (_, key) => (...args: any[]) => {
-				socket.emit('message', [key, args]);
-			},
+			get:
+				(_, key) =>
+				(...args: any[]) => {
+					socket.emit('message', [key, args]);
+				},
 		});
 		const client = createClient(server);
 

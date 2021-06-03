@@ -1,6 +1,15 @@
 import { range, compact, escapeRegExp } from 'lodash';
 import {
-	MessageType, ChatType, Expression, Eye, Muzzle, Action, Season, Holiday, Weather, toAnnouncementMessageType,
+	MessageType,
+	ChatType,
+	Expression,
+	Eye,
+	Muzzle,
+	Action,
+	Season,
+	Holiday,
+	Weather,
+	toAnnouncementMessageType,
 } from '../common/interfaces';
 import { hasRole } from '../common/accountUtils';
 import { butterfly, bat, firefly, cloud, getEntityType, getEntityTypeName } from '../common/entities';
@@ -13,8 +22,17 @@ import { parseExpression, expression } from '../common/expressionUtils';
 import { filterBadWords } from '../common/swears';
 import { randomString } from '../common/stringUtils';
 import {
-	getCounter, holdToy, getCollectedToysCount, holdItem, playerSleep, playerBlush, playerLove, playerCry,
-	setEntityExpression, execAction, teleportTo
+	getCounter,
+	holdToy,
+	getCollectedToysCount,
+	holdItem,
+	playerSleep,
+	playerBlush,
+	playerLove,
+	playerCry,
+	setEntityExpression,
+	execAction,
+	teleportTo,
 } from './playerUtils';
 import { ServerLiveSettings, GameServerSettings } from '../common/adminInterfaces';
 import { isCommand, processCommand, clamp, flatten, includes, randomPoint } from '../common/utils';
@@ -24,8 +42,16 @@ import { pathTo } from './paths';
 import { sayTo, sayToEveryone, sayToOthers, sayToAll, saySystem } from './chat';
 import { resetTiles } from './serverRegion';
 import {
-	findEntities, updateMapState, loadMapFromFile, saveMapToFile, saveEntitiesToFile, getSizeOfMap,
-	saveMapToFileBinaryAlt, saveRegionCollider, saveMap, loadMap
+	findEntities,
+	updateMapState,
+	loadMapFromFile,
+	saveMapToFile,
+	saveEntitiesToFile,
+	getSizeOfMap,
+	saveMapToFileBinaryAlt,
+	saveRegionCollider,
+	saveMap,
+	loadMap,
 } from './serverMap';
 import { PARTY_LIMIT, tileWidth, tileHeight, MAP_LOAD_SAVE_TIMEOUT } from '../common/constants';
 import { PartyService } from './services/party';
@@ -44,8 +70,12 @@ export interface CommandContext {
 }
 
 export type CommandHandler = (
-	context: CommandContext, client: IClient, message: string, type: ChatType, target: IClient | undefined,
-	settings: GameServerSettings
+	context: CommandContext,
+	client: IClient,
+	message: string,
+	type: ChatType,
+	target: IClient | undefined,
+	settings: GameServerSettings,
 ) => any;
 
 export interface Command {
@@ -57,12 +87,13 @@ export interface Command {
 }
 
 function hasRoleNull(client: IClient, role: string) {
-	if (!role || hasRole(client.account, role))
-		return true;
+	if (!role || hasRole(client.account, role)) return true;
 
-	return (role === 'sup1' && (client.supporterLevel >= 1 || client.isMod)) ||
+	return (
+		(role === 'sup1' && (client.supporterLevel >= 1 || client.isMod)) ||
 		(role === 'sup2' && (client.supporterLevel >= 2 || client.isMod)) ||
-		(role === 'sup3' && (client.supporterLevel >= 3 || client.isMod));
+		(role === 'sup3' && (client.supporterLevel >= 3 || client.isMod))
+	);
 }
 
 function command(names: string[], help: string, role: string, handler: CommandHandler, spam = false): Command {
@@ -70,43 +101,55 @@ function command(names: string[], help: string, role: string, handler: CommandHa
 }
 
 function emote(names: string[], expr: Expression, timeout?: number, cancellable?: boolean) {
-	return command(names, '', '', ({ }, { pony }) => setEntityExpression(pony, expr, timeout, cancellable));
+	return command(names, '', '', ({}, { pony }) => setEntityExpression(pony, expr, timeout, cancellable));
 }
 
 function action(names: string[], action: Action) {
-	return command(names, '', '', ({ }, client, _, __, ___, settings) => execAction(client, action, settings));
+	return command(names, '', '', ({}, client, _, __, ___, settings) => execAction(client, action, settings));
 }
 
 function adminModChat(names: string[], help: string, role: string, type: MessageType) {
-	return command(names, help, role, ({ }, client, message, _, __, settings) => {
+	return command(names, help, role, ({}, client, message, _, __, settings) => {
 		sayToEveryone(client, message, filterBadWords(message), type, settings);
 	});
 }
 
 function parseSeason(value: string): Season | undefined {
 	switch (value.toLowerCase()) {
-		case 'spring': return Season.Spring;
-		case 'summer': return Season.Summer;
-		case 'autumn': return Season.Autumn;
-		case 'winter': return Season.Winter;
-		default: return undefined;
+		case 'spring':
+			return Season.Spring;
+		case 'summer':
+			return Season.Summer;
+		case 'autumn':
+			return Season.Autumn;
+		case 'winter':
+			return Season.Winter;
+		default:
+			return undefined;
 	}
 }
 
 function parseHoliday(value: string): Holiday | undefined {
 	switch (value.toLowerCase()) {
-		case 'none': return Holiday.None;
-		case 'halloween': return Holiday.Halloween;
-		case 'christmas': return Holiday.Christmas;
-		default: return undefined;
+		case 'none':
+			return Holiday.None;
+		case 'halloween':
+			return Holiday.Halloween;
+		case 'christmas':
+			return Holiday.Christmas;
+		default:
+			return undefined;
 	}
 }
 
 function parseWeather(value: string): Weather | undefined {
 	switch (value.toLowerCase()) {
-		case 'none': return Weather.None;
-		case 'rain': return Weather.Rain;
-		default: return undefined;
+		case 'none':
+			return Weather.None;
+		case 'rain':
+			return Weather.Rain;
+		default:
+			return undefined;
 	}
 }
 
@@ -155,7 +198,7 @@ function isValidMapForEditing(map: ServerMap, client: IClient, checkTimeout: boo
 		return false;
 	}
 
-	if (checkTimeout && ((Date.now() - client.lastMapLoadOrSave) < MAP_LOAD_SAVE_TIMEOUT)) {
+	if (checkTimeout && Date.now() - client.lastMapLoadOrSave < MAP_LOAD_SAVE_TIMEOUT) {
 		saySystem(client, `You need to wait ${Math.floor(MAP_LOAD_SAVE_TIMEOUT / 1000)} seconds before loading or saving again`);
 		return false;
 	}
@@ -173,7 +216,7 @@ let interval: any;
 export function createCommands(world: World): Command[] {
 	const commands = compact([
 		// chat
-		command(['help', 'h', '?'], '/help - show help', '', ({ }, client) => {
+		command(['help', 'h', '?'], '/help - show help', '', ({}, client) => {
 			const help = commands
 				.filter(c => c.help && hasRoleNull(client, c.role))
 				.map(c => c.help)
@@ -181,7 +224,10 @@ export function createCommands(world: World): Command[] {
 
 			saySystem(client, help);
 		}),
-		command(['roll', 'rand', 'random'], '/roll [[min-]max] - randomize a number', '',
+		command(
+			['roll', 'rand', 'random'],
+			'/roll [[min-]max] - randomize a number',
+			'',
 			({ random }, client, args, type, target, settings) => {
 				const ROLL_MAX = 1000000;
 				const [, min, max] = /^(?:(\d+)-)?(\d+)$/.exec(args) || ['', '', ''];
@@ -190,22 +236,24 @@ export function createCommands(world: World): Command[] {
 				const result = args === '🍎' ? args : random(minValue, maxValue);
 				const message = `🎲 rolled ${result} of ${minValue !== 1 ? `${minValue}-` : ''}${maxValue}`;
 				sayToOthers(client, message, toAnnouncementMessageType(type), target, settings);
-			}, true),
+			},
+			true,
+		),
 		command(['s', 'say'], '/s - say', '', shouldNotBeCalled),
 		command(['p', 'party'], '/p - party chat', '', shouldNotBeCalled),
 		command(['t', 'think'], '/t - thinking balloon', '', shouldNotBeCalled),
 		command(['w', 'whisper'], '/w <name> - whisper to player', '', shouldNotBeCalled),
 		command(['r', 'reply'], '/r - reply to whisper', '', shouldNotBeCalled),
-		command(['e'], '/e - set permanent expression', '', ({ }, { pony }, message) => {
+		command(['e'], '/e - set permanent expression', '', ({}, { pony }, message) => {
 			pony.exprPermanent = parseExpression(message);
 			setEntityExpression(pony, undefined, 0);
 		}),
 
 		// actions
-		command(['turn'], '/turn - turn head', '', ({ }, client, _, __, ___, settings) => {
+		command(['turn'], '/turn - turn head', '', ({}, client, _, __, ___, settings) => {
 			execAction(client, Action.TurnHead, settings);
 		}),
-		command(['boop', ')'], '/boop or /) - a boop', '', ({ }, client, message, _, __, settings) => {
+		command(['boop', ')'], '/boop or /) - a boop', '', ({}, client, message, _, __, settings) => {
 			const expression = parseExpression(message);
 
 			if (expression) {
@@ -214,10 +262,10 @@ export function createCommands(world: World): Command[] {
 
 			execAction(client, Action.Boop, settings);
 		}),
-		command(['drop'], '/drop - drop held item', '', ({ }, client, _, __, ___, settings) => {
+		command(['drop'], '/drop - drop held item', '', ({}, client, _, __, ___, settings) => {
 			execAction(client, Action.Drop, settings);
 		}),
-		command(['droptoy'], '/droptoy - drop held toy', '', ({ }, client, _, __, ___, settings) => {
+		command(['droptoy'], '/droptoy - drop held toy', '', ({}, client, _, __, ___, settings) => {
 			execAction(client, Action.DropToy, settings);
 		}),
 		// command(['open'], '/open - open gift', '', ({ }, client) => {
@@ -225,19 +273,43 @@ export function createCommands(world: World): Command[] {
 		// }),
 
 		// counters
-		command(['gifts'], '/gifts - show gift score', '', ({ }, client, _, type, target, settings) => {
-			sayToOthers(client, `collected ${getCounter(client, 'gifts')} 🎁`, toAnnouncementMessageType(type), target, settings);
-		}, true),
-		command(['candies', 'candy'], '/candies - show candy score', '', ({ }, client, _, type, target, settings) => {
-			sayToOthers(client, `collected ${getCounter(client, 'candies')} 🍬`, toAnnouncementMessageType(type), target, settings);
-		}, true),
-		command(['eggs'], '/eggs - show egg score', '', ({ }, client, _, type, target, settings) => {
-			sayToOthers(client, `collected ${getCounter(client, 'eggs')} 🥚`, toAnnouncementMessageType(type), target, settings);
-		}, true),
-		command(['clovers', 'clover'], '/clovers - show clover score', '', ({ }, client, _, type, target, settings) => {
-			sayToOthers(client, `collected ${getCounter(client, 'clovers')} 🍀`, toAnnouncementMessageType(type), target, settings);
-		}, true),
-		command(['toys'], '/toys - show number of collected toys', '', ({ }, client, _, type, target, settings) => {
+		command(
+			['gifts'],
+			'/gifts - show gift score',
+			'',
+			({}, client, _, type, target, settings) => {
+				sayToOthers(client, `collected ${getCounter(client, 'gifts')} 🎁`, toAnnouncementMessageType(type), target, settings);
+			},
+			true,
+		),
+		command(
+			['candies', 'candy'],
+			'/candies - show candy score',
+			'',
+			({}, client, _, type, target, settings) => {
+				sayToOthers(client, `collected ${getCounter(client, 'candies')} 🍬`, toAnnouncementMessageType(type), target, settings);
+			},
+			true,
+		),
+		command(
+			['eggs'],
+			'/eggs - show egg score',
+			'',
+			({}, client, _, type, target, settings) => {
+				sayToOthers(client, `collected ${getCounter(client, 'eggs')} 🥚`, toAnnouncementMessageType(type), target, settings);
+			},
+			true,
+		),
+		command(
+			['clovers', 'clover'],
+			'/clovers - show clover score',
+			'',
+			({}, client, _, type, target, settings) => {
+				sayToOthers(client, `collected ${getCounter(client, 'clovers')} 🍀`, toAnnouncementMessageType(type), target, settings);
+			},
+			true,
+		),
+		command(['toys'], '/toys - show number of collected toys', '', ({}, client, _, type, target, settings) => {
 			const { collected, total } = getCollectedToysCount(client);
 			sayToOthers(client, `collected ${collected}/${total} toys`, toAnnouncementMessageType(type), target, settings);
 		}),
@@ -258,10 +330,10 @@ export function createCommands(world: World): Command[] {
 		command(['stand'], '/stand - stand up', '', shouldNotBeCalled),
 
 		// emotes
-		command(['blush'], '', '', ({ }, { pony }, message) => playerBlush(pony, message)),
-		command(['love', '<3'], '', '', ({ }, { pony }, message) => playerLove(pony, message)),
-		command(['sleep', 'zzz'], '', '', ({ }, { pony }, message) => playerSleep(pony, message)),
-		command(['cry'], '', '', ({ }, { pony }, message) => playerCry(pony, message)),
+		command(['blush'], '', '', ({}, { pony }, message) => playerBlush(pony, message)),
+		command(['love', '<3'], '', '', ({}, { pony }, message) => playerLove(pony, message)),
+		command(['sleep', 'zzz'], '', '', ({}, { pony }, message) => playerSleep(pony, message)),
+		command(['cry'], '', '', ({}, { pony }, message) => playerCry(pony, message)),
 
 		// expressions
 		emote(['smile', 'happy'], expression(Eye.Neutral, Eye.Neutral, Muzzle.Smile)),
@@ -277,14 +349,14 @@ export function createCommands(world: World): Command[] {
 		action(['magic'], Action.Magic),
 
 		// house
-		command(['savehouse'], '/savehouse - saves current house setup', '', async ({ }, client) => {
-			if (!isValidMapForEditing(client.map, client, true, false))
-				return;
+		command(['savehouse'], '/savehouse - saves current house setup', '', async ({}, client) => {
+			if (!isValidMapForEditing(client.map, client, true, false)) return;
 
 			client.lastMapLoadOrSave = Date.now();
 
-			const savedMap = JSON.stringify(saveMap(client.map,
-				{ saveTiles: true, saveEntities: true, saveWalls: true, saveOnlyEditableEntities: true }));
+			const savedMap = JSON.stringify(
+				saveMap(client.map, { saveTiles: true, saveEntities: true, saveWalls: true, saveOnlyEditableEntities: true }),
+			);
 
 			DEVELOPMENT && console.log(savedMap);
 
@@ -295,46 +367,43 @@ export function createCommands(world: World): Command[] {
 			client.reporter.systemLog(`Saved house`);
 		}),
 		command(['loadhouse'], '/loadhouse - loads saved house setup', '', ({ world }, client) => {
-			if (!isValidMapForEditing(client.map, client, true, true))
-				return;
+			if (!isValidMapForEditing(client.map, client, true, true)) return;
 
-			if (!client.account.savedMap)
-				return saySystem(client, 'No saved map state');
+			if (!client.account.savedMap) return saySystem(client, 'No saved map state');
 
 			client.lastMapLoadOrSave = Date.now();
 
-			loadMap(world, client.map, JSON.parse(client.account.savedMap),
-				{ loadEntities: true, loadWalls: true, loadEntitiesAsEditable: true });
+			loadMap(world, client.map, JSON.parse(client.account.savedMap), {
+				loadEntities: true,
+				loadWalls: true,
+				loadEntitiesAsEditable: true,
+			});
 
 			saySystem(client, 'Loaded');
 			client.reporter.systemLog(`Loaded house`);
 		}),
-		command(['resethouse'], '/resethouse - resets house setup to original state', '', ({ }, client) => {
-			if (!isValidMapForEditing(client.map, client, true, true))
-				return;
+		command(['resethouse'], '/resethouse - resets house setup to original state', '', ({}, client) => {
+			if (!isValidMapForEditing(client.map, client, true, true)) return;
 
 			client.lastMapLoadOrSave = Date.now();
 
 			if (defaultHouseSave) {
-				loadMap(world, client.map, defaultHouseSave,
-					{ loadEntities: true, loadWalls: true, loadEntitiesAsEditable: true });
+				loadMap(world, client.map, defaultHouseSave, { loadEntities: true, loadWalls: true, loadEntitiesAsEditable: true });
 			}
 
 			saySystem(client, 'Reset');
 			client.reporter.systemLog(`Reset house`);
 		}),
-		command(['lockhouse'], '/lockhouse - prevents other people from changing the house', '', ({ }, client) => {
-			if (!isValidMapForEditing(client.map, client, false, true))
-				return;
+		command(['lockhouse'], '/lockhouse - prevents other people from changing the house', '', ({}, client) => {
+			if (!isValidMapForEditing(client.map, client, false, true)) return;
 
 			client.map.editingLocked = true;
 
 			saySystem(client, 'House locked');
 			client.reporter.systemLog(`House locked`);
 		}),
-		command(['unlockhouse'], '/unlockhouse - enables editing by other people', '', ({ }, client) => {
-			if (!isValidMapForEditing(client.map, client, false, true))
-				return;
+		command(['unlockhouse'], '/unlockhouse - enables editing by other people', '', ({}, client) => {
+			if (!isValidMapForEditing(client.map, client, false, true)) return;
 
 			client.map.editingLocked = false;
 
@@ -342,17 +411,15 @@ export function createCommands(world: World): Command[] {
 			client.reporter.systemLog(`House unlocked`);
 		}),
 		command(['removetoolbox'], '/removetoolbox - removes toolbox from the house', '', ({ world }, client) => {
-			if (!isValidMapForEditing(client.map, client, false, true))
-				return;
+			if (!isValidMapForEditing(client.map, client, false, true)) return;
 
 			removeToolbox(world, client.map);
 
 			saySystem(client, 'Toolbox removed');
 			client.reporter.systemLog(`Toolbox removed`);
 		}),
-		command(['restoretoolbox'], '/restoretoolbox - restores toolbox to the house', '', ({ }, client) => {
-			if (!isValidMapForEditing(client.map, client, false, true))
-				return;
+		command(['restoretoolbox'], '/restoretoolbox - restores toolbox to the house', '', ({}, client) => {
+			if (!isValidMapForEditing(client.map, client, false, true)) return;
 
 			restoreToolbox(world, client.map);
 
@@ -380,12 +447,12 @@ export function createCommands(world: World): Command[] {
 		command(['emotetest'], '/emotetest - print all emotes', 'mod', (_context, client) => {
 			let text = '';
 
-			for (let i = 0; i < emojis.length;) {
+			for (let i = 0; i < emojis.length; ) {
 				if (text) {
 					text += '\n';
 				}
 
-				for (let j = 0; i < emojis.length && j < 20; j++ , i++) {
+				for (let j = 0; i < emojis.length && j < 20; j++, i++) {
 					text += emojis[i].symbol;
 				}
 			}
@@ -408,9 +475,10 @@ export function createCommands(world: World): Command[] {
 
 		// admin
 		adminModChat(['a'], '/a - admin text', 'admin', MessageType.Admin),
-		command(['announce'], '/announce - global announcement', 'admin', ({ }, client, message, _, __, settings) => {
-			findEntities(client.map, e => e.type === butterfly.type || e.type === bat.type || e.type === firefly.type)
-				.forEach(e => sayToAll(e, message, filterBadWords(message), MessageType.Admin, settings));
+		command(['announce'], '/announce - global announcement', 'admin', ({}, client, message, _, __, settings) => {
+			findEntities(client.map, e => e.type === butterfly.type || e.type === bat.type || e.type === firefly.type).forEach(e =>
+				sayToAll(e, message, filterBadWords(message), MessageType.Admin, settings),
+			);
 		}),
 		command(['time'], '/time <hour> - change server time', DEVELOPMENT ? '' : 'admin', ({ world }, _client, message) => {
 			if (!/^\d+$/.test(message)) {
@@ -423,31 +491,33 @@ export function createCommands(world: World): Command[] {
 			options.restoreTerrain = !options.restoreTerrain;
 			saySystem(client, `restoration is ${options.restoreTerrain ? 'on' : 'off'}`);
 		}),
-		command(['resettiles'], '/resettiles - reset tiles to original state', 'admin', ({ }, client) => {
+		command(['resettiles'], '/resettiles - reset tiles to original state', 'admin', ({}, client) => {
 			for (const region of client.map.regions) {
 				resetTiles(client.map, region);
 			}
 		}),
-		BETA && command(['season'], '/season <season> [<holiday>]', 'admin', ({ world }, _client, message) => {
-			const [s = '', h = ''] = message.split(' ');
-			const season = parseSeason(s);
-			const holiday = parseHoliday(h);
+		BETA &&
+			command(['season'], '/season <season> [<holiday>]', 'admin', ({ world }, _client, message) => {
+				const [s = '', h = ''] = message.split(' ');
+				const season = parseSeason(s);
+				const holiday = parseHoliday(h);
 
-			if (season === undefined) {
-				throw new UserError('invalid season');
-			} else {
-				world.setSeason(season, holiday === undefined ? world.holiday : holiday);
-			}
-		}),
-		BETA && command(['weather'], '/weather <none|rain>', 'admin', ({ }, client, message) => {
-			const weather = parseWeather(message);
+				if (season === undefined) {
+					throw new UserError('invalid season');
+				} else {
+					world.setSeason(season, holiday === undefined ? world.holiday : holiday);
+				}
+			}),
+		BETA &&
+			command(['weather'], '/weather <none|rain>', 'admin', ({}, client, message) => {
+				const weather = parseWeather(message);
 
-			if (weather === undefined) {
-				throw new UserError('invalid weather');
-			} else {
-				updateMapState(client.map, { weather });
-			}
-		}),
+				if (weather === undefined) {
+					throw new UserError('invalid weather');
+				} else {
+					updateMapState(client.map, { weather });
+				}
+			}),
 
 		// superadmin
 		command(['update'], '/update - prepare server for update', 'superadmin', ({ world, liveSettings }) => {
@@ -458,16 +528,19 @@ export function createCommands(world: World): Command[] {
 		}),
 
 		// debug
-		DEVELOPMENT && command(['map'], '/map - show map info', '', ({ world }, client) => {
-			const map = client.map;
-			const { memory, entities } = getSizeOfMap(map);
-			const message = `[${map.id}:${map.instance || '-'}] ${world.maps.indexOf(map)}/${world.maps.length} ` +
-				`${(memory / 1024).toFixed(2)} kb ${entities} entities`;
-			saySystem(client, message);
-		}),
+		DEVELOPMENT &&
+			command(['map'], '/map - show map info', '', ({ world }, client) => {
+				const map = client.map;
+				const { memory, entities } = getSizeOfMap(map);
+				const message =
+					`[${map.id}:${map.instance || '-'}] ${world.maps.indexOf(map)}/${world.maps.length} ` +
+					`${(memory / 1024).toFixed(2)} kb ${entities} entities`;
+				saySystem(client, message);
+			}),
 		command(['loadmap'], '/loadmap <file name> - load map from file', 'superadmin', ({ world }, client, message) => {
 			execWithFileName(client, message, fileName =>
-				loadMapFromFile(world, client.map, pathTo('store', `${fileName}.json`), { loadOnlyTiles: true }));
+				loadMapFromFile(world, client.map, pathTo('store', `${fileName}.json`), { loadOnlyTiles: true }),
+			);
 		}),
 		command(['savemap'], '/savemap <file name> - save map to file', 'superadmin', (_, client, message) => {
 			execWithFileName(client, message, async fileName => {
@@ -489,20 +562,23 @@ export function createCommands(world: World): Command[] {
 		command(['throwerror'], '/throwerror <message> - throw test error', 'superadmin', (_, _client, message) => {
 			throw new Error(message || 'test');
 		}),
-		BETA && command(['test'], '', 'superadmin', ({ }, client) => {
-			client.map.regions.forEach(region => {
-				console.log(region.x, region.y, region.colliders.length);
-			});
-		}),
-		BETA && command(['spamchat'], '/spamchat - spam chat messages', 'superadmin',
-			({ world, random }, client, _, __, ___, settings) => {
+		BETA &&
+			command(['test'], '', 'superadmin', ({}, client) => {
+				client.map.regions.forEach(region => {
+					console.log(region.x, region.y, region.colliders.length);
+				});
+			}),
+		BETA &&
+			command(['spamchat'], '/spamchat - spam chat messages', 'superadmin', ({ world, random }, client, _, __, ___, settings) => {
 				if (interval) {
 					clearInterval(interval);
 					interval = undefined;
 				} else {
 					interval = setInterval(() => {
 						if (includes(world.clients, client)) {
-							const message = range(random(1, 10)).map(() => randomString(random(1, 10))).join(' ');
+							const message = range(random(1, 10))
+								.map(() => randomString(random(1, 10)))
+								.join(' ');
 							sayToEveryone(client, message, message, MessageType.Chat, settings);
 						} else {
 							clearInterval(interval);
@@ -510,53 +586,63 @@ export function createCommands(world: World): Command[] {
 					}, 100);
 				}
 			}),
-		BETA && command(['noclouds'], '/noclouds - remove clouds', 'superadmin', ({ world }, client) => {
-			findEntities(client.map, e => e.type === cloud.type).forEach(e => world.removeEntity(e, client.map));
-		}),
-		BETA && command(['msg'], '/msg - say random stuff', 'superadmin', ({ }, client, _, __, ___, settings) => {
-			findEntities(client.map, e => !!e.options && e.name === 'debug 2')
-				.forEach(e => sayToAll(e, 'Hello there!', 'Hello there!', MessageType.Chat, settings));
-		}),
-		BETA && command(['hold'], '/hold <name> - hold item', 'superadmin', ({ }, client, message) => {
-			holdItem(client.pony, getEntityType(message));
-		}),
-		BETA && command(['toy'], '/toy <number> - hold toy', 'superadmin', ({ }, client, message) => {
-			holdToy(client.pony, parseInt(message, 10) | 0);
-		}),
-		BETA && command(['dc'], '/dc', 'superadmin', ({ }, client) => {
-			client.disconnect(true, false);
-		}),
-		BETA && command(['disconnect'], '/disconnect', 'superadmin', ({ }, client) => {
-			client.disconnect(true, true);
-		}),
-		BETA && command(['info'], '/info <id>', 'superadmin', ({ world }, client, message) => {
-			const id = parseInt(message, 10) | 0;
-			const entity = world.getEntityById(id);
+		BETA &&
+			command(['noclouds'], '/noclouds - remove clouds', 'superadmin', ({ world }, client) => {
+				findEntities(client.map, e => e.type === cloud.type).forEach(e => world.removeEntity(e, client.map));
+			}),
+		BETA &&
+			command(['msg'], '/msg - say random stuff', 'superadmin', ({}, client, _, __, ___, settings) => {
+				findEntities(client.map, e => !!e.options && e.name === 'debug 2').forEach(e =>
+					sayToAll(e, 'Hello there!', 'Hello there!', MessageType.Chat, settings),
+				);
+			}),
+		BETA &&
+			command(['hold'], '/hold <name> - hold item', 'superadmin', ({}, client, message) => {
+				holdItem(client.pony, getEntityType(message));
+			}),
+		BETA &&
+			command(['toy'], '/toy <number> - hold toy', 'superadmin', ({}, client, message) => {
+				holdToy(client.pony, parseInt(message, 10) | 0);
+			}),
+		BETA &&
+			command(['dc'], '/dc', 'superadmin', ({}, client) => {
+				client.disconnect(true, false);
+			}),
+		BETA &&
+			command(['disconnect'], '/disconnect', 'superadmin', ({}, client) => {
+				client.disconnect(true, true);
+			}),
+		BETA &&
+			command(['info'], '/info <id>', 'superadmin', ({ world }, client, message) => {
+				const id = parseInt(message, 10) | 0;
+				const entity = world.getEntityById(id);
 
-			if (entity) {
-				const { id, type, x, y, options } = entity;
-				const info = { id, type: getEntityTypeName(type), x, y, options };
-				saySystem(client, JSON.stringify(info, null, 2));
-			} else {
-				saySystem(client, 'undefined');
-			}
-		}),
-		BETA && command(['collider'], '/collider', 'superadmin', ({ }, client) => {
-			const region = getRegionGlobal(client.map, client.pony.x, client.pony.y);
+				if (entity) {
+					const { id, type, x, y, options } = entity;
+					const info = { id, type: getEntityTypeName(type), x, y, options };
+					saySystem(client, JSON.stringify(info, null, 2));
+				} else {
+					saySystem(client, 'undefined');
+				}
+			}),
+		BETA &&
+			command(['collider'], '/collider', 'superadmin', ({}, client) => {
+				const region = getRegionGlobal(client.map, client.pony.x, client.pony.y);
 
-			if (region) {
-				saveRegionCollider(region);
-				saySystem(client, 'saved');
-				// console.log(region.tileIndices);
-			}
-		}),
-		DEVELOPMENT && command(['testparty'], '', 'superadmin', ({ party }, client) => {
-			const entities = findEntities(client.map, e => !!e.client && /^debug/.test(e.name || ''));
+				if (region) {
+					saveRegionCollider(region);
+					saySystem(client, 'saved');
+					// console.log(region.tileIndices);
+				}
+			}),
+		DEVELOPMENT &&
+			command(['testparty'], '', 'superadmin', ({ party }, client) => {
+				const entities = findEntities(client.map, e => !!e.client && /^debug/.test(e.name || ''));
 
-			for (const e of entities.slice(0, PARTY_LIMIT - 1)) {
-				party.invite(client, e.client!);
-			}
-		}),
+				for (const e of entities.slice(0, PARTY_LIMIT - 1)) {
+					party.invite(client, e.client!);
+				}
+			}),
 	]);
 
 	return commands;
@@ -570,26 +656,26 @@ export type RunCommand = ReturnType<typeof createRunCommand>;
 
 export const createRunCommand =
 	(context: CommandContext, commands: Command[]) =>
-		(client: IClient, command: string, args: string, type: ChatType, target: IClient | undefined, settings: GameServerSettings) => {
-			command = command.toLowerCase().trim();
-			const func = commands.find(c => c.names.indexOf(command) !== -1);
+	(client: IClient, command: string, args: string, type: ChatType, target: IClient | undefined, settings: GameServerSettings) => {
+		command = command.toLowerCase().trim();
+		const func = commands.find(c => c.names.indexOf(command) !== -1);
 
-			try {
-				if (func && hasRoleNull(client, func.role)) {
-					func.handler(context, client, args, type, target, settings);
-				} else {
-					return false;
-				}
-			} catch (e) {
-				if (isUserError(e)) {
-					saySystem(client, e.message);
-				} else {
-					throw e;
-				}
+		try {
+			if (func && hasRoleNull(client, func.role)) {
+				func.handler(context, client, args, type, target, settings);
+			} else {
+				return false;
 			}
+		} catch (e) {
+			if (isUserError(e)) {
+				saySystem(client, e.message);
+			} else {
+				throw e;
+			}
+		}
 
-			return true;
-		};
+		return true;
+	};
 
 const chatTypes = new Map<string, ChatType>();
 chatTypes.set('p', ChatType.Party);
@@ -607,7 +693,7 @@ chatTypes.set('reply', ChatType.Whisper);
 chatTypes.set('w', ChatType.Whisper);
 chatTypes.set('whisper', ChatType.Whisper);
 
-export function parseCommand(text: string, type: ChatType): { command?: string; args: string; type: ChatType; } {
+export function parseCommand(text: string, type: ChatType): { command?: string; args: string; type: ChatType } {
 	if (!isCommand(text)) {
 		return { args: text, type };
 	}

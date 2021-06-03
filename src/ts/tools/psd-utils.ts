@@ -29,7 +29,12 @@ function toPsd({ width, height, children }: PsdFile, name: string, dir: string):
 	const info = `${dir}/${name}`;
 
 	return {
-		dir, name, width, height, info, children: (children || []).map(c => toLayer(c, width, height, info)),
+		dir,
+		name,
+		width,
+		height,
+		info,
+		children: (children || []).map(c => toLayer(c, width, height, info)),
 	};
 }
 
@@ -45,10 +50,14 @@ function toLayer({ name, canvas, left, top, children }: PsdLayer, width: number,
 }
 
 function fixCanvas(
-	canvas: HTMLCanvasElement | undefined, width: number, height: number, left: number, top: number, info: string
+	canvas: HTMLCanvasElement | undefined,
+	width: number,
+	height: number,
+	left: number,
+	top: number,
+	info: string,
 ) {
-	if (!canvas)
-		return undefined;
+	if (!canvas) return undefined;
 
 	const result = createExtCanvas(width, height, info);
 	result.getContext('2d')!.drawImage(canvas, left, top);
@@ -61,7 +70,7 @@ export const getPsds = (directory: string) => fs.readdirSync(directory).filter(i
 
 export function openPsdFiles(directory: string, match?: RegExp) {
 	return getPsds(directory)
-		.filter(f => match ? match.test(f) : true)
+		.filter(f => (match ? match.test(f) : true))
 		.sort((a, b) => parseWithNumber(a) - parseWithNumber(b))
 		.map(f => path.join(directory, f))
 		.map(openPsd);

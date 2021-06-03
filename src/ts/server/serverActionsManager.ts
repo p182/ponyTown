@@ -5,8 +5,12 @@ import { HOUR, SECOND, SEASON, HOLIDAY, UNHIDE_TIMEOUT, MINUTE } from '../common
 import { CharacterState, ServerConfig, Settings } from '../common/adminInterfaces';
 import { ClientActions } from '../client/clientActions';
 import {
-	updateAccountSafe, timeoutAccount, reportInviteLimitAccount, reportSwearingAccount, reportSpammingAccount,
-	reportFriendLimitAccount
+	updateAccountSafe,
+	timeoutAccount,
+	reportInviteLimitAccount,
+	reportSwearingAccount,
+	reportSpammingAccount,
+	reportFriendLimitAccount,
 } from './api/admin-accounts';
 import { ServerActions } from './serverActions';
 import { IClient, AccountService, GetSettings, SocketStats, TokenData } from './serverInterfaces';
@@ -39,7 +43,10 @@ async function refreshSettings(account: IAccount) {
 }
 
 export function createServerActionsFactory(
-	server: ServerConfig, settings: Settings, getSettings: GetSettings, socketStats: SocketStats
+	server: ServerConfig,
+	settings: Settings,
+	getSettings: GetSettings,
+	socketStats: SocketStats,
 ) {
 	const reportInviteLimitFunc = reportInviteLimit(reportInviteLimitAccount, `Party invite limit`);
 	const reportFriendLimitFunc = reportInviteLimit(reportFriendLimitAccount, `Friend request limit`);
@@ -68,7 +75,7 @@ export function createServerActionsFactory(
 		if (hidingData) {
 			hiding.deserialize(hidingData);
 		}
-	} catch { }
+	} catch {}
 
 	pollHidingDataSave(hiding, server.id);
 
@@ -98,8 +105,17 @@ export function createServerActionsFactory(
 	const checkSpam = createSpamChecker(spamCounter, rapidCounter, reportSpammingAccount, timeoutAccount);
 	const isSuspiciousMessage = createIsSuspiciousMessage(settings);
 	const say = createSay(
-		world, runCommand, logChatMessage, checkSpam, reportSwears, reportForbidden, reportSuspicious, spamCommands,
-		Math.random, isSuspiciousMessage);
+		world,
+		runCommand,
+		logChatMessage,
+		checkSpam,
+		reportSwears,
+		reportForbidden,
+		reportSuspicious,
+		spamCommands,
+		Math.random,
+		isSuspiciousMessage,
+	);
 	const move = createMove(teleportCounter);
 	const ignorePlayer = createIgnorePlayer(updateAccount);
 
@@ -109,8 +125,21 @@ export function createServerActionsFactory(
 		createClientAndPony(client, friendIds, hideIds, server, world, statesCounter);
 
 		return new ServerActions(
-			client, world, notifications, party, supporterInvites, getSettings, server, say, move, hiding, statesCounter,
-			accountService, ignorePlayer, findClientByEntityId, friends
+			client,
+			world,
+			notifications,
+			party,
+			supporterInvites,
+			getSettings,
+			server,
+			say,
+			move,
+			hiding,
+			statesCounter,
+			accountService,
+			ignorePlayer,
+			findClientByEntityId,
+			friends,
 		);
 	}
 

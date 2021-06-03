@@ -1,4 +1,4 @@
-export const countryCodeToName: { [key: string]: string | undefined; } = {
+export const countryCodeToName: { [key: string]: string | undefined } = {
 	AD: `Andorra`,
 	AE: `United Arab Emirates (the)`,
 	AF: `Afghanistan`,

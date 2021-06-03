@@ -26,7 +26,7 @@ export const ADMIN_COLOR = 0xff69b4ff;
 export const MOD_COLOR = 0xb689ffff;
 export const SYSTEM_COLOR = 0xbbbbbbff;
 export const MESSAGE_COLOR = 0x333333ff;
-export const ANNOUNCEMENT_COLOR = 0xf0e68Cff;
+export const ANNOUNCEMENT_COLOR = 0xf0e68cff;
 export const PARTY_COLOR = 0x71daffff;
 export const THINKING_COLOR = 0xafafafff;
 export const PARTY_THINKING_COLOR = 0x5da9c4ff;
@@ -74,16 +74,26 @@ export function updateActionColor(color: string) {
 
 export function getMessageColor(type: MessageType): number {
 	switch (type) {
-		case MessageType.Chat: return WHITE;
-		case MessageType.System: return SYSTEM_COLOR;
-		case MessageType.Admin: return ADMIN_COLOR;
-		case MessageType.Mod: return MOD_COLOR;
-		case MessageType.Party: return PARTY_COLOR;
-		case MessageType.Thinking: return THINKING_COLOR;
-		case MessageType.PartyThinking: return PARTY_THINKING_COLOR;
-		case MessageType.Supporter1: return SUPPORTER1_COLOR;
-		case MessageType.Supporter2: return SUPPORTER2_COLOR;
-		case MessageType.Supporter3: return SUPPORTER3_COLOR;
+		case MessageType.Chat:
+			return WHITE;
+		case MessageType.System:
+			return SYSTEM_COLOR;
+		case MessageType.Admin:
+			return ADMIN_COLOR;
+		case MessageType.Mod:
+			return MOD_COLOR;
+		case MessageType.Party:
+			return PARTY_COLOR;
+		case MessageType.Thinking:
+			return THINKING_COLOR;
+		case MessageType.PartyThinking:
+			return PARTY_THINKING_COLOR;
+		case MessageType.Supporter1:
+			return SUPPORTER1_COLOR;
+		case MessageType.Supporter2:
+			return SUPPORTER2_COLOR;
+		case MessageType.Supporter3:
+			return SUPPORTER3_COLOR;
 		case MessageType.Whisper:
 		case MessageType.WhisperTo:
 			return WHISPER_COLOR;
@@ -92,7 +102,8 @@ export function getMessageColor(type: MessageType): number {
 		case MessageType.WhisperAnnouncement:
 		case MessageType.WhisperToAnnouncement:
 			return ANNOUNCEMENT_COLOR;
-		case MessageType.Dismiss: return TRANSPARENT;
+		case MessageType.Dismiss:
+			return TRANSPARENT;
 		default:
 			return invalidEnumReturn(type, WHITE);
 	}

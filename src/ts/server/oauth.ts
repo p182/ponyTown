@@ -14,14 +14,14 @@ import { colorToCSS } from '../common/color';
 import { config } from './config';
 import { IAccount } from './db';
 
-export type OAuthProfileName = string | { familyName: string; givenName: string; };
+export type OAuthProfileName = string | { familyName: string; givenName: string };
 
 export interface OAuthProfile {
 	id?: string;
 	name?: OAuthProfileName;
 	username?: string;
 	displayName?: string;
-	emails?: { value: string; }[];
+	emails?: { value: string }[];
 	provider: string;
 	gender?: string;
 	profileUrl?: string;
@@ -30,14 +30,16 @@ export interface OAuthProfile {
 }
 
 export interface Strategy {
-	new(
+	new (
 		options: any,
 		callback: (
 			req: Request,
 			accessToken: string,
 			refreshToken: string,
 			profile: OAuthProfile,
-			callback: (err: Error | null, user: IAccount | null) => void) => void): any;
+			callback: (err: Error | null, user: IAccount | null) => void,
+		) => void,
+	): any;
 }
 
 export interface OAuthProviderInfo {
@@ -89,8 +91,8 @@ const providerList: OAuthProviderInfo[] = [
 	},
 ];
 
-providerList.forEach(p => p.auth = config.oauth[p.id]);
-providerList.filter(p => p.auth && p.auth.connectOnly).forEach(p => p.connectOnly = true);
+providerList.forEach(p => (p.auth = config.oauth[p.id]));
+providerList.filter(p => p.auth && p.auth.connectOnly).forEach(p => (p.connectOnly = true));
 
 export const providers = providerList.filter(p => !!p.auth);
 
@@ -101,7 +103,8 @@ export function getProfileUrl(profile: OAuthProfile): string | undefined {
 		return `http://${profile.username}.tumblr.com/`;
 	} else if (profile.provider === 'facebook') {
 		return `http://www.facebook.com/${profile.id}`;
-	} else if (profile._json.attributes && profile._json.attributes.url) { // patreon
+	} else if (profile._json.attributes && profile._json.attributes.url) {
+		// patreon
 		return profile._json.attributes.url;
 	} else {
 		return profile.profileUrl || profile._json.url;
@@ -111,7 +114,8 @@ export function getProfileUrl(profile: OAuthProfile): string | undefined {
 export function getProfileEmails(profile: OAuthProfile): string[] {
 	if (profile.emails && profile.emails.length) {
 		return profile.emails.map(e => e.value);
-	} else if (profile._json && profile._json.attributes && profile._json.attributes.email) { // patreon
+	} else if (profile._json && profile._json.attributes && profile._json.attributes.email) {
+		// patreon
 		return [profile._json.attributes.email];
 	} else {
 		return [];

@@ -69,8 +69,8 @@ export function updateCamera(camera: Camera, player: Point, map: Size) {
 
 export function centerCameraOn(camera: Camera, point: Point) {
 	camera.x = Math.floor(toScreenX(point.x) - camera.w / 2);
-	camera.y = Math.floor((toScreenY(point.y) - camera.h / 2) - characterHeight);
-	camera.shiftTarget = Math.floor((toScreenY(point.y) - Math.ceil(camera.h - camera.offset) / 2) - characterHeight);
+	camera.y = Math.floor(toScreenY(point.y) - camera.h / 2 - characterHeight);
+	camera.shiftTarget = Math.floor(toScreenY(point.y) - Math.ceil(camera.h - camera.offset) / 2 - characterHeight);
 }
 
 export function calculateCameraY(camera: Camera) {
@@ -83,8 +83,13 @@ export function isWorldPointVisible(camera: Camera, point: Point): boolean {
 
 export function isWorldPointWithPaddingVisible(camera: Camera, point: Point, padding: number): boolean {
 	return pointInXYWH(
-		toScreenX(point.x), toScreenY(point.y),
-		camera.x - padding, camera.actualY - padding, camera.w + 2 * padding, camera.h + 2 * padding);
+		toScreenX(point.x),
+		toScreenY(point.y),
+		camera.x - padding,
+		camera.actualY - padding,
+		camera.w + 2 * padding,
+		camera.h + 2 * padding,
+	);
 }
 
 export function isAreaVisible(camera: Camera, x: number, y: number, w: number, h: number): boolean {
@@ -96,8 +101,7 @@ export function isRectVisible(camera: Camera, rect: Rect): boolean {
 }
 
 export function isBoundsVisible(camera: Camera, bounds: Rect | undefined, x: number, y: number): boolean {
-	return bounds !== undefined &&
-		isAreaVisible(camera, toScreenX(x) + bounds.x, toScreenY(y) + bounds.y, bounds.w, bounds.h);
+	return bounds !== undefined && isAreaVisible(camera, toScreenX(x) + bounds.x, toScreenY(y) + bounds.y, bounds.w, bounds.h);
 }
 
 export function isEntityVisible(camera: Camera, entity: Entity): boolean {
@@ -109,8 +113,7 @@ function isChatBaloonAboveScreenTop(camera: Camera, entity: Entity) {
 }
 
 export function isChatVisible(camera: Camera, entity: Entity): boolean {
-	return isBoundsVisible(camera, entity.bounds, entity.x, entity.y)
-		&& !isChatBaloonAboveScreenTop(camera, entity);
+	return isBoundsVisible(camera, entity.bounds, entity.x, entity.y) && !isChatBaloonAboveScreenTop(camera, entity);
 }
 
 export function screenToWorld(camera: Camera, point: Point): Point {

@@ -166,14 +166,18 @@ export const CHINESE = [
 	'鲜鲤鲨鲸鳃鳄鳌鳍鳖鳞鳥鳩鳳鳴鳶鴨鴻鵜鵬鶏鶴鷄鷗鷲鷹鷺鸟鸠鸡鸣鸥鸦',
 	'鸭鸯鸳鸽鸾鸿鹃鹅鹉鹊鹏鹤鹦鹰鹳鹿麒麓麗麟麦麹麺麻麽麿黄黎黏黑黒黔',
 	'默黙黛黝黯鼎鼓鼠鼻鼾齊齐齢齿龄龈龋龍龙龚龟           ',
-].map(lengthChecker(32)).join('');
+]
+	.map(lengthChecker(32))
+	.join('');
 
 export const BASE_CHARS = [
 	' ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼',
 	` !"#$%&'()*+,-./0123456789:;<=>?`,
 	'@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_',
 	'`abcdefghijklmnopqrstuvwxyz{|}~⌂',
-].map(lengthChecker(32)).join('');
+]
+	.map(lengthChecker(32))
+	.join('');
 
 export const CHARS = [
 	' ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼',
@@ -208,13 +212,17 @@ export const CHARS = [
 	'👃🙂😵😠😐😑😆😟🙃                       ',
 	'                                ',
 	'                                ',
-].map(lengthChecker(32)).join('');
+]
+	.map(lengthChecker(32))
+	.join('');
 
 export const ROMAJI = [
 	'\uff00！＂＃＄％＆＇（）＊＋，－．／０１２３４５６７８９：；＜＝＞？',
 	'＠ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ［＼］＾＿',
 	'｀ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ｛｜｝～ ',
-].map(lengthChecker(32)).join('');
+]
+	.map(lengthChecker(32))
+	.join('');
 
 export const EMOJI = [
 	'😍😈👿🤔            ',
@@ -224,7 +232,9 @@ export const EMOJI = [
 	'💎🥌🎁⛄❄🕯🎅🌠⭐🌟🎲✨⚡🔥🎵🎶',
 	'♈♉♊♋♌♍♎♏♐♑♒♓⛎👑☘🍀',
 	'🍪🥚🍐🥭🥕🍇⛏🍌        ',
-].map(lengthChecker(16)).join('');
+]
+	.map(lengthChecker(16))
+	.join('');
 
 function isSurrogate(code: number) {
 	return code >= 0xd800 && code <= 0xdbff;
@@ -240,7 +250,7 @@ export function charsToCodes(text: string) {
 	for (let i = 0; i < text.length; i++) {
 		let code = text.charCodeAt(i);
 
-		if (isSurrogate(code) && (i + 1) < text.length) {
+		if (isSurrogate(code) && i + 1 < text.length) {
 			code = fromSurrogate(code, text.charCodeAt(i + 1));
 			i++;
 		}
@@ -257,8 +267,11 @@ export interface FontSprite {
 }
 
 export function createFont(
-	canvas: ExtCanvas, w: number, h: number, addImage: (canvas: ExtCanvas) => number,
-	options: { noChinese?: boolean; mono?: number; onlyBase?: boolean; } = {},
+	canvas: ExtCanvas,
+	w: number,
+	h: number,
+	addImage: (canvas: ExtCanvas) => number,
+	options: { noChinese?: boolean; mono?: number; onlyBase?: boolean } = {},
 ): FontSprite[] {
 	const data = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
 	const cols = canvas.width / w;
@@ -271,8 +284,8 @@ export function createFont(
 	const added = new Set<number>();
 	const arrows = new Set('↑↓'.split('').map(x => x.charCodeAt(0)));
 
-	return compact(codes
-		.map((code, i) => {
+	return compact(
+		codes.map((code, i) => {
 			if (i >= baseCodesLength) {
 				i = 32 + (i - baseCodesLength);
 			}
@@ -301,18 +314,16 @@ export function createFont(
 				added.add(actualCode);
 				return { code: actualCode, sprite };
 			}
-		}))
-		.sort(compareFontSprite);
+		}),
+	).sort(compareFontSprite);
 }
 
-export function createEmojis(
-	canvas: ExtCanvas, w: number, h: number, addImage: (canvas: ExtCanvas) => number
-): FontSprite[] {
+export function createEmojis(canvas: ExtCanvas, w: number, h: number, addImage: (canvas: ExtCanvas) => number): FontSprite[] {
 	const data = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
 	const cols = canvas.width / w;
 
-	return compact(charsToCodes(EMOJI)
-		.map((code, i) => {
+	return compact(
+		charsToCodes(EMOJI).map((code, i) => {
 			const { x, y } = getXY(cols, i);
 			const { left, width } = getCharWidth(data, x, y, w, h);
 
@@ -327,11 +338,11 @@ export function createEmojis(
 
 			const sprite = addImage(cropCanvas(canvas, x * w + left, y * h, width - left, h));
 			return { code, sprite };
-		}))
-		.sort(compareFontSprite);
+		}),
+	).sort(compareFontSprite);
 }
 
-export function fontSpritesToStringAndSprites(fontSprites: FontSprite[]): { chars: string; sprites: number[]; } {
+export function fontSpritesToStringAndSprites(fontSprites: FontSprite[]): { chars: string; sprites: number[] } {
 	const chars = fontSprites.map(s => String.fromCodePoint(s.code)).join('');
 	const sprites = fontSprites.map(s => s.sprite);
 	return { chars, sprites };
@@ -343,8 +354,7 @@ function compareFontSprite(a: FontSprite, b: FontSprite) {
 
 function isColEmpty(data: ImageData, x: number, y: number, h: number) {
 	for (let yy = 0; yy < h; yy++) {
-		if (data.data[((y + yy) * data.width + x) * 4 + 3])
-			return false;
+		if (data.data[((y + yy) * data.width + x) * 4 + 3]) return false;
 	}
 
 	return true;
@@ -377,8 +387,7 @@ function lengthChecker(expected: number) {
 	return function (line: string) {
 		const length = charsToCodes(line).length;
 
-		if (length !== expected)
-			throw new Error(`Invalid line length (${length}/${expected}) in "${line}"`);
+		if (length !== expected) throw new Error(`Invalid line length (${length}/${expected}) in "${line}"`);
 
 		return line;
 	};

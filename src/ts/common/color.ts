@@ -144,7 +144,7 @@ export const colorNames: { [key: string]: string | undefined } = {
 	white: 'ffffff',
 	whitesmoke: 'f5f5f5',
 	yellow: 'ffff00',
-	yellowgreen: '9acd32'
+	yellowgreen: '9acd32',
 };
 
 const TRANSPARENT = 0x00000000 >>> 0;
@@ -271,37 +271,30 @@ export function colorFromHSVAObject({ h, s, v, a }: HSVA) {
 // parse
 
 export function parseColorFast(str: string): number {
-	if (!isString(str))
-		return TRANSPARENT;
+	if (!isString(str)) return TRANSPARENT;
 
 	const int = parseInt(str, 16);
 
 	if (str.length !== 6 || isNaN(int) || int < 0) {
 		return parseColorWithAlpha(str, 1);
 	} else {
-		return (((int << 8) | 0xff) >>> 0);
+		return ((int << 8) | 0xff) >>> 0;
 	}
 }
 
 export function parseColor(str: string): number {
-	if (!isString(str))
-		return TRANSPARENT;
+	if (!isString(str)) return TRANSPARENT;
 
 	str = str.trim().toLowerCase();
 
-	if (str === '' || str === 'none' || str === 'transparent')
-		return TRANSPARENT;
+	if (str === '' || str === 'none' || str === 'transparent') return TRANSPARENT;
 
 	str = colorNames[str] || str;
 
 	const m = /(\d+)[ ,]+(\d+)[ ,]+(\d+)(?:[ ,]+(\d*\.?\d+))?/.exec(str);
 
 	if (m) {
-		return colorFromRGBA(
-			parseInt(m[1], 10),
-			parseInt(m[2], 10),
-			parseInt(m[3], 10),
-			m[4] ? parseFloat(m[4]) * 255 : 255);
+		return colorFromRGBA(parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10), m[4] ? parseFloat(m[4]) * 255 : 255);
 	}
 
 	const n = /[0-9a-f]+/i.exec(str);
@@ -313,13 +306,16 @@ export function parseColor(str: string): number {
 			return colorFromRGBA(
 				parseInt(s.charAt(0), 16) * 0x11,
 				parseInt(s.charAt(1), 16) * 0x11,
-				parseInt(s.charAt(2), 16) * 0x11, 255);
+				parseInt(s.charAt(2), 16) * 0x11,
+				255,
+			);
 		} else {
 			return colorFromRGBA(
 				parseInt(s.substr(0, 2), 16),
 				parseInt(s.substr(2, 2), 16),
 				parseInt(s.substr(4, 2), 16),
-				s.length >= 8 ? parseInt(s.substr(6, 2), 16) : 255);
+				s.length >= 8 ? parseInt(s.substr(6, 2), 16) : 255,
+			);
 		}
 	}
 
@@ -347,7 +343,7 @@ export function multiplyColor(color: number, factor: number /* 0-1 */): number {
 		clamp(getR(color) * factor, 0, 255),
 		clamp(getG(color) * factor, 0, 255),
 		clamp(getB(color) * factor, 0, 255),
-		getAlpha(color)
+		getAlpha(color),
 	);
 }
 
@@ -359,7 +355,7 @@ export function lerpColors(a: number, b: number, factor: number): number {
 		getR(a) * t + getR(b) * f,
 		getG(a) * t + getG(b) * f,
 		getB(a) * t + getB(b) * f,
-		getAlpha(a) * t + getAlpha(b) * f
+		getAlpha(a) * t + getAlpha(b) * f,
 	);
 }
 
@@ -455,11 +451,13 @@ export function hsv2rgb(h: number, s: number, v: number): RGB {
 
 export function h2rgb(h: number): RGB {
 	h /= 60;
-	let r = 0, g = 0, b = 0;
+	let r = 0,
+		g = 0,
+		b = 0;
 	const i = Math.floor(h);
 	const f = h - i;
-	const q = (1 - f);
-	const t = (1 - (1 - f));
+	const q = 1 - f;
+	const t = 1 - (1 - f);
 
 	switch (i) {
 		case 0:
@@ -490,6 +488,6 @@ export function h2rgb(h: number): RGB {
 	return {
 		r: Math.round(r * 255),
 		g: Math.round(g * 255),
-		b: Math.round(b * 255)
+		b: Math.round(b * 255),
 	};
 }

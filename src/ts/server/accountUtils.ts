@@ -6,12 +6,22 @@ import { Profile, ModInfo, AccountDataFlags } from '../common/interfaces';
 import { ACCOUNT_NAME_MAX_LENGTH, DAY } from '../common/constants';
 import { fromNow, includes, hasFlag } from '../common/utils';
 import {
-	isAdmin, getCharacterLimit as getCharacterLimitInternal, getSupporterInviteLimit as getSupporterInviteLimitInternal
+	isAdmin,
+	getCharacterLimit as getCharacterLimitInternal,
+	getSupporterInviteLimit as getSupporterInviteLimitInternal,
 } from '../common/accountUtils';
 import { cleanName } from '../client/clientUtils';
 import {
-	IAccount, IAuth, Account, ID, characterCount as getCharacterCount, findAccount, queryAccount, updateAccount,
-	FriendRequest, IFriendRequest
+	IAccount,
+	IAuth,
+	Account,
+	ID,
+	characterCount as getCharacterCount,
+	findAccount,
+	queryAccount,
+	updateAccount,
+	FriendRequest,
+	IFriendRequest,
 } from './db';
 import { assignAuth } from './authUtils';
 import { UserError } from './userError';
@@ -56,23 +66,24 @@ function findAccountByEmail(emails?: string[]) {
 	return emails && emails.length ? queryAccount({ emails: { $in: emails } }) : Promise.resolve(undefined);
 }
 
-const availableProviders = providers.filter(a => !a.connectOnly).map(a => a.name).join(', ');
+const availableProviders = providers
+	.filter(a => !a.connectOnly)
+	.map(a => a.name)
+	.join(', ');
 
-export const connectOnlySocialError =
-	`Cannot create new account using this social site, new accounts can only be created using: ${availableProviders}`;
+export const connectOnlySocialError = `Cannot create new account using this social site, new accounts can only be created using: ${availableProviders}`;
 
 function createNewAccount(profile: Profile, options: CreateAccountOptions) {
 	if (!options.canCreateAccounts) {
-		throw new UserError(
-			'Creating accounts is temporarily disabled, try again later');
+		throw new UserError('Creating accounts is temporarily disabled, try again later');
 	} else if (options.connectOnly) {
 		throw new UserError(connectOnlySocialError);
 	} else if (options.creationLocked) {
-		throw new UserError(
-			'Could not create account, try again later', { log: `account creation blocked by ACL (${options.ip})` });
+		throw new UserError('Could not create account, try again later', { log: `account creation blocked by ACL (${options.ip})` });
 	} else if (profile.suspended) {
-		throw new UserError(
-			'Cannot create new account using suspended social site account', { log: 'account creation blocked by suspended' });
+		throw new UserError('Cannot create new account using suspended social site account', {
+			log: 'account creation blocked by suspended',
+		});
 	} else {
 		return new Account();
 	}
@@ -84,17 +95,13 @@ async function hasDuplicatesAtOrigin(account: IAccount, ip: string) {
 	const duplicates: IAccount[] = await Account.find(query, '_id ban mute shadow flags name').lean().exec();
 
 	return duplicates.some(({ _id, ban = 0, mute = 0, shadow = 0, flags = 0, name }) => {
-		if (_id.toString() === account._id.toString())
-			return false;
+		if (_id.toString() === account._id.toString()) return false;
 
-		if (ban === -1 || ban > now || mute === -1 || mute > now || shadow === -1 || shadow > now)
-			return true;
+		if (ban === -1 || ban > now || mute === -1 || mute > now || shadow === -1 || shadow > now) return true;
 
-		if (hasFlag(flags, AccountFlags.CreatingDuplicates))
-			return true;
+		if (hasFlag(flags, AccountFlags.CreatingDuplicates)) return true;
 
-		if (name === account.name)
-			return true;
+		if (name === account.name) return true;
 
 		return false;
 	});
@@ -196,12 +203,11 @@ export function updateAccountState(account: IAccount, update: (state: AccountSta
 	const state = account.state || {};
 	update(state);
 	account.state = state;
-	updateAccount(account._id, { state: account.state })
-		.catch(e => logger.error(e));
+	updateAccount(account._id, { state: account.state }).catch(e => logger.error(e));
 }
 
 export function getAccountAlertMessage(account: IAccount) {
-	return (account.alert && account.alert.expires.getTime() > Date.now()) ? account.alert.message : undefined;
+	return account.alert && account.alert.expires.getTime() > Date.now() ? account.alert.message : undefined;
 }
 
 async function findFriendRequest(accountId: string, friendId: string): Promise<IFriendRequest | undefined> {
@@ -209,7 +215,7 @@ async function findFriendRequest(accountId: string, friendId: string): Promise<I
 		$or: [
 			{ source: accountId, target: friendId },
 			{ source: friendId, target: accountId },
-		]
+		],
 	}).exec();
 
 	return requests[0];

@@ -1,5 +1,14 @@
 import {
-	Entity, DrawOptions, Camera, PaletteSpriteBatch, SpriteBatch, TileSets, Engine, Pony, WorldMap, EntityState
+	Entity,
+	DrawOptions,
+	Camera,
+	PaletteSpriteBatch,
+	SpriteBatch,
+	TileSets,
+	Engine,
+	Pony,
+	WorldMap,
+	EntityState,
 } from '../common/interfaces';
 import { isBoundsVisible } from '../common/camera';
 import { drawBounds, drawPixelText, drawBoundsOutline, drawOutlineRect, drawWorldBounds } from '../graphics/graphicsUtils';
@@ -47,7 +56,7 @@ export function drawEntityLights(batch: SpriteBatch, entities: Entity[], camera:
 	const drawHidden = options.drawHidden;
 
 	for (const entity of entities) {
-		if (DEVELOPMENT && (entity.type !== PONY_TYPE && !entity.drawLight)) {
+		if (DEVELOPMENT && entity.type !== PONY_TYPE && !entity.drawLight) {
 			console.error('Cannot draw entity light', entity);
 		}
 
@@ -65,7 +74,7 @@ export function drawEntityLightSprites(batch: SpriteBatch, entities: Entity[], c
 	const drawHidden = options.drawHidden;
 
 	for (const entity of entities) {
-		if (DEVELOPMENT && (entity.type !== PONY_TYPE && !entity.drawLightSprite)) {
+		if (DEVELOPMENT && entity.type !== PONY_TYPE && !entity.drawLightSprite) {
 			console.error('Cannot draw entity light sprite', entity);
 		}
 
@@ -82,8 +91,10 @@ export function drawEntityLightSprites(batch: SpriteBatch, entities: Entity[], c
 export function hasDrawLight(entity: Entity) {
 	if (entity.type === PONY_TYPE) {
 		const pony = entity as Pony;
-		return (pony.ponyState.holding !== undefined && pony.ponyState.holding.drawLight !== undefined) ||
-			((pony.state & EntityState.Magic) !== 0);
+		return (
+			(pony.ponyState.holding !== undefined && pony.ponyState.holding.drawLight !== undefined) ||
+			(pony.state & EntityState.Magic) !== 0
+		);
 	} else {
 		return entity.drawLight !== undefined;
 	}
@@ -92,15 +103,20 @@ export function hasDrawLight(entity: Entity) {
 export function hasLightSprite(entity: Entity) {
 	if (entity.type === PONY_TYPE) {
 		const pony = entity as Pony;
-		return (pony.ponyState.holding !== undefined && pony.ponyState.holding.drawLightSprite !== undefined);
+		return pony.ponyState.holding !== undefined && pony.ponyState.holding.drawLightSprite !== undefined;
 	} else {
 		return entity.drawLightSprite !== undefined;
 	}
 }
 
 export function drawMap(
-	batch: PaletteSpriteBatch, map: WorldMap, camera: Camera, player: Pony, options: DrawOptions,
-	tileSets: TileSets, selectedEntities: Entity[],
+	batch: PaletteSpriteBatch,
+	map: WorldMap,
+	camera: Camera,
+	player: Pony,
+	options: DrawOptions,
+	tileSets: TileSets,
+	selectedEntities: Entity[],
 ) {
 	TIMING && timeStart('forEachRegion');
 	if (BETA && options.engine === Engine.Whiteness) {
@@ -206,16 +222,13 @@ function drawDebugInWater(batch: PaletteSpriteBatch, map: WorldMap, camera: Came
 		const cameraTop = camera.actualY;
 		const cameraBottom = camera.actualY + camera.h;
 
-		if (sx > cameraRight || sy > cameraBottom || (sx + w) < cameraLeft || (sy + h) < cameraTop)
-			return;
+		if (sx > cameraRight || sy > cameraBottom || sx + w < cameraLeft || sy + h < cameraTop) return;
 
 		for (let y = 0; y < h; y++) {
-			if ((sy + y + 1) < cameraTop || (sy + y) > cameraBottom)
-				continue;
+			if (sy + y + 1 < cameraTop || sy + y > cameraBottom) continue;
 
 			for (let x = 0; x < w; x++) {
-				if ((sx + x + 1) < cameraLeft || (sx + x) > cameraRight)
-					continue;
+				if (sx + x + 1 < cameraLeft || sx + x > cameraRight) continue;
 
 				const tx = x;
 
@@ -245,16 +258,13 @@ function drawDebugCollider(batch: PaletteSpriteBatch, map: WorldMap, camera: Cam
 		const cameraTop = camera.actualY;
 		const cameraBottom = camera.actualY + camera.h;
 
-		if (sx > cameraRight || sy > cameraBottom || (sx + w) < cameraLeft || (sy + h) < cameraTop)
-			return;
+		if (sx > cameraRight || sy > cameraBottom || sx + w < cameraLeft || sy + h < cameraTop) return;
 
 		for (let y = 0; y < h; y++) {
-			if ((sy + y + 1) < cameraTop || (sy + y) > cameraBottom)
-				continue;
+			if (sy + y + 1 < cameraTop || sy + y > cameraBottom) continue;
 
 			for (let x = 0; x < w; x++) {
-				if ((sx + x + 1) < cameraLeft || (sx + x) > cameraRight)
-					continue;
+				if (sx + x + 1 < cameraLeft || sx + x > cameraRight) continue;
 
 				const tx = x;
 

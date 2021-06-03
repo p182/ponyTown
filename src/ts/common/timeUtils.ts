@@ -13,7 +13,7 @@ export const HOUR_LENGTH = 2 * MINUTE; // 48 min -> 24 hours
 export const DAY_LENGTH = HOUR_LENGTH * 24;
 
 const getTimeOfDay = (time: number) => time % DAY_LENGTH;
-const getHourOfDay = (timeOfDay: number) => timeOfDay * 24 / DAY_LENGTH;
+const getHourOfDay = (timeOfDay: number) => (timeOfDay * 24) / DAY_LENGTH;
 
 export function getHour(time: number) {
 	const timeOfDay = getTimeOfDay(time);
@@ -24,7 +24,7 @@ export function getHour(time: number) {
 export function formatHourMinutes(time: number): string {
 	const timeOfDay = getTimeOfDay(time);
 	const minutesInDay = 60 * 24;
-	const totalMinutes = Math.floor(timeOfDay * minutesInDay / DAY_LENGTH);
+	const totalMinutes = Math.floor((timeOfDay * minutesInDay) / DAY_LENGTH);
 	const minutes = totalMinutes % 60;
 	const hours = Math.floor(totalMinutes / 60);
 	return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -37,14 +37,14 @@ const isHour = (test: (hour: number) => boolean) => (time: number) => {
 export const isDay = isHour(hour => hour > DAY_START && hour <= DAY_END);
 export const isNight = (time: number) => !isDay(time);
 
-export const isFullDay = isHour(hour => hour > (DAY_START + SUN_HALF) && hour <= (DAY_END - SUN_HALF));
-export const isFullNight = isHour(hour => hour < (DAY_START - SUN_HALF) || hour >= (DAY_END + SUN_HALF));
+export const isFullDay = isHour(hour => hour > DAY_START + SUN_HALF && hour <= DAY_END - SUN_HALF);
+export const isFullNight = isHour(hour => hour < DAY_START - SUN_HALF || hour >= DAY_END + SUN_HALF);
 
-export const isSunRaising = isHour(hour => hour > (DAY_START - SUN_HALF) && hour <= (DAY_START + SUN_HALF));
-export const isSunSetting = isHour(hour => hour > (DAY_END - SUN_HALF) && hour <= (DAY_END + SUN_HALF));
+export const isSunRaising = isHour(hour => hour > DAY_START - SUN_HALF && hour <= DAY_START + SUN_HALF);
+export const isSunSetting = isHour(hour => hour > DAY_END - SUN_HALF && hour <= DAY_END + SUN_HALF);
 
-export const isDayTime = isHour(hour => hour > DAY_START && hour < (DAY_END - SUN_HALF));
-export const isNightTime = isHour(hour => hour < (DAY_START - SUN_HALF) || hour > DAY_END);
+export const isDayTime = isHour(hour => hour > DAY_START && hour < DAY_END - SUN_HALF);
+export const isNightTime = isHour(hour => hour < DAY_START - SUN_HALF || hour > DAY_END);
 
 // light color
 

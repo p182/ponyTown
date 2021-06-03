@@ -31,7 +31,7 @@ export function charsToCodes(text: string) {
 	for (let i = 0; i < text.length; i++) {
 		let code = text.charCodeAt(i);
 
-		if (isSurrogate(code) && (i + 1) < text.length) {
+		if (isSurrogate(code) && i + 1 < text.length) {
 			const extra = text.charCodeAt(i + 1);
 
 			if (isLowSurrogate(extra)) {

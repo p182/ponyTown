@@ -22,29 +22,33 @@ export const notFound: RequestHandler = (_, res) => {
 	res.sendStatus(404);
 };
 
-export const validAccount = (server: ServerConfig): RequestHandler => (req, res, next) => {
-	const account = req.user as IAccount | undefined;
-	const accountId = req.body.accountId as string;
-	const accountName = req.body.accountName as string;
+export const validAccount =
+	(server: ServerConfig): RequestHandler =>
+	(req, res, next) => {
+		const account = req.user as IAccount | undefined;
+		const accountId = req.body.accountId as string;
+		const accountName = req.body.accountName as string;
 
-	if (!account || account.id !== accountId) {
-		if (!/#$/.test(accountId)) {
-			createFromRequest(server, req).warn(ACCOUNT_ERROR, `${accountName} [${accountId}] (${req.path})`);
+		if (!account || account.id !== accountId) {
+			if (!/#$/.test(accountId)) {
+				createFromRequest(server, req).warn(ACCOUNT_ERROR, `${accountName} [${accountId}] (${req.path})`);
+			}
+			//logger.warn(ACCOUNT_ERROR, `${accountName} [${accountId}] (${req.path})`);
+			res.status(403).json({ error: ACCOUNT_ERROR });
+		} else {
+			next(null);
 		}
-		//logger.warn(ACCOUNT_ERROR, `${accountName} [${accountId}] (${req.path})`);
-		res.status(403).json({ error: ACCOUNT_ERROR });
-	} else {
-		next(null);
-	}
-};
+	};
 
-export const blockMaps = (debug: boolean, local: boolean): RequestHandler => (req, res, next) => {
-	if (!debug && !local && /\.map$/.test(req.path) && getIP(req) !== ROLLBAR_IP) {
-		res.sendStatus(404);
-	} else {
-		next(null);
-	}
-};
+export const blockMaps =
+	(debug: boolean, local: boolean): RequestHandler =>
+	(req, res, next) => {
+		if (!debug && !local && /\.map$/.test(req.path) && getIP(req) !== ROLLBAR_IP) {
+			res.sendStatus(404);
+		} else {
+			next(null);
+		}
+	};
 
 export const hash: RequestHandler = (req, res, next) => {
 	const apiVersion = req.get('api-version');
@@ -56,22 +60,26 @@ export const hash: RequestHandler = (req, res, next) => {
 	}
 };
 
-export const offline = (settings: Settings): RequestHandler => (_req, res, next) => {
-	if (settings.isPageOffline) {
-		res.status(503).send(OFFLINE_ERROR);
-	} else {
-		next(null);
-	}
-};
+export const offline =
+	(settings: Settings): RequestHandler =>
+	(_req, res, next) => {
+		if (settings.isPageOffline) {
+			res.status(503).send(OFFLINE_ERROR);
+		} else {
+			next(null);
+		}
+	};
 
-export const internal = (config: AppConfig, server: ServerConfig): RequestHandler => (req, res, next) => {
-	if (req.get('api-token') === config.token) {
-		next(null);
-	} else {
-		createFromRequest(server, req).warn('Unauthorized internal api call', req.originalUrl);
-		res.sendStatus(403);
-	}
-};
+export const internal =
+	(config: AppConfig, server: ServerConfig): RequestHandler =>
+	(req, res, next) => {
+		if (req.get('api-token') === config.token) {
+			next(null);
+		} else {
+			createFromRequest(server, req).warn('Unauthorized internal api call', req.originalUrl);
+			res.sendStatus(403);
+		}
+	};
 
 export const auth: RequestHandler = (req, res, next) => {
 	if (req.isAuthenticated()) {
@@ -83,18 +91,20 @@ export const auth: RequestHandler = (req, res, next) => {
 	}
 };
 
-export const admin = (server: ServerConfig): RequestHandler => (req, res, next) => {
-	if (req.isAuthenticated() && req.user && isAdmin(req.user)) {
-		next(null);
-	} else {
-		if (!/Googlebot/.test(req.get('User-Agent')!)) {
-			createFromRequest(server, req).warn(`Unauthorized access (admin)`, req.originalUrl);
-		}
+export const admin =
+	(server: ServerConfig): RequestHandler =>
+	(req, res, next) => {
+		if (req.isAuthenticated() && req.user && isAdmin(req.user)) {
+			next(null);
+		} else {
+			if (!/Googlebot/.test(req.get('User-Agent')!)) {
+				createFromRequest(server, req).warn(`Unauthorized access (admin)`, req.originalUrl);
+			}
 
-		res.setHeader('X-Robots-Tag', 'noindex, nofollow');
-		res.sendStatus(403);
-	}
-};
+			res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+			res.sendStatus(403);
+		}
+	};
 
 const store = new ExpressBrute.MemoryStore();
 
@@ -105,10 +115,10 @@ export function limit(freeRetries: number, lifetime: number) {
 		failCallback(req: Request, res: Response, _next: NextFunction, nextValidRequestDate: any) {
 			logger.warn(`rate limit ${req.url} ${req.ip}`);
 			res.status(429).send(`Too many requests, please try again ${moment(nextValidRequestDate).fromNow()}`);
-		}
+		},
 	};
 
-	return (new (ExpressBrute as any)(store, options)).prevent;
+	return new (ExpressBrute as any)(store, options).prevent;
 }
 
 function reportError(e: Error, server: ServerConfig, req: Request) {

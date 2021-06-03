@@ -1,7 +1,26 @@
 import {
-	PonyEye, PonyState, PalettePonyInfo, PaletteSpriteSet, Palette, HeadAnimationFrame,
-	Eye, Iris, ColorExtraSets, ExpressionExtra, BodyAnimationFrame, DrawPonyOptions, Muzzle, BodyShadow, DrawOptions,
-	NoDraw, PaletteSpriteBatch, defaultDrawOptions, PonyStateFlags, PaletteManager, isEyeSleeping, Matrix2D,
+	PonyEye,
+	PonyState,
+	PalettePonyInfo,
+	PaletteSpriteSet,
+	Palette,
+	HeadAnimationFrame,
+	Eye,
+	Iris,
+	ColorExtraSets,
+	ExpressionExtra,
+	BodyAnimationFrame,
+	DrawPonyOptions,
+	Muzzle,
+	BodyShadow,
+	DrawOptions,
+	NoDraw,
+	PaletteSpriteBatch,
+	defaultDrawOptions,
+	PonyStateFlags,
+	PaletteManager,
+	isEyeSleeping,
+	Matrix2D,
 } from '../common/interfaces';
 import { WHITE, SHINES_COLOR, FAR_COLOR, TRANSPARENT, fillToOutlineColor } from '../common/colors';
 import { toInt, hasFlag, repeat, flatten, point } from '../common/utils';
@@ -10,10 +29,29 @@ import * as offsets from '../common/offsets';
 import { defaultHeadAnimation, defaultBodyFrame, defaultHeadFrame } from './ponyAnimations';
 import { toWorldX, toWorldY } from '../common/positionUtils';
 import {
-	frontHooves, PONY_WIDTH, PONY_HEIGHT, wings, chestBehind, tails, chest, neckAccessories, waistAccessories,
-	SLEEVED_ACCESSORIES, blinkFrames, flipIris, claws, Sets, backAccessories, SLEEVED_BACK_ACCESSORIES,
-	CHEST_ACCESSORIES_IN_FRONT, flipFaceAccessoryType, flipFaceAccessoryPattern, backLegSleeves,
-	NO_MANE_HEAD_ACCESSORIES, backHoovesInFront, frontHoovesInFront
+	frontHooves,
+	PONY_WIDTH,
+	PONY_HEIGHT,
+	wings,
+	chestBehind,
+	tails,
+	chest,
+	neckAccessories,
+	waistAccessories,
+	SLEEVED_ACCESSORIES,
+	blinkFrames,
+	flipIris,
+	claws,
+	Sets,
+	backAccessories,
+	SLEEVED_BACK_ACCESSORIES,
+	CHEST_ACCESSORIES_IN_FRONT,
+	flipFaceAccessoryType,
+	flipFaceAccessoryPattern,
+	backLegSleeves,
+	NO_MANE_HEAD_ACCESSORIES,
+	backHoovesInFront,
+	frontHoovesInFront,
 } from './ponyUtils';
 import { HEAD_ACCESSORY_OFFSETS, EAR_ACCESSORY_OFFSETS, EXTRA_ACCESSORY_OFFSETS } from '../common/offsets';
 import { createMat2D, identityMat2D, translateMat2D, copyMat2D, rotateMat2D, scaleMat2D } from '../common/mat2d';
@@ -80,7 +118,7 @@ function att<T>(items: T[] | undefined, index: any): T | undefined {
 }
 
 function atDef<T>(items: T[] | undefined, index: number, def: T): T {
-	return (items && items.length > 0 && index >= 0 && index < items.length) ? items[index | 0] : def;
+	return items && items.length > 0 && index >= 0 && index < items.length ? items[index | 0] : def;
 }
 
 export function getPonyAnimationFrame<T>({ frames }: { frames: T[] }, frame: number, defaultFrame: T): T {
@@ -89,14 +127,18 @@ export function getPonyAnimationFrame<T>({ frames }: { frames: T[] }, frame: num
 
 function getHeadXY(x: number, y: number, turned: boolean, frame: BodyAnimationFrame, headFrame: HeadAnimationFrame) {
 	const headOffset = at(offsets.headOffsets, frame.body)!;
-	const headX = x + frame.headX + (headFrame.headX * (turned ? -1 : 1)) + headOffset.x;
+	const headX = x + frame.headX + headFrame.headX * (turned ? -1 : 1) + headOffset.x;
 	const headY = y + frame.headY + headFrame.headY + headOffset.y;
 	return { headX, headY };
 }
 
 export function getPonyHeadPosition(state: State, ponyX: number, ponyY: number) {
 	const frame = getPonyAnimationFrame(state.animation, state.animationFrame, defaultBodyFrame);
-	const headFrame = getPonyAnimationFrame(state.headAnimation || defaultHeadAnimation, state.headAnimationFrame, defaultHeadFrame);
+	const headFrame = getPonyAnimationFrame(
+		state.headAnimation || defaultHeadAnimation,
+		state.headAnimationFrame,
+		defaultHeadFrame,
+	);
 	const baseX = ponyX - PONY_WIDTH / 2;
 	const baseY = ponyY - PONY_HEIGHT;
 	const x = baseX + frame.bodyX;
@@ -106,7 +148,10 @@ export function getPonyHeadPosition(state: State, ponyX: number, ponyY: number) 
 }
 
 export function createHeadTransform(
-	originalTransform: Matrix2D | undefined, headX: number, headY: number, { headTilt, headTurned }: State
+	originalTransform: Matrix2D | undefined,
+	headX: number,
+	headY: number,
+	{ headTilt, headTurned }: State,
 ) {
 	if (originalTransform !== undefined) {
 		copyMat2D(headTransform, originalTransform);
@@ -131,14 +176,7 @@ export function getHeadY(frame: BodyAnimationFrame, headFrame: HeadAnimationFram
 }
 
 const defaultShadow: BodyShadow = { frame: 0, offset: 0 };
-const hairOffsets = [
-	0, 0, 0, 0,
-	-1, -1, 0, 0,
-	0, 0, 0, -1,
-	-1, 0, 0, 0,
-	0, 0, 0, 0,
-	...repeat(100, 0),
-];
+const hairOffsets = [0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, ...repeat(100, 0)];
 
 function draw(options: Options, flag: NoDraw) {
 	if (TOOLS) {
@@ -155,10 +193,7 @@ let toys: (PaletteSpriteSet | undefined)[] = [];
 
 export function initializeToys(paletteManager: PaletteManager) {
 	function set(type: number, pattern: number, colors: number[]): PaletteSpriteSet {
-		const palette = [
-			TRANSPARENT,
-			...flatten(colors.map(color => [color, darkenForOutline(fillToOutlineColor(color))]))
-		];
+		const palette = [TRANSPARENT, ...flatten(colors.map(color => [color, darkenForOutline(fillToOutlineColor(color))]))];
 
 		return { type, pattern, palette: paletteManager.add(palette) };
 	}
@@ -224,13 +259,17 @@ const wakes = [
 const wakeIndices = [0, 2, 1, 0, 2, 2, 2, 0, 2, 2, 2, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1];
 
 function getWakeIndex(info: Info) {
-	const tail = info.tail && info.tail.type || 0;
+	const tail = (info.tail && info.tail.type) || 0;
 	return wakeIndices[tail];
 }
 
 export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, ponyY: number, options: Options) {
 	const frame = getPonyAnimationFrame(state.animation, state.animationFrame, defaultBodyFrame);
-	const headFrame = getPonyAnimationFrame(state.headAnimation || defaultHeadAnimation, state.headAnimationFrame, defaultHeadFrame);
+	const headFrame = getPonyAnimationFrame(
+		state.headAnimation || defaultHeadAnimation,
+		state.headAnimationFrame,
+		defaultHeadFrame,
+	);
 	const baseX = ponyX - PONY_WIDTH / 2;
 	const baseY = ponyY - PONY_HEIGHT;
 	const x = baseX + frame.bodyX;
@@ -254,7 +293,7 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 
 	const headTotalY = headY + headOffsetY;
 	const headTransform = createHeadTransform(undefined, headX + headOffsetX, headTotalY, state);
-	const headCropY = 42 - ((headTotalY + headFlipOffsetY) - baseY);
+	const headCropY = 42 - (headTotalY + headFlipOffsetY - baseY);
 	const cropW = 80;
 	const cropH = 65;
 
@@ -264,7 +303,7 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 	const wake = wakes[getWakeIndex(info)];
 	const wakeX = baseX + wake.ox;
 	const wakeY = baseY + wake.oy;
-	const wakeFrame = Math.floor(options.gameTime * 7 / 1000) % wake.behind.frames.length;
+	const wakeFrame = Math.floor((options.gameTime * 7) / 1000) % wake.behind.frames.length;
 	const swimming = options.swimming;
 
 	if (swimming) {
@@ -354,18 +393,46 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 
 	// far leg back
 	if (draw(options, NoDraw.BackFarLeg)) {
-		drawLeg(batch, backBehindX, backBehindY, frame.backFarLeg, sprites.backLegs,
-			sprites.backLegHooves, sprites.backLegAccessories, info.backLegs,
-			flipped ? info.backLegAccessory : info.backLegAccessoryRight, info.backHooves, backHoovesInFront, FAR_COLOR,
-			undefined, false, 0, 0);
+		drawLeg(
+			batch,
+			backBehindX,
+			backBehindY,
+			frame.backFarLeg,
+			sprites.backLegs,
+			sprites.backLegHooves,
+			sprites.backLegAccessories,
+			info.backLegs,
+			flipped ? info.backLegAccessory : info.backLegAccessoryRight,
+			info.backHooves,
+			backHoovesInFront,
+			FAR_COLOR,
+			undefined,
+			false,
+			0,
+			0,
+		);
 	}
 
 	// far leg front
 	if (draw(options, NoDraw.FrontFarLeg)) {
-		drawLeg(batch, frontBehindX, frontBehindY, frame.frontFarLeg, sprites.frontLegs,
-			frontHooves, sprites.frontLegAccessories, info.frontLegs,
-			flipped ? info.frontLegAccessory : info.frontLegAccessoryRight, info.frontHooves, frontHoovesInFront, FAR_COLOR,
-			undefined, false, 0, 0);
+		drawLeg(
+			batch,
+			frontBehindX,
+			frontBehindY,
+			frame.frontFarLeg,
+			sprites.frontLegs,
+			frontHooves,
+			sprites.frontLegAccessories,
+			info.frontLegs,
+			flipped ? info.frontLegAccessory : info.frontLegAccessoryRight,
+			info.frontHooves,
+			frontHoovesInFront,
+			FAR_COLOR,
+			undefined,
+			false,
+			0,
+			0,
+		);
 	}
 
 	// far leg back sleeve
@@ -408,14 +475,28 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 	const backX = x + backLegOffset.x + frame.backLegX;
 	const backY = y + backLegOffset.y + frame.backLegY;
 	const cmOffset = at(offsets.cmOffsets, body)!;
-	const hooves = (TOOLS && options.useAllHooves) ? sprites.frontLegHooves : frontHooves;
+	const hooves = TOOLS && options.useAllHooves ? sprites.frontLegHooves : frontHooves;
 
 	// close legs back
 	if (draw(options, NoDraw.BackLeg)) {
 		drawLeg(
-			batch, backX, backY, frame.backLeg, sprites.backLegs, sprites.backLegHooves, sprites.backLegAccessories,
-			info.backLegs, flipped ? info.backLegAccessoryRight : info.backLegAccessory, info.backHooves, backHoovesInFront, WHITE,
-			info.cmPalette, flipped && !!info.cmFlip, x + cmOffset.x, y + cmOffset.y);
+			batch,
+			backX,
+			backY,
+			frame.backLeg,
+			sprites.backLegs,
+			sprites.backLegHooves,
+			sprites.backLegAccessories,
+			info.backLegs,
+			flipped ? info.backLegAccessoryRight : info.backLegAccessory,
+			info.backHooves,
+			backHoovesInFront,
+			WHITE,
+			info.cmPalette,
+			flipped && !!info.cmFlip,
+			x + cmOffset.x,
+			y + cmOffset.y,
+		);
 	}
 
 	// back accessory
@@ -438,9 +519,23 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 	// close legs front
 	if (draw(options, NoDraw.FrontLeg)) {
 		drawLeg(
-			batch, frontX, frontY, frame.frontLeg, sprites.frontLegs, hooves, sprites.frontLegAccessories,
-			info.frontLegs, flipped ? info.frontLegAccessoryRight : info.frontLegAccessory, info.frontHooves, frontHoovesInFront, WHITE,
-			undefined, false, 0, 0);
+			batch,
+			frontX,
+			frontY,
+			frame.frontLeg,
+			sprites.frontLegs,
+			hooves,
+			sprites.frontLegAccessories,
+			info.frontLegs,
+			flipped ? info.frontLegAccessoryRight : info.frontLegAccessory,
+			info.frontHooves,
+			frontHoovesInFront,
+			WHITE,
+			undefined,
+			false,
+			0,
+			0,
+		);
 	}
 
 	// close legs front sleeves
@@ -456,9 +551,23 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 	// close legs back (2)
 	if (draw(options, NoDraw.BackLeg)) {
 		drawLeg(
-			batch, backX, backY, frame.backLeg, sprites.backLegs2, sprites.backLegHooves2, sprites.backLegAccessories2,
-			info.backLegs, flipped ? info.backLegAccessoryRight : info.backLegAccessory, info.backHooves, backHoovesInFront, WHITE,
-			undefined, false, 0, 0);
+			batch,
+			backX,
+			backY,
+			frame.backLeg,
+			sprites.backLegs2,
+			sprites.backLegHooves2,
+			sprites.backLegAccessories2,
+			info.backLegs,
+			flipped ? info.backLegAccessoryRight : info.backLegAccessory,
+			info.backHooves,
+			backHoovesInFront,
+			WHITE,
+			undefined,
+			false,
+			0,
+			0,
+		);
 	}
 
 	// close legs back sleeves (2)
@@ -511,9 +620,16 @@ export function drawPony(batch: Batch, info: Info, state: State, ponyX: number, 
 }
 
 export function drawHead(
-	batch: Batch, info: Info, x: number, y: number, headSprites: ColorExtraSets, headFrame: HeadAnimationFrame,
+	batch: Batch,
+	info: Info,
+	x: number,
+	y: number,
+	headSprites: ColorExtraSets,
+	headFrame: HeadAnimationFrame,
 	{ blinkFrame, expression, holding, blushColor, drawFaceExtra }: State,
-	options: Options, flip: boolean, maneOffsetY: number,
+	options: Options,
+	flip: boolean,
+	maneOffsetY: number,
 ) {
 	const extraOffset = at(EXTRA_ACCESSORY_OFFSETS, info.mane && info.mane.type) || pointZero;
 	const extraX = x + extraOffset.x;
@@ -573,11 +689,25 @@ export function drawHead(
 
 		if (draw(options, NoDraw.Eyes)) {
 			drawEye(
-				batch, att(at(eyeLeftSprites, eyeFrameLeft), info.eyelashes),
-				eyeIrisLeft, info, eyeColorLeft, eyePaletteLeft, x, y);
+				batch,
+				att(at(eyeLeftSprites, eyeFrameLeft), info.eyelashes),
+				eyeIrisLeft,
+				info,
+				eyeColorLeft,
+				eyePaletteLeft,
+				x,
+				y,
+			);
 			drawEye(
-				batch, att(at(eyeRightSprites, eyeFrameRight), info.eyelashes),
-				eyeIrisRight, info, eyeColorRight, eyePaletteRight, x, y);
+				batch,
+				att(at(eyeRightSprites, eyeFrameRight), info.eyelashes),
+				eyeIrisRight,
+				info,
+				eyeColorRight,
+				eyePaletteRight,
+				x,
+				y,
+			);
 		}
 	}
 
@@ -599,8 +729,16 @@ export function drawHead(
 
 		if (draw(options, NoDraw.FaceAccessory1)) {
 			drawTypePattern(
-				batch, sprites.faceAccessories, faceAccessoryType, faceAccessoryPattern,
-				faceAccessory.palette, faceAccessory.extraPalette, x, y, WHITE);
+				batch,
+				sprites.faceAccessories,
+				faceAccessoryType,
+				faceAccessoryPattern,
+				faceAccessory.palette,
+				faceAccessory.extraPalette,
+				x,
+				y,
+				WHITE,
+			);
 
 			// if (info.faceAccessoryExtraPalette) {
 			// 	drawTypePattern(
@@ -611,11 +749,13 @@ export function drawHead(
 	}
 
 	if (draw(options, NoDraw.Body) && draw(options, NoDraw.Nose)) {
-		const muzzle = holding ?
-			Muzzle.Smile :
-			headFrame.mouth === -1 ?
-				(expression ? expression.muzzle : info.muzzle) :
-				headFrame.mouth;
+		const muzzle = holding
+			? Muzzle.Smile
+			: headFrame.mouth === -1
+			? expression
+				? expression.muzzle
+				: info.muzzle
+			: headFrame.mouth;
 
 		const noses = at(sprites.noses, muzzle);
 		const nose = att(noses, info.nose && info.nose.type)![0];
@@ -665,8 +805,16 @@ export function drawHead(
 
 	if (faceAccessory !== undefined && draw(options, NoDraw.FaceAccessory2)) {
 		drawTypePattern(
-			batch, sprites.faceAccessories2, faceAccessoryType, faceAccessoryPattern,
-			faceAccessory.palette, faceAccessory.extraPalette, x, y, WHITE);
+			batch,
+			sprites.faceAccessories2,
+			faceAccessoryType,
+			faceAccessoryPattern,
+			faceAccessory.palette,
+			faceAccessory.extraPalette,
+			x,
+			y,
+			WHITE,
+		);
 
 		// if (info.faceAccessoryExtraPalette) {
 		// 	drawTypePattern(
@@ -692,9 +840,22 @@ export function drawHead(
 }
 
 function drawLeg(
-	batch: Batch, x: number, y: number, frame: number, leg: Sets, hoof: Sets, sock: Sets,
-	legSet: PaletteSpriteSet | undefined, sockSet: PaletteSpriteSet | undefined, hoofSet: PaletteSpriteSet | undefined,
-	hoovesInFront: boolean[], color: number, cmPalette: Palette | undefined, cmFlip: boolean, cmX: number, cmY: number
+	batch: Batch,
+	x: number,
+	y: number,
+	frame: number,
+	leg: Sets,
+	hoof: Sets,
+	sock: Sets,
+	legSet: PaletteSpriteSet | undefined,
+	sockSet: PaletteSpriteSet | undefined,
+	hoofSet: PaletteSpriteSet | undefined,
+	hoovesInFront: boolean[],
+	color: number,
+	cmPalette: Palette | undefined,
+	cmFlip: boolean,
+	cmX: number,
+	cmY: number,
 ) {
 	const hoofInFront = hoofSet !== undefined && !!hoovesInFront[hoofSet.type];
 
@@ -715,14 +876,13 @@ function drawLeg(
 	if (hoofInFront) {
 		const hasClaws = hoofSet && hoofSet.type === 3 && hoof === frontHooves;
 		const hasSocks = !!(sockSet && sockSet.type > 0);
-		const hoofSprites = (hasClaws && hasSocks) ? claws : hoof;
+		const hoofSprites = hasClaws && hasSocks ? claws : hoof;
 		drawSet(batch, at(hoofSprites, frame), hoofSet, x, y, color);
 	}
 }
 
 function getEyeFrame(base: Eye, expression: Eye, anim: Eye, blinkFrame: number) {
-	if (anim !== -1)
-		return anim;
+	if (anim !== -1) return anim;
 
 	const frame = expression === -1 ? base : expression;
 	const blink = blinkFrames[frame];
@@ -739,8 +899,14 @@ function getEyeFrame(base: Eye, expression: Eye, anim: Eye, blinkFrame: number) 
 }
 
 function drawEye(
-	batch: Batch, eye: PonyEye | undefined, iris: Iris, info: Info, palette: Palette | undefined, eyePalette: Palette,
-	x: number, y: number
+	batch: Batch,
+	eye: PonyEye | undefined,
+	iris: Iris,
+	info: Info,
+	palette: Palette | undefined,
+	eyePalette: Palette,
+	x: number,
+	y: number,
 ) {
 	if (eye !== undefined) {
 		if (info.eyeshadow === true) {
@@ -754,9 +920,7 @@ function drawEye(
 	}
 }
 
-function drawSet(
-	batch: Batch, sprites: ColorExtraSets, set: PaletteSpriteSet | undefined, x: number, y: number, tint: number
-) {
+function drawSet(batch: Batch, sprites: ColorExtraSets, set: PaletteSpriteSet | undefined, x: number, y: number, tint: number) {
 	if (set !== undefined) {
 		const patterns = att(sprites, set.type);
 
@@ -771,8 +935,15 @@ function drawSet(
 }
 
 function drawTypePattern(
-	batch: Batch, sprites: ColorExtraSets, type: number, pattern: number, palette: Palette, extraPalette: Palette | undefined,
-	x: number, y: number, tint: number
+	batch: Batch,
+	sprites: ColorExtraSets,
+	type: number,
+	pattern: number,
+	palette: Palette,
+	extraPalette: Palette | undefined,
+	x: number,
+	y: number,
+	tint: number,
 ) {
 	const patterns = att(sprites, type);
 

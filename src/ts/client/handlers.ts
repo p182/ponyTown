@@ -2,9 +2,28 @@ import { compact, escapeRegExp, repeat } from 'lodash';
 import { createBinaryReader, readUint8, readUint32, readUint16 } from 'ag-sockets/dist/browser';
 import { decodeString } from 'ag-sockets/dist/utf8';
 import {
-	Entity, Region, Pony, EntityState, PonyOptions, MessageType, isNonIgnorableMessage, EntityPlayerState,
-	EntityOrPonyOptions, isPublicMessage, FakeEntity, Action, WorldMap, DoAction, UpdateType, DecodedUpdate,
-	PonyData, WorldStateFlags, FriendStatusData, FriendStatusFlags, isWhisper, isWhisperTo,
+	Entity,
+	Region,
+	Pony,
+	EntityState,
+	PonyOptions,
+	MessageType,
+	isNonIgnorableMessage,
+	EntityPlayerState,
+	EntityOrPonyOptions,
+	isPublicMessage,
+	FakeEntity,
+	Action,
+	WorldMap,
+	DoAction,
+	UpdateType,
+	DecodedUpdate,
+	PonyData,
+	WorldStateFlags,
+	FriendStatusData,
+	FriendStatusFlags,
+	isWhisper,
+	isWhisperTo,
 } from '../common/interfaces';
 import { bitmask, setFlag, findById, distance, hasFlag, distanceXY, invalidEnum, removeItem } from '../common/utils';
 import { isChatVisible } from '../common/camera';
@@ -12,9 +31,15 @@ import { createRegion, worldToRegionX, worldToRegionY } from '../common/region';
 import { createAnEntity, poof, poof2 } from '../common/entities';
 import { getPonyState, setPonyState, isPonyFlying, addChatBubble, isHidden } from '../common/entityUtils';
 import {
-	isPony, createPony, setPonyExpression, updatePonyInfo, updatePonyHold, doPonyAction, hasHeadAnimation,
+	isPony,
+	createPony,
+	setPonyExpression,
+	updatePonyInfo,
+	updatePonyHold,
+	doPonyAction,
+	hasHeadAnimation,
 	setHeadAnimation,
-	doBoopPonyAction
+	doBoopPonyAction,
 } from '../common/pony';
 import { PonyTownGame } from './game';
 import { setupPlayer, savePlayerPosition } from './sec';
@@ -27,8 +52,17 @@ import { decodePonyInfo } from '../common/compressPony';
 import { mockPaletteManager } from '../common/ponyInfo';
 import { yawn, laugh, sneeze } from './ponyAnimations';
 import {
-	findEntityById, getRegionGlobal, setTile, removeEntity, addEntity, removeEntityDirectly, setRegion,
-	addEntityToMapRegion, switchEntityRegion, getRegionUnsafe, addOrRemoveFromEntityList,
+	findEntityById,
+	getRegionGlobal,
+	setTile,
+	removeEntity,
+	addEntity,
+	removeEntityDirectly,
+	setRegion,
+	addEntityToMapRegion,
+	switchEntityRegion,
+	getRegionUnsafe,
+	addOrRemoveFromEntityList,
 } from '../common/worldMap';
 import { isSelected } from './gameUtils';
 import { compareFriends } from '../components/services/model';
@@ -43,8 +77,20 @@ function log(message: string) {
 
 function handleAddEntity(game: PonyTownGame, region: Region, update: DecodedUpdate, initial: boolean) {
 	const {
-		id, type = 0, x = 0, y = 0, vx = 0, vy = 0, state = 0, playerState = 0, options = {},
-		name, filterName, info, crc = 0, action // , expression
+		id,
+		type = 0,
+		x = 0,
+		y = 0,
+		vx = 0,
+		vy = 0,
+		state = 0,
+		playerState = 0,
+		options = {},
+		name,
+		filterName,
+		info,
+		crc = 0,
+		action, // , expression
 	} = update;
 
 	const filteredName = filterEntityName(game, name, filterName);
@@ -84,8 +130,21 @@ function handleAddEntity(game: PonyTownGame, region: Region, update: DecodedUpda
 
 export function handleUpdateEntity(game: PonyTownGame, update: DecodedUpdate) {
 	const {
-		id, x, y, vx, vy, state, playerState, expression, options, switchRegion,
-		name, filterName, info, crc = 0, action
+		id,
+		x,
+		y,
+		vx,
+		vy,
+		state,
+		playerState,
+		expression,
+		options,
+		switchRegion,
+		name,
+		filterName,
+		info,
+		crc = 0,
+		action,
 	} = update;
 
 	const filteredName = filterEntityName(game, name, filterName);
@@ -178,7 +237,7 @@ export function handleUpdateEntity(game: PonyTownGame, update: DecodedUpdate) {
 
 export function handleUpdatePonies(game: PonyTownGame, ponies: PonyData[]) {
 	for (const [id, options = {}, name, info, playerState, nameBad] of ponies) {
-		const decodedName = name && decodeString(name) || undefined;
+		const decodedName = (name && decodeString(name)) || undefined;
 		const filteredName = filterEntityName(game, decodedName, nameBad);
 		const decodedInfo = info ? bitmask(info, PONY_INFO_KEY) : '';
 		const pony = createPonyEntity(game, id, options, filteredName, decodedInfo, EntityState.None);
@@ -189,13 +248,17 @@ export function handleUpdatePonies(game: PonyTownGame, ponies: PonyData[]) {
 	const missing = game.party && game.party.members.filter(p => !p.pony);
 
 	if (missing && missing.length) {
-		game.apply(() => missing.forEach(p => p.pony = game.fallbackPonies.get(p.id)));
+		game.apply(() => missing.forEach(p => (p.pony = game.fallbackPonies.get(p.id))));
 	}
 }
 
 function createPonyEntity(
-	game: PonyTownGame, id: number, options: PonyOptions, name: string | undefined, info: string | Uint8Array,
-	state: EntityState
+	game: PonyTownGame,
+	id: number,
+	options: PonyOptions,
+	name: string | undefined,
+	info: string | Uint8Array,
+	state: EntityState,
 ) {
 	if (!game.webgl) {
 		throw new Error('WebGL not initialized');
@@ -424,8 +487,7 @@ export function handleAction(game: PonyTownGame, id: number, action: Action) {
 }
 
 export function playEffect(game: PonyTownGame, target: Entity, type: number) {
-	if (isHidden(target))
-		return;
+	if (isHidden(target)) return;
 
 	try {
 		const entity = createAnEntity(type, 0, target.x, target.y, {}, game.paletteManager, game);
@@ -478,8 +540,14 @@ export function findBestEntityByName(game: PonyTownGame, name: string): Entity |
 
 	if (game.player) {
 		for (const entity of game.map.entities) {
-			if (entity.type === PONY_TYPE && entity.id !== game.playerId && !isHidden(entity) && entity.name && regex.test(entity.name)) {
-				if (!result || (distance(game.player, entity) < distance(game.player, result))) {
+			if (
+				entity.type === PONY_TYPE &&
+				entity.id !== game.playerId &&
+				!isHidden(entity) &&
+				entity.name &&
+				regex.test(entity.name)
+			) {
+				if (!result || distance(game.player, entity) < distance(game.player, result)) {
 					result = entity;
 				}
 			}
@@ -529,7 +597,12 @@ let cachedRegex: RegExp | undefined = undefined;
 export function containsFilteredWords(message: string, filter: string | undefined) {
 	if (cachedFilter !== filter) {
 		if (filter) {
-			const words = compact(filter.replace(/[,]/g, ' ').split(/[\r\n\t ]+/g).map(x => x.trim()));
+			const words = compact(
+				filter
+					.replace(/[,]/g, ' ')
+					.split(/[\r\n\t ]+/g)
+					.map(x => x.trim()),
+			);
 			cachedRegex = new RegExp(`(^| )(${words.map(escapeRegExp).join('|')})($| )`, 'i');
 		} else {
 			cachedRegex = undefined;
@@ -566,32 +639,23 @@ function isFriendEntityId(game: PonyTownGame, id: number) {
 }
 
 function shouldShowChatMessage(game: PonyTownGame, entity: Entity | FakeEntity, message: string, type: MessageType): boolean {
-	if (entity === game.player)
-		return true;
+	if (entity === game.player) return true;
 
-	if (isWhisperTo(type))
-		return true;
+	if (isWhisperTo(type)) return true;
 
-	if (isWhisper(type) && isFriendEntityId(game, entity.id))
-		return true;
+	if (isWhisper(type) && isFriendEntityId(game, entity.id)) return true;
 
-	if (isPublicMessage(type) && !entity.fake && !isChatVisible(game.camera, entity))
-		return false;
+	if (isPublicMessage(type) && !entity.fake && !isChatVisible(game.camera, entity)) return false;
 
-	if (isNonIgnorableMessage(type))
-		return true;
+	if (isNonIgnorableMessage(type)) return true;
 
-	if (game.settings.account.filterCyrillic && containsCyrillic(message))
-		return false;
+	if (game.settings.account.filterCyrillic && containsCyrillic(message)) return false;
 
-	if (game.settings.account.ignorePublicChat && isPublicMessage(type))
-		return false;
+	if (game.settings.account.ignorePublicChat && isPublicMessage(type)) return false;
 
-	if (isWhisper(type) && game.settings.account.ignoreNonFriendWhispers)
-		return false;
+	if (isWhisper(type) && game.settings.account.ignoreNonFriendWhispers) return false;
 
-	if (containsFilteredWords(message, game.settings.account.filterWords))
-		return false;
+	if (containsFilteredWords(message, game.settings.account.filterWords)) return false;
 
 	return true;
 }
@@ -601,24 +665,19 @@ function isChatInRange(entity: Entity, player: Entity | undefined, range: number
 }
 
 function shouldShowChatMessageInChatlog(game: PonyTownGame, entity: Entity | FakeEntity, type: MessageType) {
-	if (entity.type !== PONY_TYPE)
-		return false;
+	if (entity.type !== PONY_TYPE) return false;
 
-	if (entity.fake)
-		return true;
+	if (entity.fake) return true;
 
-	if (!isPublicMessage(type))
-		return true;
+	if (!isPublicMessage(type)) return true;
 
-	if (!isChatInRange(entity, game.player, game.settings.account.chatlogRange))
-		return false;
+	if (!isChatInRange(entity, game.player, game.settings.account.chatlogRange)) return false;
 
 	return true;
 }
 
 export function handleSay(game: PonyTownGame, entity: Entity | FakeEntity, message: string, type: MessageType) {
-	if (!shouldShowChatMessage(game, entity, message, type))
-		return;
+	if (!shouldShowChatMessage(game, entity, message, type)) return;
 
 	if (type === MessageType.Dismiss || message === '.') {
 		if (!entity.fake && entity.says) {
@@ -647,7 +706,7 @@ export function handleSay(game: PonyTownGame, entity: Entity | FakeEntity, messa
 export function handleEntityInfo(game: PonyTownGame, id: number, name: string, crc: number, nameBad: boolean) {
 	name = filterEntityName(game, name, nameBad)!;
 
-	for (let i = 0; i < game.incompleteSays.length;) {
+	for (let i = 0; i < game.incompleteSays.length; ) {
 		const say = game.incompleteSays[i];
 
 		if (say.id === id) {
@@ -682,8 +741,16 @@ export function filterEntityName({ settings, worldFlags }: PonyTownGame, name: s
 }
 
 function createEntityOrPony(
-	game: PonyTownGame, type: number, id: number, x: number, y: number, options: EntityOrPonyOptions,
-	crc: number, name: string | undefined, info: Uint8Array | undefined, state: EntityState
+	game: PonyTownGame,
+	type: number,
+	id: number,
+	x: number,
+	y: number,
+	options: EntityOrPonyOptions,
+	crc: number,
+	name: string | undefined,
+	info: Uint8Array | undefined,
+	state: EntityState,
 ): Entity {
 	if (type === PONY_TYPE) {
 		const entity = createPonyEntity(game, id, options, name, info ? bitmask(info, PONY_INFO_KEY) : '', state);
@@ -691,7 +758,7 @@ function createEntityOrPony(
 		entity.crc = crc;
 
 		if (member) {
-			game.apply(() => member.pony = entity);
+			game.apply(() => (member.pony = entity));
 		}
 
 		if (isSelected(game, id)) {
@@ -721,8 +788,7 @@ function updateEntityOptionsInternal(entity: Entity, options: Partial<EntityOrPo
 }
 
 export function handleUpdateFriends(game: PonyTownGame, friends: FriendStatusData[], removeMissing: boolean) {
-	if (!game.model.friends)
-		return;
+	if (!game.model.friends) return;
 
 	for (const { accountId, accountName, status, entityId, name, info, crc, nameBad = false } of friends) {
 		let friend = game.model.friends.find(f => f.accountId === accountId);
@@ -798,5 +864,5 @@ export function handleUpdateFriends(game: PonyTownGame, friends: FriendStatusDat
 	}
 
 	game.model.friends.sort(compareFriends);
-	game.apply(() => { });
+	game.apply(() => {});
 }

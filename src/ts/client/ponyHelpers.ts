@@ -23,7 +23,8 @@ export function defaultPonyState(): PonyState {
 }
 
 export function isStateEqual(a: PonyState, b: PonyState) {
-	return a.animation === b.animation &&
+	return (
+		a.animation === b.animation &&
 		a.animationFrame === b.animationFrame &&
 		a.headAnimation === b.headAnimation &&
 		a.headAnimationFrame === b.headAnimationFrame &&
@@ -35,7 +36,8 @@ export function isStateEqual(a: PonyState, b: PonyState) {
 		a.holding === b.holding &&
 		a.expression === b.expression &&
 		a.drawFaceExtra === b.drawFaceExtra &&
-		a.flags === b.flags;
+		a.flags === b.flags
+	);
 }
 
 export function defaultDrawPonyOptions(): DrawPonyOptions {

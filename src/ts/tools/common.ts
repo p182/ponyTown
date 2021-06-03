@@ -26,12 +26,19 @@ export const TEETH_SHADE_COLOR = 0x77d9d9ff;
 
 // TEMP: remove after adding palettes for effects
 const holdPoofColors = [
-	0xffff47ff, 0xeaed58ff, 0xd8dc00ff, 0xff6741ff, 0xff0000ff, 0xff7af9ff, 0xff00ccff, 0xb67affff,
-	0x9876ffff, 0x76a6ffff, 0x0097ffff, 0x00ff9bff, 0x76ed5cff, 0x28dc00ff, 0x76ed5cff,
+	0xffff47ff, 0xeaed58ff, 0xd8dc00ff, 0xff6741ff, 0xff0000ff, 0xff7af9ff, 0xff00ccff, 0xb67affff, 0x9876ffff, 0x76a6ffff,
+	0x0097ffff, 0x00ff9bff, 0x76ed5cff, 0x28dc00ff, 0x76ed5cff,
 ];
 
 export const defaultPalette = [
-	TRANSPARENT, WHITE, BLACK, MOUTH_COLOR, TONGUE_COLOR, LIGHT_SHADE_COLOR, TEAR_COLOR, DARK_GRAY,
+	TRANSPARENT,
+	WHITE,
+	BLACK,
+	MOUTH_COLOR,
+	TONGUE_COLOR,
+	LIGHT_SHADE_COLOR,
+	TEAR_COLOR,
+	DARK_GRAY,
 	...holdPoofColors,
 ];
 
@@ -44,12 +51,16 @@ export function cartesian(...args: any[]) {
 export function mkdir(dirpath: string) {
 	try {
 		fs.mkdirSync(dirpath);
-	} catch { }
+	} catch {}
 }
 
 const isDirectory = (dir: string) => fs.lstatSync(dir).isDirectory();
 
-export const getDirectories = (dir: string) => fs.readdirSync(dir).map(name => path.join(dir, name)).filter(isDirectory);
+export const getDirectories = (dir: string) =>
+	fs
+		.readdirSync(dir)
+		.map(name => path.join(dir, name))
+		.filter(isDirectory);
 
 function findLayerByPath([name, ...child]: string[], layer: Layer | Psd | undefined): Layer | undefined {
 	return name ? findLayerByPath(child, layer && findByName(layer.children, name)) : layer;
@@ -77,7 +88,7 @@ export function findByIndex<T extends { index?: number }>(items: T[], index: num
 	return items.find(i => i.index === index);
 }
 
-export const nameMatches = (regex: RegExp) => (l: { name: string; }) => regex.test(l.name);
+export const nameMatches = (regex: RegExp) => (l: { name: string }) => regex.test(l.name);
 
 export function compareNames(a: { name: string }, b: { name: string }) {
 	return a.name.localeCompare(b.name);
@@ -88,7 +99,7 @@ export const time = (function () {
 	let last = start;
 
 	return function (text: string) {
-		console.log(text, (Date.now() - last), 'ms');
+		console.log(text, Date.now() - last, 'ms');
 		last = Date.now();
 		return true;
 	};
@@ -98,15 +109,16 @@ export function spawnAsync(command: string, args?: string[]) {
 	return new Promise<void>((resolve, reject) => {
 		spawn(command, args)
 			.on('error', (err: Error) => reject(err))
-			.on('exit', (code: number) => code === 0 ? resolve() : reject(new Error(`Non-zero return code for ${command} (${code})`)));
+			.on('exit', (code: number) =>
+				code === 0 ? resolve() : reject(new Error(`Non-zero return code for ${command} (${code})`)),
+			);
 	});
 }
 
 // canvas
 
 export function getCanvas(layer: Layer | undefined): ExtCanvas | undefined {
-	if (!layer)
-		return undefined;
+	if (!layer) return undefined;
 
 	const canvas = layer.canvas;
 
@@ -143,7 +155,7 @@ export function parseWithNumber(name: string) {
 export const matcher = (regex: RegExp) => (text: string) => regex.test(text);
 
 const isArrayEmpty = <T>(a: T[] | null) => !a || a.length === 0;
-const nullForEmpty = <T>(a: T[] | null) => isArrayEmpty(a) ? null : a;
+const nullForEmpty = <T>(a: T[] | null) => (isArrayEmpty(a) ? null : a);
 
 export function trimRight<T>(items: ((T | null)[] | null)[]): ((T | null)[] | null)[] {
 	return dropRightWhile(items.map(nullForEmpty) as any, isArrayEmpty as any) as any;
@@ -171,7 +183,11 @@ const maxSpriteWidth = 500;
 const maxSpriteHeight = 500;
 
 export function addSprite(
-	sprites: Sprite[], canvas?: ExtCanvas, pattern?: ExtCanvas, palette?: number[], out: ColorsOutput = {}
+	sprites: Sprite[],
+	canvas?: ExtCanvas,
+	pattern?: ExtCanvas,
+	palette?: number[],
+	out: ColorsOutput = {},
 ): number {
 	if (canvas) {
 		const rect = getSpriteRect(canvas, 0, 0, canvas.width, canvas.height);
@@ -191,7 +207,10 @@ export function addSprite(
 }
 
 export function addSpriteWithColors(
-	sprites: Sprite[], colorImage?: ExtCanvas, patternImage?: ExtCanvas, forceWhite?: boolean
+	sprites: Sprite[],
+	colorImage?: ExtCanvas,
+	patternImage?: ExtCanvas,
+	forceWhite?: boolean,
 ): ColorExtra {
 	const out: ColorsOutput = { forceWhite };
 	const color = addSprite(sprites, colorImage, patternImage, undefined, out);

@@ -7,26 +7,202 @@ const prefix = (items: string[], fix: string) => items.map(x => fix + x);
 const suffix = (items: string[], fix: string) => items.map(x => x + fix);
 
 export const THREE_LETTER_WORDS = [
-	'ace', 'act', 'ama', 'amp', 'amo', 'amu', 'amy', 'ana', 'ane', 'and', 'ant', 'any', 'ape', 'app', 'apo',
-	'apt', 'ava', 'ave', 'avo', 'awe', 'awn', 'awp', 'axe',
-	'boa', 'bob', 'bod', 'bog', 'bon', 'boo', 'bop', 'bot', 'boy', 'bub', 'bud', 'bug', 'bup', 'but', 'bun', 'buy',
-	'dad', 'doe', 'dog', 'dot', 'doy', 'dna', 'dub', 'dud', 'due', 'dun', 'dug', 'duo', 'dup', 'dva', 'dvd',
-	'eco', 'ecu', 'eme', 'emu', 'emo', 'eon', 'end', 'eng', 'eva', 'eve', 'exe', 'exp',
-	'gnu', 'goa', 'god', 'gog', 'gon', 'goo', 'got', 'gud', 'gut', 'gun', 'guv', 'guy',
-	'nnn', 'nog', 'non', 'noo', 'nop', 'not', 'nun', 'nut', 'nub',
-	'oca', 'omo', 'one', 'ooo', 'oot', 'ope', 'opt', 'oud', 'out', 'ova', 'owe', 'own', 'oxo', 'oxe', 'omg',
-	'pay', 'pnp', 'pod', 'pon', 'poo', 'pop', 'pot', 'pov', 'ppp', 'pub', 'pud', 'pug', 'pup', 'pun', 'put', 'pvp',
-	'qqq', 'que', 'qua',
-	'tnt', 'ton', 'top', 'tod', 'toe', 'tog', 'too', 'toy', 'tub', 'tug', 'tun', 'twa', 'two',
-	'uuu', 'una', 'und', 'uno', 'ump', 'upo', 'uva',
-	'voe', 'voy', 'vpn', 'vug', 'vvv',
-	'yay', 'yob', 'yod', 'yon', 'you', 'yup',
+	'ace',
+	'act',
+	'ama',
+	'amp',
+	'amo',
+	'amu',
+	'amy',
+	'ana',
+	'ane',
+	'and',
+	'ant',
+	'any',
+	'ape',
+	'app',
+	'apo',
+	'apt',
+	'ava',
+	'ave',
+	'avo',
+	'awe',
+	'awn',
+	'awp',
+	'axe',
+	'boa',
+	'bob',
+	'bod',
+	'bog',
+	'bon',
+	'boo',
+	'bop',
+	'bot',
+	'boy',
+	'bub',
+	'bud',
+	'bug',
+	'bup',
+	'but',
+	'bun',
+	'buy',
+	'dad',
+	'doe',
+	'dog',
+	'dot',
+	'doy',
+	'dna',
+	'dub',
+	'dud',
+	'due',
+	'dun',
+	'dug',
+	'duo',
+	'dup',
+	'dva',
+	'dvd',
+	'eco',
+	'ecu',
+	'eme',
+	'emu',
+	'emo',
+	'eon',
+	'end',
+	'eng',
+	'eva',
+	'eve',
+	'exe',
+	'exp',
+	'gnu',
+	'goa',
+	'god',
+	'gog',
+	'gon',
+	'goo',
+	'got',
+	'gud',
+	'gut',
+	'gun',
+	'guv',
+	'guy',
+	'nnn',
+	'nog',
+	'non',
+	'noo',
+	'nop',
+	'not',
+	'nun',
+	'nut',
+	'nub',
+	'oca',
+	'omo',
+	'one',
+	'ooo',
+	'oot',
+	'ope',
+	'opt',
+	'oud',
+	'out',
+	'ova',
+	'owe',
+	'own',
+	'oxo',
+	'oxe',
+	'omg',
+	'pay',
+	'pnp',
+	'pod',
+	'pon',
+	'poo',
+	'pop',
+	'pot',
+	'pov',
+	'ppp',
+	'pub',
+	'pud',
+	'pug',
+	'pup',
+	'pun',
+	'put',
+	'pvp',
+	'qqq',
+	'que',
+	'qua',
+	'tnt',
+	'ton',
+	'top',
+	'tod',
+	'toe',
+	'tog',
+	'too',
+	'toy',
+	'tub',
+	'tug',
+	'tun',
+	'twa',
+	'two',
+	'uuu',
+	'una',
+	'und',
+	'uno',
+	'ump',
+	'upo',
+	'uva',
+	'voe',
+	'voy',
+	'vpn',
+	'vug',
+	'vvv',
+	'yay',
+	'yob',
+	'yod',
+	'yon',
+	'you',
+	'yup',
 ];
 
 export const TWO_LETTER_WORDS = [
-	'ox', 'ex', 'by', 'my', 'up', 'of', 'if', 'me', 'ow', 'am', 'we', 'uh', 'um', 'be', 'em', 'bi', 'oh',
-	'go', 'eh', 'ah', 'ye', 'ya', 'he', 'hi', 'ho', 'ha', 'yo', 'us', 'on', 'id', 'an', 'do', 'no',
-	'as', 'at', 'it', 'is', 'or', 'so', 'to', 'pc',
+	'ox',
+	'ex',
+	'by',
+	'my',
+	'up',
+	'of',
+	'if',
+	'me',
+	'ow',
+	'am',
+	'we',
+	'uh',
+	'um',
+	'be',
+	'em',
+	'bi',
+	'oh',
+	'go',
+	'eh',
+	'ah',
+	'ye',
+	'ya',
+	'he',
+	'hi',
+	'ho',
+	'ha',
+	'yo',
+	'us',
+	'on',
+	'id',
+	'an',
+	'do',
+	'no',
+	'as',
+	'at',
+	'it',
+	'is',
+	'or',
+	'so',
+	'to',
+	'pc',
 ];
 
 const threeLetterWords = new RegExp(`^(${THREE_LETTER_WORDS.join('|')})$`);
@@ -178,29 +354,31 @@ const verticalLeftRegex = new RegExp(`^${any(muzzlesLeft)}-?${tears}${any(vertic
 const horizontalRegex = new RegExp(`^${any(horizontalEyesRight)}(//)?${any(horizontalMuzzles)}(//)?${any(horizontalEyesLeft)}$`);
 
 function matchVertical(
-	text: string, regex: RegExp, flip: boolean, muzzleMap: Dict<Muzzle>, eyesMap: Dict<Eye>
+	text: string,
+	regex: RegExp,
+	flip: boolean,
+	muzzleMap: Dict<Muzzle>,
+	eyesMap: Dict<Eye>,
 ): Expression | undefined {
-	if (/^([|]{2,}|BS|8x|x8|x-?x|\d+)$/i.test(text))
-		return undefined;
+	if (/^([|]{2,}|BS|8x|x8|x-?x|\d+)$/i.test(text)) return undefined;
 
 	const match = regex.exec(text);
 
-	if (!match)
-		return undefined;
+	if (!match) return undefined;
 
 	const eyesStr = flip ? match[3] : match[1];
 	const muzzleStr = flip ? match[1] : match[3];
 	const muzzle = muzzleMap[muzzleStr];
 	const veye = eyesMap[eyesStr];
-	const eye = veye === Eye.Neutral && !/[OV]/.test(muzzleStr) ? (muzzleToEye[muzzle] || veye) : veye;
+	const eye = veye === Eye.Neutral && !/[OV]/.test(muzzleStr) ? muzzleToEye[muzzle] || veye : veye;
 	const blink = /;/.test(eyesStr);
 	const tear = blink && muzzleToEye[muzzle] === Eye.Sad;
-	const left = tear ? (/[<>]/.test(eyesStr) ? eye : Eye.Sad2) : (blink && flip ? Eye.Closed : eye);
-	const right = tear ? (/[<>]/.test(eyesStr) ? eye : Eye.Sad2) : (blink && !flip ? Eye.Closed : eye);
+	const left = tear ? (/[<>]/.test(eyesStr) ? eye : Eye.Sad2) : blink && flip ? Eye.Closed : eye;
+	const right = tear ? (/[<>]/.test(eyesStr) ? eye : Eye.Sad2) : blink && !flip ? Eye.Closed : eye;
 	const shocked = /8/.test(eyesStr);
 	const rightIris = shocked ? Iris.Shocked : Iris.Forward;
-	const leftIris = shocked ? Iris.Shocked : (/%/.test(eyesStr) ? Iris.Up : Iris.Forward);
-	const extra = (tearsRegex.test(match[2]) || tear) ? ExpressionExtra.Tears : ExpressionExtra.None;
+	const leftIris = shocked ? Iris.Shocked : /%/.test(eyesStr) ? Iris.Up : Iris.Forward;
+	const extra = tearsRegex.test(match[2]) || tear ? ExpressionExtra.Tears : ExpressionExtra.None;
 
 	return { right, left, muzzle, rightIris, leftIris, extra };
 }
@@ -211,7 +389,7 @@ function matchHorizontal(text: string): Expression | undefined {
 	}
 
 	if (/[a-zA-Z][a-z][a-z]|[A-Z]{3}/.test(text)) {
-		const clear = text.replace(/[^a-z]/ig, '').toLowerCase();
+		const clear = text.replace(/[^a-z]/gi, '').toLowerCase();
 
 		if (clear.length === 3 && threeLetterWords.test(clear)) {
 			return undefined;
@@ -219,7 +397,7 @@ function matchHorizontal(text: string): Expression | undefined {
 	}
 
 	if (/[a-z][a-z][.,*-]/i.test(text)) {
-		const clear = text.replace(/[^a-z]/ig, '').toLowerCase();
+		const clear = text.replace(/[^a-z]/gi, '').toLowerCase();
 
 		if (clear.length === 2 && twoLetterWords.test(clear)) {
 			return undefined;
@@ -246,23 +424,28 @@ function matchHorizontal(text: string): Expression | undefined {
 	const shocked = bigEyes.test(leftStr) && bigEyes.test(rightStr) && rightStr !== '0' && leftStr !== '0';
 	const lookingDown = (same && rightStr === '6') || (rightStr === 'b' && leftStr === 'd');
 	const unamused = !lookingDown && same && rightStr === '-' && /[.,_]/.test(muzzleStr);
-	const left = (lookingToSide || (leftStr === 'o' && bigEyes.test(rightStr))) ? Eye.Neutral2 : leftEye;
-	const right = (lookingToSide || (rightStr === 'o' && bigEyes.test(leftStr))) ? Eye.Neutral2 : rightEye;
+	const left = lookingToSide || (leftStr === 'o' && bigEyes.test(rightStr)) ? Eye.Neutral2 : leftEye;
+	const right = lookingToSide || (rightStr === 'o' && bigEyes.test(leftStr)) ? Eye.Neutral2 : rightEye;
 	const blush = /[/][/]/.test(muzzleStr) || (rightBlush && rightBlush === leftBlush);
 	const cry = cryingEye.test(leftStr) || cryingEye.test(rightStr);
 
 	return {
 		left: unamused ? Eye.Frown2 : left,
 		right: unamused ? Eye.Frown2 : right,
-		muzzle: same && (leftEye === Eye.ClosedHappy || leftEye === Eye.ClosedHappy2) ? (neutralToSmile[muzzle] || muzzle) : muzzle,
-		rightIris: lookingDown ? Iris.Down : (shocked ? Iris.Shocked : (horizontalIrises[rightStr] || Iris.Forward)),
-		leftIris: lookingDown ? Iris.Down : (shocked ? Iris.Shocked : (horizontalIrises[leftStr] || Iris.Forward)),
+		muzzle: same && (leftEye === Eye.ClosedHappy || leftEye === Eye.ClosedHappy2) ? neutralToSmile[muzzle] || muzzle : muzzle,
+		rightIris: lookingDown ? Iris.Down : shocked ? Iris.Shocked : horizontalIrises[rightStr] || Iris.Forward,
+		leftIris: lookingDown ? Iris.Down : shocked ? Iris.Shocked : horizontalIrises[leftStr] || Iris.Forward,
 		extra: (blush ? ExpressionExtra.Blush : ExpressionExtra.None) | (cry ? ExpressionExtra.Cry : ExpressionExtra.None),
 	};
 }
 
 export function expression(
-	right: Eye, left: Eye, muzzle: Muzzle, rightIris = Iris.Forward, leftIris = Iris.Forward, extra = ExpressionExtra.None
+	right: Eye,
+	left: Eye,
+	muzzle: Muzzle,
+	rightIris = Iris.Forward,
+	leftIris = Iris.Forward,
+	extra = ExpressionExtra.None,
 ): Expression {
 	return { right, left, muzzle, rightIris, leftIris, extra };
 }
@@ -298,7 +481,7 @@ function matchOther(text: string): Expression | undefined {
 }
 
 export function matchExpression(text: string): Expression | undefined {
-	if (/тот/ui.test(text)) {
+	if (/тот/iu.test(text)) {
 		return undefined;
 	}
 
@@ -307,10 +490,12 @@ export function matchExpression(text: string): Expression | undefined {
 		.replace(/\\/g, '/')
 		.replace(/\/{3,}/g, '//');
 
-	return matchVertical(text, verticalRightRegex, false, muzzlesRight, verticalEyesRight)
-		|| matchVertical(text, verticalLeftRegex, true, muzzlesLeft, verticalEyesLeft)
-		|| matchHorizontal(text)
-		|| matchOther(text);
+	return (
+		matchVertical(text, verticalRightRegex, false, muzzlesRight, verticalEyesRight) ||
+		matchVertical(text, verticalLeftRegex, true, muzzlesLeft, verticalEyesLeft) ||
+		matchHorizontal(text) ||
+		matchOther(text)
+	);
 }
 
 export function parseExpression(text: string): Expression | undefined {
@@ -320,25 +505,42 @@ export function parseExpression(text: string): Expression | undefined {
 }
 
 function createMap<T>(values: any[][]): Dict<T> {
-	return values.reduce((obj: Dict<T>, [exp, ...values]) => (values.forEach(v => obj[v] = exp), obj), Object.create(null));
+	return values.reduce((obj: Dict<T>, [exp, ...values]) => (values.forEach(v => (obj[v] = exp)), obj), Object.create(null));
 }
 
 const charMap = createPlainMap<string>({
-	'З': '3', 'з': '3', 'Э': '3', 'э': '3',
-	'А': 'A', 'а': 'a', 'Д': 'A', 'д': 'A',
-	'В': 'B', 'в': 'B',
-	'Г': 'L',
-	'М': 'M', 'м': 'M',
-	'О': 'O', 'о': 'o',
-	'П': 'n', 'п': 'n',
-	'Р': 'P', 'р': 'p',
-	'С': 'C', 'с': 'c',
-	'Т': 'T', 'т': 'T',
-	'Х': 'X', 'х': 'x',
-	'Ш': 'W', 'ш': 'w',
-	'Ь': 'b', 'ь': 'b',
-	'е': 'e',
-	'у': 'y', 'У': 'Y',
+	З: '3',
+	з: '3',
+	Э: '3',
+	э: '3',
+	А: 'A',
+	а: 'a',
+	Д: 'A',
+	д: 'A',
+	В: 'B',
+	в: 'B',
+	Г: 'L',
+	М: 'M',
+	м: 'M',
+	О: 'O',
+	о: 'o',
+	П: 'n',
+	п: 'n',
+	Р: 'P',
+	р: 'p',
+	С: 'C',
+	с: 'c',
+	Т: 'T',
+	т: 'T',
+	Х: 'X',
+	х: 'x',
+	Ш: 'W',
+	ш: 'w',
+	Ь: 'b',
+	ь: 'b',
+	е: 'e',
+	у: 'y',
+	У: 'Y',
 });
 
 const charRegex = new RegExp(`[${Object.keys(charMap).join('')}]`, 'g');

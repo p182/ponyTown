@@ -1,7 +1,12 @@
 import * as request from 'request-promise';
 import { noop, flatMap, uniq } from 'lodash';
 import {
-	InternalGameServerState, ServerStatus, InternalLoginApi, InternalLoginServerState, InternalApi, HidingStats
+	InternalGameServerState,
+	ServerStatus,
+	InternalLoginApi,
+	InternalLoginServerState,
+	InternalApi,
+	HidingStats,
 } from '../common/adminInterfaces';
 import { isMod } from '../common/accountUtils';
 import { findById, flatten, delay } from '../common/utils';
@@ -35,30 +40,35 @@ export const loginServers: InternalLoginServerState[] = [
 	},
 ];
 
-export const adminServer = config.adminLocal && !args.admin ? {
-	id: 'admin',
-	api: createApi<InternalAdminApi>(config.adminLocal, 'api-internal-admin', config.token),
-} : undefined;
+export const adminServer =
+	config.adminLocal && !args.admin
+		? {
+				id: 'admin',
+				api: createApi<InternalAdminApi>(config.adminLocal, 'api-internal-admin', config.token),
+		  }
+		: undefined;
 
 export const servers: InternalGameServerState[] = [];
 
 if (args.login || args.admin) {
-	servers.push(...gameServers.map(s => ({
-		id: s.id,
-		state: {
-			...s,
-			offline: true,
-			dead: true,
-			maps: 0,
-			online: 0,
-			onMain: 0,
-			queued: 0,
-			shutdown: false,
-			filter: false,
-			settings: {},
-		},
-		api: createApi<InternalApi>(s.local, 'api-internal', config.token),
-	})));
+	servers.push(
+		...gameServers.map(s => ({
+			id: s.id,
+			state: {
+				...s,
+				offline: true,
+				dead: true,
+				maps: 0,
+				online: 0,
+				onMain: 0,
+				queued: 0,
+				shutdown: false,
+				filter: false,
+				settings: {},
+			},
+			api: createApi<InternalApi>(s.local, 'api-internal', config.token),
+		})),
+	);
 }
 
 export function findServer(id: string) {
@@ -81,14 +91,17 @@ export function getServer(id: string) {
 
 export function createApi<T extends {}>(host: string, url: string, apiToken: string): T {
 	return new Proxy<T>({} as any, {
-		get: (_, key) =>
+		get:
+			(_, key) =>
 			(...args: any[]) =>
-				Promise.resolve<T>(request(`http://${host}/${url}/api`, {
-					json: true,
-					headers: { 'api-token': apiToken },
-					method: 'post',
-					body: { method: key, args },
-				})),
+				Promise.resolve<T>(
+					request(`http://${host}/${url}/api`, {
+						json: true,
+						headers: { 'api-token': apiToken },
+						method: 'post',
+						body: { method: key, args },
+					}),
+				),
 	});
 }
 
@@ -142,7 +155,9 @@ export async function accountChanged(accountId: string) {
 }
 
 export async function accountMerged(accountId: string, mergedId: string) {
-	await mapGameServers(s => { s.api.accountMerged(accountId, mergedId).catch(noop); });
+	await mapGameServers(s => {
+		s.api.accountMerged(accountId, mergedId).catch(noop);
+	});
 }
 
 export async function accountStatus(accountId: string) {
@@ -152,7 +167,9 @@ export async function accountStatus(accountId: string) {
 
 export async function accountAround(accountId: string) {
 	const users = await mapGameServers(s => s.api.accountAround(accountId).catch(() => []));
-	return flatten(users).sort((a, b) => a.distance - b.distance).slice(0, 10);
+	return flatten(users)
+		.sort((a, b) => a.distance - b.distance)
+		.slice(0, 10);
 }
 
 export async function accountHidden(accountId: string): Promise<HidingStats> {
@@ -175,8 +192,8 @@ export type RemovedDocument = ReturnType<typeof createRemovedDocument>;
 
 export const createRemovedDocument =
 	(endPoints: EndPoints | undefined, adminService: AdminService | undefined) =>
-		(model: 'events' | 'ponies' | 'accounts' | 'auths' | 'origins', id: string) => {
-			endPoints && model in endPoints && (endPoints as any)[model].removedItem(id);
-			adminService && adminService.removedItem(model, id);
-			return adminServer ? adminServer.api.removedDocument(model, id).catch(noop) : Promise.resolve();
-		};
+	(model: 'events' | 'ponies' | 'accounts' | 'auths' | 'origins', id: string) => {
+		endPoints && model in endPoints && (endPoints as any)[model].removedItem(id);
+		adminService && adminService.removedItem(model, id);
+		return adminServer ? adminServer.api.removedDocument(model, id).catch(noop) : Promise.resolve();
+	};

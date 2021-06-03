@@ -33,8 +33,18 @@ export function setMat2D(out: Matrix2D, a: number, b: number, c: number, d: numb
 }
 
 export function mulMat2D(out: Matrix2D, a: Matrix2D, b: Matrix2D) {
-	const a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
-	const b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
+	const a0 = a[0],
+		a1 = a[1],
+		a2 = a[2],
+		a3 = a[3],
+		a4 = a[4],
+		a5 = a[5];
+	const b0 = b[0],
+		b1 = b[1],
+		b2 = b[2],
+		b3 = b[3],
+		b4 = b[4],
+		b5 = b[5];
 	out[0] = a0 * b0 + a2 * b1;
 	out[1] = a1 * b0 + a3 * b1;
 	out[2] = a0 * b2 + a2 * b3;
@@ -45,7 +55,12 @@ export function mulMat2D(out: Matrix2D, a: Matrix2D, b: Matrix2D) {
 }
 
 export function translateMat2D(out: Matrix2D, a: Matrix2D, x: number, y: number) {
-	const a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+	const a0 = a[0],
+		a1 = a[1],
+		a2 = a[2],
+		a3 = a[3],
+		a4 = a[4],
+		a5 = a[5];
 	out[0] = a0;
 	out[1] = a1;
 	out[2] = a2;
@@ -56,7 +71,12 @@ export function translateMat2D(out: Matrix2D, a: Matrix2D, x: number, y: number)
 }
 
 export function rotateMat2D(out: Matrix2D, a: Matrix2D, rad: number) {
-	const a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+	const a0 = a[0],
+		a1 = a[1],
+		a2 = a[2],
+		a3 = a[3],
+		a4 = a[4],
+		a5 = a[5];
 	const s = Math.sin(rad);
 	const c = Math.cos(rad);
 	out[0] = a0 * c + a2 * s;
@@ -69,7 +89,12 @@ export function rotateMat2D(out: Matrix2D, a: Matrix2D, rad: number) {
 }
 
 export function scaleMat2D(out: Matrix2D, a: Matrix2D, x: number, y: number) {
-	const a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+	const a0 = a[0],
+		a1 = a[1],
+		a2 = a[2],
+		a3 = a[3],
+		a4 = a[4],
+		a5 = a[5];
 	out[0] = a0 * x;
 	out[1] = a1 * x;
 	out[2] = a2 * y;

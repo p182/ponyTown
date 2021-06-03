@@ -117,8 +117,17 @@ export function initWebGLResources(gl: WebGLRenderingContext, paletteManager: Pa
 	}
 
 	return {
-		gl, paletteShader, spriteShader, lightShader, spriteBatch, paletteBatch,
-		frameBuffer, frameBufferSheet, palettes, failedFBO, renderer,
+		gl,
+		paletteShader,
+		spriteShader,
+		lightShader,
+		spriteBatch,
+		paletteBatch,
+		frameBuffer,
+		frameBufferSheet,
+		palettes,
+		failedFBO,
+		renderer,
 	};
 }
 

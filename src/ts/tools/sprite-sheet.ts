@@ -20,8 +20,7 @@ function isIdenticalSprite(a: ExtSprite | undefined, b: ExtSprite | undefined): 
 }
 
 function isIdenticalData(a: ImageData, b: ImageData) {
-	if (a.width !== b.width || a.height !== b.height)
-		return false;
+	if (a.width !== b.width || a.height !== b.height) return false;
 
 	const length = (a.width * a.height * 4) | 0;
 	const adat = a.data;
@@ -37,8 +36,7 @@ function isIdenticalData(a: ImageData, b: ImageData) {
 }
 
 function isIdenticalChannel(a: Sprite | undefined, b: Sprite | undefined, channel: number) {
-	if (!a || !b || a.w !== b.w || a.h !== b.h)
-		return false;
+	if (!a || !b || a.w !== b.w || a.h !== b.h) return false;
 
 	const adata = a.image.getContext('2d')!.getImageData(a.ox, a.oy, a.w, a.h);
 	const bdata = b.image.getContext('2d')!.getImageData(b.ox, b.oy, b.w, b.h);
@@ -88,14 +86,10 @@ function trimImageData(data: ImageData): Rect {
 		return true;
 	}
 
-	while (bottom > top && isRowEmpty(bottom - 1))
-		bottom--;
-	while (right > left && isColEmpty(right - 1))
-		right--;
-	while (top < bottom && isRowEmpty(top))
-		top++;
-	while (left < right && isColEmpty(left))
-		left++;
+	while (bottom > top && isRowEmpty(bottom - 1)) bottom--;
+	while (right > left && isColEmpty(right - 1)) right--;
+	while (top < bottom && isRowEmpty(top)) top++;
+	while (left < right && isColEmpty(left)) left++;
 
 	return { y: top, x: left, w: right - left, h: bottom - top };
 }
@@ -193,9 +187,10 @@ function getFirstFreePacked(outputWidth: number, width: number, height: number, 
 
 function positionSprite(sprite: ExtSprite, outputWidth: number, taken: Taken[], pack: boolean) {
 	const layers = sprite.layers || 1;
-	const { x, y, layer } = (pack && layers === 1) ?
-		getFirstFreePacked(outputWidth, sprite.w, sprite.h, taken) :
-		getFirstFree(outputWidth, sprite.w, sprite.h, taken[0]);
+	const { x, y, layer } =
+		pack && layers === 1
+			? getFirstFreePacked(outputWidth, sprite.w, sprite.h, taken)
+			: getFirstFree(outputWidth, sprite.w, sprite.h, taken[0]);
 
 	sprite.x = x;
 	sprite.y = y;
@@ -222,23 +217,29 @@ function positionSprite(sprite: ExtSprite, outputWidth: number, taken: Taken[], 
 				const length = span.length;
 				const end = start + length;
 
-				if (start >= right) // right of span
+				if (start >= right)
+					// right of span
 					break;
 
-				if (end <= right) // left of span
+				if (end <= right)
+					// left of span
 					continue;
 
 				if (start === x) {
-					if (length === w) { // entire span
+					if (length === w) {
+						// entire span
 						spans.splice(i, 1);
-					} else { // at the start of span
+					} else {
+						// at the start of span
 						span.start += w;
 						span.length -= w;
 					}
 				} else {
-					if (end === right) { // at the end of span
+					if (end === right) {
+						// at the end of span
 						span.length -= w;
-					} else { // in the middle of span
+					} else {
+						// in the middle of span
 						span.length = x - start;
 						spans.splice(i + 1, 0, { start: right, length: end - right });
 					}
@@ -285,8 +286,7 @@ function hasShading(s: Sprite) {
 }
 
 function getSpriteImageData(s: ExtSprite): ImageData | undefined {
-	if (!s.w || !s.h)
-		return undefined;
+	if (!s.w || !s.h) return undefined;
 
 	const context = s.image.getContext('2d')!;
 	const { width, height, data } = context.getImageData(s.ox, s.oy, s.w, s.h);
@@ -308,22 +308,20 @@ export function createSpriteSheet(name: string, images: ExtSprite[], log: boolea
 		throw new Error(`Sprite too large (${tooBig.w}x${tooBig.h}) in ${name} (${size}x${size})`);
 	}
 
-	sprites
-		.forEach(s => s.data = getSpriteImageData(s));
+	sprites.forEach(s => (s.data = getSpriteImageData(s)));
 
-	sprites
-		.forEach((s, i) => {
-			if (s.w && s.h) {
-				for (let j = 0; j < i; j++) {
-					if (!s.duplicateOf && isIdenticalSprite(sprites[j], s)) {
-						s.duplicateOf = sprites[j];
-						deduplicated++;
-						//console.log('duplicate', sprite.name, '==', sprites[j].name);
-						break;
-					}
+	sprites.forEach((s, i) => {
+		if (s.w && s.h) {
+			for (let j = 0; j < i; j++) {
+				if (!s.duplicateOf && isIdenticalSprite(sprites[j], s)) {
+					s.duplicateOf = sprites[j];
+					deduplicated++;
+					//console.log('duplicate', sprite.name, '==', sprites[j].name);
+					break;
 				}
 			}
-		});
+		}
+	});
 
 	sprites
 		.filter(s => !s.duplicateOf && s.w && s.h)
@@ -358,7 +356,7 @@ export function createSpriteSheet(name: string, images: ExtSprite[], log: boolea
 			}, [] as ExtSprite[]);
 	}
 
-	sprites.sort((a, b) => ((b.layers || 1) - (a.layers || 1)) || ((b.h * 1024 + b.w) - (a.h * 1024 + a.w)));
+	sprites.sort((a, b) => (b.layers || 1) - (a.layers || 1) || b.h * 1024 + b.w - (a.h * 1024 + a.w));
 
 	maxY = 0;
 	areaTaken = 0;
@@ -385,11 +383,12 @@ export function createSpriteSheet(name: string, images: ExtSprite[], log: boolea
 	}
 
 	if (log) {
-		const efficiency = (areaTaken * 100 / outputWidth / maxY).toFixed();
+		const efficiency = ((areaTaken * 100) / outputWidth / maxY).toFixed();
 
 		console.log(
-			`[sprites] [${name}] Packed ${sprites.length} sprites into ${outputWidth} x ${maxY} sheet, `
-			+ `${efficiency}% efficiency, ${deduplicated} deduplicated, ${layered} layered`);
+			`[sprites] [${name}] Packed ${sprites.length} sprites into ${outputWidth} x ${maxY} sheet, ` +
+				`${efficiency}% efficiency, ${deduplicated} deduplicated, ${layered} layered`,
+		);
 	}
 
 	sprites
@@ -454,15 +453,22 @@ export function createSpriteSheet(name: string, images: ExtSprite[], log: boolea
 }
 
 function drawChannel(
-	src: HTMLCanvasElement, dst: ImageData, srcChannel: number, dstChannel: number,
-	sx: number, sy: number, dx: number, dy: number, w: number, h: number
+	src: HTMLCanvasElement,
+	dst: ImageData,
+	srcChannel: number,
+	dstChannel: number,
+	sx: number,
+	sy: number,
+	dx: number,
+	dy: number,
+	w: number,
+	h: number,
 ) {
 	const srcData = src.getContext('2d')!.getImageData(sx, sy, w, h);
 
 	for (let y = 0; y < h; y++) {
 		for (let x = 0; x < w; x++) {
-			dst.data[((x + dx) + (y + dy) * dst.width) * 4 + dstChannel] =
-				srcData.data[(x + y * srcData.width) * 4 + srcChannel];
+			dst.data[(x + dx + (y + dy) * dst.width) * 4 + dstChannel] = srcData.data[(x + y * srcData.width) * 4 + srcChannel];
 		}
 	}
 }

@@ -63,8 +63,8 @@ const adminServer: ServerConfig = { id: 'admin', filter: false, port: config.adm
 export const gameServers = config.servers.filter(s => !s.hidden);
 
 const allServers = [...gameServers, loginServer, adminServer];
-allServers.forEach(s => s.flags = s.flags || {});
-const serverId = args.game || (args.login ? 'login' : (args.admin ? 'admin' : allServers[0].id));
+allServers.forEach(s => (s.flags = s.flags || {}));
+const serverId = args.game || (args.login ? 'login' : args.admin ? 'admin' : allServers[0].id);
 
 export const server = allServers.find(s => s.id === serverId) || allServers[0];
 export const port = (args.port && parseInt(args.port, 10)) || server.port || config.port;

@@ -1,7 +1,17 @@
 import { model, Schema, Types, Document, Query } from 'mongoose';
 import {
-	TimestampsBase, EventBase, CharacterBase, AccountBase, AuthBase, OriginBase, OriginInfoBase, CharacterState,
-	SupporterInviteBase, FriendRequestBase, HideRequestBase, MergeHideData
+	TimestampsBase,
+	EventBase,
+	CharacterBase,
+	AccountBase,
+	AuthBase,
+	OriginBase,
+	OriginInfoBase,
+	CharacterState,
+	SupporterInviteBase,
+	FriendRequestBase,
+	HideRequestBase,
+	MergeHideData,
 } from '../common/adminInterfaces';
 import { logger } from './logger';
 import { isAdmin } from '../common/accountUtils';
@@ -16,14 +26,14 @@ export interface Doc extends Document {
 	updatedAt: Date;
 }
 
-export interface IOriginInfo extends OriginInfoBase { }
-export interface ITimestamps extends TimestampsBase { }
-export interface IAuth extends AuthBase<Types.ObjectId>, Doc { }
-export interface IOrigin extends OriginBase, Doc { }
-export interface IEvent extends EventBase<Types.ObjectId>, Doc { }
-export interface ISupporterInvite extends SupporterInviteBase<Types.ObjectId>, Doc { }
-export interface IFriendRequest extends FriendRequestBase<Types.ObjectId>, Doc { }
-export interface IHideRequest extends HideRequestBase<Types.ObjectId>, Doc { }
+export interface IOriginInfo extends OriginInfoBase {}
+export interface ITimestamps extends TimestampsBase {}
+export interface IAuth extends AuthBase<Types.ObjectId>, Doc {}
+export interface IOrigin extends OriginBase, Doc {}
+export interface IEvent extends EventBase<Types.ObjectId>, Doc {}
+export interface ISupporterInvite extends SupporterInviteBase<Types.ObjectId>, Doc {}
+export interface IFriendRequest extends FriendRequestBase<Types.ObjectId>, Doc {}
+export interface IHideRequest extends HideRequestBase<Types.ObjectId>, Doc {}
 
 export interface ICharacter extends CharacterBase<Types.ObjectId>, Doc {
 	auth?: IAuth;
@@ -61,18 +71,21 @@ const logEntry = {
 	date: Date,
 };
 
-const authSchema = new Schema({
-	account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
-	openId: String,
-	provider: String,
-	name: String,
-	url: String,
-	emails: [String],
-	disabled: Boolean,
-	banned: Boolean,
-	pledged: Number,
-	lastUsed: Date,
-}, { timestamps: true });
+const authSchema = new Schema(
+	{
+		account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
+		openId: String,
+		provider: String,
+		name: String,
+		url: String,
+		emails: [String],
+		disabled: Boolean,
+		banned: Boolean,
+		pledged: Number,
+		lastUsed: Date,
+	},
+	{ timestamps: true },
+);
 
 authSchema.index({ updatedAt: 1 });
 authSchema.index({ openId: 1, provider: 1 }, { unique: true });
@@ -83,51 +96,57 @@ const bannedMuted = {
 	ban: Number,
 };
 
-const originSchema = new Schema({
-	ip: { type: String, index: true },
-	country: String,
-	...bannedMuted,
-}, { timestamps: true });
+const originSchema = new Schema(
+	{
+		ip: { type: String, index: true },
+		country: String,
+		...bannedMuted,
+	},
+	{ timestamps: true },
+);
 
 originSchema.index({ updatedAt: 1 });
 
-const accountSchema = new Schema({
-	name: String,
-	birthdate: Date,
-	birthyear: Number,
-	// code: Number,
-	emails: { type: [String], index: true },
-	lastVisit: Date,
-	lastUserAgent: String,
-	lastBrowserId: String,
-	lastOnline: Date,
-	lastCharacter: Schema.Types.ObjectId,
-	roles: [String],
-	origins: [originInfo],
-	note: String,
-	noteUpdated: Date,
-	ignores: [String],
-	// friends: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Account' }],
-	flags: Number,
-	characterCount: { type: Number, default: 0 },
-	// NOTE: use account.markModified('settings') if changed nested field
-	settings: { type: Schema.Types.Mixed, default: () => ({}) },
-	counters: { type: Schema.Types.Mixed, default: () => ({}) },
-	patreon: Number,
-	supporter: Number,
-	supporterLog: [logEntry],
-	supporterTotal: Number,
-	supporterDeclinedSince: Date,
-	merges: [mergeInfo],
-	banLog: [logEntry],
-	mute: Number,
-	shadow: Number,
-	ban: Number,
-	// auths: [{ type: Schema.Types.ObjectId, ref: 'Auth' }],
-	state: Object,
-	alert: Object,
-	savedMap: String,
-}, { timestamps: true });
+const accountSchema = new Schema(
+	{
+		name: String,
+		birthdate: Date,
+		birthyear: Number,
+		// code: Number,
+		emails: { type: [String], index: true },
+		lastVisit: Date,
+		lastUserAgent: String,
+		lastBrowserId: String,
+		lastOnline: Date,
+		lastCharacter: Schema.Types.ObjectId,
+		roles: [String],
+		origins: [originInfo],
+		note: String,
+		noteUpdated: Date,
+		ignores: [String],
+		// friends: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Account' }],
+		flags: Number,
+		characterCount: { type: Number, default: 0 },
+		// NOTE: use account.markModified('settings') if changed nested field
+		settings: { type: Schema.Types.Mixed, default: () => ({}) },
+		counters: { type: Schema.Types.Mixed, default: () => ({}) },
+		patreon: Number,
+		supporter: Number,
+		supporterLog: [logEntry],
+		supporterTotal: Number,
+		supporterDeclinedSince: Date,
+		merges: [mergeInfo],
+		banLog: [logEntry],
+		mute: Number,
+		shadow: Number,
+		ban: Number,
+		// auths: [{ type: Schema.Types.ObjectId, ref: 'Auth' }],
+		state: Object,
+		alert: Object,
+		savedMap: String,
+	},
+	{ timestamps: true },
+);
 
 accountSchema.virtual('auths', {
 	ref: 'Auth',
@@ -143,42 +162,51 @@ accountSchema.virtual('characters', {
 
 accountSchema.index({ updatedAt: 1 });
 
-const characterSchema = new Schema({
-	account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
-	site: { type: Schema.Types.ObjectId, ref: 'Auth' },
-	name: { type: String, index: true },
-	desc: String,
-	tag: String,
-	info: String,
-	flags: { type: Number, default: 0 },
-	lastUsed: { type: Date, index: true },
-	creator: String,
-	state: Object,
-}, { timestamps: true });
+const characterSchema = new Schema(
+	{
+		account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
+		site: { type: Schema.Types.ObjectId, ref: 'Auth' },
+		name: { type: String, index: true },
+		desc: String,
+		tag: String,
+		info: String,
+		flags: { type: Number, default: 0 },
+		lastUsed: { type: Date, index: true },
+		creator: String,
+		state: Object,
+	},
+	{ timestamps: true },
+);
 
 characterSchema.index({ updatedAt: 1 });
 characterSchema.index({ createdAt: 1 });
 
-const eventSchema = new Schema({
-	account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
-	pony: Schema.Types.ObjectId,
-	type: String,
-	server: String,
-	message: String,
-	desc: String,
-	origin: originInfo,
-	count: { type: Number, default: 1 },
-}, { timestamps: true });
+const eventSchema = new Schema(
+	{
+		account: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
+		pony: Schema.Types.ObjectId,
+		type: String,
+		server: String,
+		message: String,
+		desc: String,
+		origin: originInfo,
+		count: { type: Number, default: 1 },
+	},
+	{ timestamps: true },
+);
 
 eventSchema.index({ updatedAt: 1 });
 
-const supporterInviteSchema = new Schema({
-	source: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
-	target: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
-	name: String,
-	info: String,
-	active: Boolean,
-}, { timestamps: true });
+const supporterInviteSchema = new Schema(
+	{
+		source: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
+		target: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
+		name: String,
+		info: String,
+		active: Boolean,
+	},
+	{ timestamps: true },
+);
 
 const friendRequestSchema = new Schema({
 	source: { type: Schema.Types.ObjectId, index: true, ref: 'Account' },
@@ -255,13 +283,12 @@ export type MongoQuery<T> = {
 
 export type MongoUpdate<T> = {
 	[P in keyof T]?: T[P] | MongoUpdateExprField<T[P]>;
-} & MongoUpdateExpr<T>;
+} &
+	MongoUpdateExpr<T>;
 
 export function iterate<T>(query: Query<T>, onData: (doc: T) => void) {
 	return new Promise<void>(resolve => {
-		query.cursor()
-			.on('data', onData)
-			.on('end', resolve);
+		query.cursor().on('data', onData).on('end', resolve);
 	});
 }
 
@@ -305,22 +332,17 @@ export function findCharacter(pony: ID, account: ID): Promise<ICharacter | undef
 }
 
 export function findCharacterSafe(pony: ID, accountId: ID): Promise<ICharacter> {
-	return findCharacter(pony, accountId)
-		.then(checkCharacterExists);
+	return findCharacter(pony, accountId).then(checkCharacterExists);
 }
 
 export function findCharacterById(id: string): Promise<ICharacter | undefined> {
 	return Character.findById(id).exec().then(nullToUndefined);
 }
 
-export const findAllCharacters: FindCharacters = (account, fields) =>
-	Character.find({ account }, fields).lean().exec();
+export const findAllCharacters: FindCharacters = (account, fields) => Character.find({ account }, fields).lean().exec();
 
 export function findLatestCharacters(account: ID, count: number): Promise<ICharacter[]> {
-	return Character.find({ account })
-		.sort('-lastUsed')
-		.limit(count)
-		.exec();
+	return Character.find({ account }).sort('-lastUsed').limit(count).exec();
 }
 
 export function removeCharacter(id: ID, account: ID): Promise<ICharacter | undefined> {
@@ -328,10 +350,11 @@ export function removeCharacter(id: ID, account: ID): Promise<ICharacter | undef
 }
 
 export const updateCharacterState: UpdateCharacterState = (characterId, serverName, state) =>
-	Character.updateOne({ _id: characterId }, { [`state.${serverName}`]: state }).exec().then(nullToUndefined);
+	Character.updateOne({ _id: characterId }, { [`state.${serverName}`]: state })
+		.exec()
+		.then(nullToUndefined);
 
-export const queryCharacter: QueryCharacter = (query, fields) =>
-	Character.findOne(query, fields).exec() as any;
+export const queryCharacter: QueryCharacter = (query, fields) => Character.findOne(query, fields).exec() as any;
 
 // auths
 
@@ -345,25 +368,28 @@ export const findAuthByOpenId = (openId: string, provider: string): Promise<IAut
 	Auth.findOne({ openId, provider }).exec().then(nullToUndefined);
 
 export const findAuthByEmail = (emails: string[]): Promise<IAuth | undefined> =>
-	Auth.findOne({ emails: { $in: emails } }).exec().then(nullToUndefined);
+	Auth.findOne({ emails: { $in: emails } })
+		.exec()
+		.then(nullToUndefined);
 
 export const findAuth: FindAuth = (auth, account, fields) =>
 	Auth.findOne({ _id: auth, account }, fields).exec().then(nullToUndefined);
 
-export const findAllAuths: FindAuths = (account, fields) =>
-	Auth.find({ account, fields }).exec();
+export const findAllAuths: FindAuths = (account, fields) => Auth.find({ account, fields }).exec();
 
 export const findAllVisibleAuths: FindAuths = (account, fields) =>
-	Auth.find({ account, disabled: { $ne: true }, banned: { $ne: true } }, fields).lean().exec();
+	Auth.find({ account, disabled: { $ne: true }, banned: { $ne: true } }, fields)
+		.lean()
+		.exec();
 
-export const countAllVisibleAuths: CountAuths = (account) =>
-	Auth.find({ account, disabled: { $ne: true }, banned: { $ne: true } }).countDocuments().exec();
+export const countAllVisibleAuths: CountAuths = account =>
+	Auth.find({ account, disabled: { $ne: true }, banned: { $ne: true } })
+		.countDocuments()
+		.exec();
 
-export const queryAuths: QueryAuths = (query, fields) =>
-	Auth.find(query, fields).lean().exec();
+export const queryAuths: QueryAuths = (query, fields) => Auth.find(query, fields).lean().exec();
 
-export const updateAuth: UpdateAuth = (id, update) =>
-	Auth.updateOne({ _id: id }, update).exec();
+export const updateAuth: UpdateAuth = (id, update) => Auth.updateOne({ _id: id }, update).exec();
 
 // accounts
 
@@ -377,33 +403,31 @@ export const findAccount = (account: ID, projection?: string): Promise<IAccount 
 	Account.findById(account, projection).exec().then(nullToUndefined);
 
 export function checkIfAdmin(account: ID): Promise<boolean> {
-	return Account.findOne({ _id: account }, 'roles').lean().exec()
+	return Account.findOne({ _id: account }, 'roles')
+		.lean()
+		.exec()
 		.then(a => a && isAdmin(a));
 }
 
 export function findAccountSafe(account: ID, projection?: string): Promise<IAccount> {
-	return findAccount(account, projection)
-		.then(checkAccountExists);
+	return findAccount(account, projection).then(checkAccountExists);
 }
 
-export const updateAccount: UpdateAccount = (accountId, update) =>
-	Account.updateOne({ _id: accountId }, update).exec();
+export const updateAccount: UpdateAccount = (accountId, update) => Account.updateOne({ _id: accountId }, update).exec();
 
-export const updateAccounts: UpdateAccounts = (query, update) =>
-	Account.updateMany(query, update).exec();
+export const updateAccounts: UpdateAccounts = (query, update) => Account.updateMany(query, update).exec();
 
-export const queryAccounts: QueryAccounts = (query, fields) =>
-	Account.find(query, fields).lean().exec();
+export const queryAccounts: QueryAccounts = (query, fields) => Account.find(query, fields).lean().exec();
 
-export const queryAccount: QueryAccount = (query, fields) =>
-	Account.findOne(query, fields).exec().then(nullToUndefined);
+export const queryAccount: QueryAccount = (query, fields) => Account.findOne(query, fields).exec().then(nullToUndefined);
 
 // supporter invites
 
 export type HasActiveSupporterInvites = (accountId: ID) => Promise<boolean>;
 
-export const hasActiveSupporterInvites: HasActiveSupporterInvites = (accountId) =>
-	SupporterInvite.countDocuments({ target: accountId, active: true }).exec()
+export const hasActiveSupporterInvites: HasActiveSupporterInvites = accountId =>
+	SupporterInvite.countDocuments({ target: accountId, active: true })
+		.exec()
 		.then(count => count > 0);
 
 // friend requests
@@ -411,25 +435,29 @@ export const hasActiveSupporterInvites: HasActiveSupporterInvites = (accountId) 
 export async function findFriendIds(accountId: ID) {
 	const accountIdString = accountId.toString();
 
-	const friendRequests = await FriendRequest
-		.find({ $or: [{ source: accountId }, { target: accountId }] }, 'source target')
+	const friendRequests = await FriendRequest.find({ $or: [{ source: accountId }, { target: accountId }] }, 'source target')
 		.lean()
 		.exec();
 
-	const friendIds = friendRequests
-		.map((f: any) => f.source.toString() === accountIdString ? f.target.toString() : f.source.toString());
+	const friendIds = friendRequests.map((f: any) =>
+		f.source.toString() === accountIdString ? f.target.toString() : f.source.toString(),
+	);
 
 	return friendIds;
 }
 
 export async function findFriends(accountId: ID, withCharacters: boolean): Promise<FriendData[]> {
 	const friendIds = await findFriendIds(accountId);
-	const accounts: IAccount[] = await Account.find({ _id: { $in: friendIds } }, '_id name lastOnline lastCharacter').lean().exec();
+	const accounts: IAccount[] = await Account.find({ _id: { $in: friendIds } }, '_id name lastOnline lastCharacter')
+		.lean()
+		.exec();
 	let characters: ICharacter[] = [];
 
 	if (withCharacters) {
 		const characterIds = accounts.map(a => a.lastCharacter).filter(id => id);
-		characters = await Character.find({ _id: { $in: characterIds } }, '_id name info').lean().exec();
+		characters = await Character.find({ _id: { $in: characterIds } }, '_id name info')
+			.lean()
+			.exec();
 	}
 
 	return accounts.map(a => {
@@ -461,10 +489,7 @@ export async function findHideIdsRev(accountId: ID) {
 }
 
 export async function findHidesForMerge(accountId: ID): Promise<MergeHideData[]> {
-	const hideRequests: IHideRequest[] = await HideRequest
-		.find({ source: accountId }, '_id name date')
-		.lean()
-		.exec();
+	const hideRequests: IHideRequest[] = await HideRequest.find({ source: accountId }, '_id name date').lean().exec();
 
 	return hideRequests.map(f => ({
 		id: f._id.toString(),
@@ -474,8 +499,7 @@ export async function findHidesForMerge(accountId: ID): Promise<MergeHideData[]>
 }
 
 export async function addHide(source: ID, target: ID, name: string) {
-	if (source.toString() === target.toString())
-		return;
+	if (source.toString() === target.toString()) return;
 
 	const existing = await HideRequest.findOne({ source, target }, '_id').lean().exec();
 

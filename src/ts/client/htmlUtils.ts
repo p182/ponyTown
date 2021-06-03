@@ -4,33 +4,35 @@ import { font } from './fonts';
 import { getCharacterSprite } from '../graphics/spriteFont';
 
 export function createHtmlNodes(value: string | undefined, scale: number): Node[] {
-	return value ? splitEmojis(value).map(x => {
-		const sprite = hasEmojis(x) && font && getCharacterSprite(x, font);
+	return value
+		? splitEmojis(value).map(x => {
+				const sprite = hasEmojis(x) && font && getCharacterSprite(x, font);
 
-		if (sprite) {
-			const emote = findEmoji(x);
-			const img = document.createElement('img');
-			img.className = 'pixelart';
-			img.style.display = 'inline-block';
-			img.style.visibility = 'hidden';
-			img.style.width = `${(sprite.w + sprite.ox) * scale}px`;
-			img.style.height = `${10 * scale}px`;
+				if (sprite) {
+					const emote = findEmoji(x);
+					const img = document.createElement('img');
+					img.className = 'pixelart';
+					img.style.display = 'inline-block';
+					img.style.visibility = 'hidden';
+					img.style.width = `${(sprite.w + sprite.ox) * scale}px`;
+					img.style.height = `${10 * scale}px`;
 
-			if (emote) {
-				img.setAttribute('aria-label', emote.names[0]);
-			}
+					if (emote) {
+						img.setAttribute('aria-label', emote.names[0]);
+					}
 
-			getEmojiImageAsync(sprite, src => {
-				img.alt = x;
-				img.src = src;
-				img.style.visibility = 'visible';
-			});
+					getEmojiImageAsync(sprite, src => {
+						img.alt = x;
+						img.src = src;
+						img.style.visibility = 'visible';
+					});
 
-			return img;
-		} else {
-			return document.createTextNode(x);
-		}
-	}) : [];
+					return img;
+				} else {
+					return document.createTextNode(x);
+				}
+		  })
+		: [];
 }
 
 export function textNode(text: string) {
@@ -38,7 +40,11 @@ export function textNode(text: string) {
 }
 
 export function element(
-	tag: string, className?: string, nodes?: (Node | undefined)[], attrs?: Dict<any>, events?: Dict<() => any>
+	tag: string,
+	className?: string,
+	nodes?: (Node | undefined)[],
+	attrs?: Dict<any>,
+	events?: Dict<() => any>,
 ) {
 	const element = document.createElement(tag);
 
@@ -74,7 +80,7 @@ export function appendAllNodes(element: Element, nodes: (Node | undefined)[]) {
 export function removeAllNodes(element: Element) {
 	let child: Node | null;
 
-	while (child = element.lastChild) {
+	while ((child = element.lastChild)) {
 		element.removeChild(child);
 	}
 }
@@ -82,7 +88,7 @@ export function removeAllNodes(element: Element) {
 export function removeFirstChild(element: HTMLElement) {
 	let child: Node | null;
 
-	if (child = element.firstChild) {
+	if ((child = element.firstChild)) {
 		element.removeChild(child);
 	}
 }
@@ -99,7 +105,7 @@ export function replaceNodes(element: HTMLElement, text: string) {
 	let firstChild = element.firstChild;
 
 	if (!firstChild) {
-		element.appendChild(firstChild = textNode(''));
+		element.appendChild((firstChild = textNode('')));
 	}
 
 	if (hasEmojis(text)) {

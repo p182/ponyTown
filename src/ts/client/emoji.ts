@@ -112,7 +112,10 @@ export const emojis: Emoji[] = [
 ].map(createEmoji);
 
 export const emojiMap = new Map<string, string>();
-export const emojiNames = emojis.slice().sort().map(e => `:${e.names[0]}:`);
+export const emojiNames = emojis
+	.slice()
+	.sort()
+	.map(e => `:${e.names[0]}:`);
 emojis.forEach(e => e.names.forEach(name => emojiMap.set(`:${name}:`, e.symbol)));
 
 export function findEmoji(name: string): Emoji | undefined {
@@ -120,7 +123,7 @@ export function findEmoji(name: string): Emoji | undefined {
 }
 
 export function replaceEmojis(text: string | undefined): string {
-	return (text || '').replace(/:[a-z0-9_]+:/ig, match => emojiMap.get(match) || match);
+	return (text || '').replace(/:[a-z0-9_]+:/gi, match => emojiMap.get(match) || match);
 }
 
 function createEmoji([symbol, ...names]: string[]): Emoji {
@@ -160,10 +163,10 @@ export function getEmojiImageAsync(sprite: Sprite, callback: (str: string) => vo
 		.then(callback);
 }
 
-const emojisRegex = new RegExp(`(${[
-	...emojis.map(e => e.symbol),
-	'♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓', '⛎',
-].join('|')})`, 'g');
+const emojisRegex = new RegExp(
+	`(${[...emojis.map(e => e.symbol), '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓', '⛎'].join('|')})`,
+	'g',
+);
 
 export function splitEmojis(text: string) {
 	return text.split(emojisRegex);

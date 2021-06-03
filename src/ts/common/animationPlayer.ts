@@ -89,7 +89,7 @@ export function updateAnimation(player: AnimationPlayer, delta: number) {
 			extraFrame = start + ((extraFrame - start) % middle);
 		}
 
-		if (player.phase === AnimationPhase.Ending && extraFrame > (start + middle + end)) {
+		if (player.phase === AnimationPhase.Ending && extraFrame > start + middle + end) {
 			player.currentAnimation = undefined;
 			player.dirty = true;
 
@@ -108,12 +108,18 @@ export function updateAnimation(player: AnimationPlayer, delta: number) {
 }
 
 export function drawAnimation(
-	batch: PaletteSpriteBatch, player: AnimationPlayer, x: number, y: number, color = WHITE, flip = false, maxY = 0
+	batch: PaletteSpriteBatch,
+	player: AnimationPlayer,
+	x: number,
+	y: number,
+	color = WHITE,
+	flip = false,
+	maxY = 0,
 ) {
 	const animation = player.currentAnimation;
 
 	if (animation !== undefined) {
-		const frames = (flip && animation.flipFrames) ? animation.flipFrames : animation.frames;
+		const frames = flip && animation.flipFrames ? animation.flipFrames : animation.frames;
 
 		if (player.frame < frames.length) {
 			const frame = frames[player.frame];
@@ -122,7 +128,8 @@ export function drawAnimation(
 				throw new Error('Undefined frame in sprite animation');
 			}
 
-			if (!frame) // TEMP
+			if (!frame)
+				// TEMP
 				return;
 
 			if (maxY === 0) {

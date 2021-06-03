@@ -32,7 +32,7 @@ export function fromNow(duration: number): Date {
 }
 
 export function compareDates(a?: Date, b?: Date) {
-	return a ? (b ? a.getTime() - b.getTime() : 1) : (b ? -1 : 0);
+	return a ? (b ? a.getTime() - b.getTime() : 1) : b ? -1 : 0;
 }
 
 export function maxDate(a?: Date, b?: Date) {
@@ -84,12 +84,15 @@ export function parseISODate(value: string) {
 
 export function createValidBirthDate(day: number, month: number, year: number) {
 	const date = new Date(0);
-	const currentYear = (new Date()).getFullYear();
+	const currentYear = new Date().getFullYear();
 	date.setFullYear(year, month - 1, day);
 
 	if (
-		date.getFullYear() === year && date.getMonth() === (month - 1) && date.getDate() === day &&
-		year >= (currentYear - 120) && year < currentYear
+		date.getFullYear() === year &&
+		date.getMonth() === month - 1 &&
+		date.getDate() === day &&
+		year >= currentYear - 120 &&
+		year < currentYear
 	) {
 		return date;
 	} else {
@@ -100,7 +103,7 @@ export function createValidBirthDate(day: number, month: number, year: number) {
 // color
 
 export function parseSpriteColor(str: string): number {
-	return str === '0' ? 0 : (str.length === 6 ? (((parseInt(str, 16) << 8) | 0xff) >>> 0) : (parseInt(str, 16) >>> 0));
+	return str === '0' ? 0 : str.length === 6 ? ((parseInt(str, 16) << 8) | 0xff) >>> 0 : parseInt(str, 16) >>> 0;
 }
 
 // numbers
@@ -125,7 +128,7 @@ export function computeCRC(colors: Uint32Array): number {
 		crc ^= colors[i];
 
 		for (let j = 0; j < 8; j++) {
-			crc = (crc & 1) ? ((crc >>> 1) ^ 0x82f63b78) : (crc >>> 1);
+			crc = crc & 1 ? (crc >>> 1) ^ 0x82f63b78 : crc >>> 1;
 		}
 	}
 
@@ -163,7 +166,7 @@ export function toInt(value: any): number {
 	return value | 0;
 }
 
-export function dispose<T extends { dispose(): void; }>(obj: T | undefined): undefined {
+export function dispose<T extends { dispose(): void }>(obj: T | undefined): undefined {
 	obj && obj.dispose();
 	return undefined;
 }
@@ -182,10 +185,13 @@ export function setFlag(value: number | undefined, flag: number, on: boolean): n
 	return (value! & ~flag) | (on ? flag : 0);
 }
 
-export function flagsToString(value: number, flags: { value: number; name: string; }[], none = 'None') {
-	return flags
-		.filter(flag => hasFlag(value, flag.value))
-		.map(flag => flag.name).join(' | ') || none;
+export function flagsToString(value: number, flags: { value: number; name: string }[], none = 'None') {
+	return (
+		flags
+			.filter(flag => hasFlag(value, flag.value))
+			.map(flag => flag.name)
+			.join(' | ') || none
+	);
 }
 
 // collections
@@ -321,7 +327,7 @@ export function pushUniq<T>(array: T[], item: T) {
 }
 
 export function createPlainMap<T>(values: Dict<T>): Dict<T> {
-	return Object.keys(values).reduce((obj: Dict<T>, key: string) => (obj[key] = values[key], obj), Object.create(null));
+	return Object.keys(values).reduce((obj: Dict<T>, key: string) => ((obj[key] = values[key]), obj), Object.create(null));
 }
 
 // rects / points
@@ -410,24 +416,38 @@ export function collidersIntersect(ax: number, ay: number, a: Rect, bx: number, 
 }
 
 export function boundsIntersect(
-	ax: number, ay: number, a: Rect | undefined, bx: number, by: number, b: Rect | undefined
+	ax: number,
+	ay: number,
+	a: Rect | undefined,
+	bx: number,
+	by: number,
+	b: Rect | undefined,
 ): boolean {
-	return !!(a && b && intersect(
-		ax * tileWidth + a.x, ay * tileHeight + a.y, a.w, a.h,
-		bx * tileWidth + b.x, by * tileHeight + b.y, b.w, b.h));
+	return !!(
+		a &&
+		b &&
+		intersect(ax * tileWidth + a.x, ay * tileHeight + a.y, a.w, a.h, bx * tileWidth + b.x, by * tileHeight + b.y, b.w, b.h)
+	);
 }
 
 export function intersect(
-	ax: number, ay: number, aw: number, ah: number, bx: number, by: number, bw: number, bh: number
+	ax: number,
+	ay: number,
+	aw: number,
+	ah: number,
+	bx: number,
+	by: number,
+	bw: number,
+	bh: number,
 ): boolean {
-	return ax <= (bx + bw) && (ax + aw) >= bx && ay <= (by + bh) && (ay + ah) >= by;
+	return ax <= bx + bw && ax + aw >= bx && ay <= by + bh && ay + ah >= by;
 }
 
 // requests
 
-export type RequestError = Error & { status?: number; text?: string; };
+export type RequestError = Error & { status?: number; text?: string };
 
-export function createError(status: number, data: string | { error: string; }): Error {
+export function createError(status: number, data: string | { error: string }): Error {
 	if (status > 500 && status < 600) {
 		return new Error(PROTECTION_ERROR);
 		// } else if (status === 400) {
@@ -448,19 +468,18 @@ export function delay(timeout: number) {
 }
 
 export function observableToPromise<T>(observable: Observable<T>) {
-	return observable.toPromise()
-		.catch(({ status, error }: HttpErrorResponse) => {
-			const text = error && error.text;
+	return observable.toPromise().catch(({ status, error }: HttpErrorResponse) => {
+		const text = error && error.text;
 
-			try {
-				error = JSON.parse(error);
-			} catch { }
+		try {
+			error = JSON.parse(error);
+		} catch {}
 
-			const e: RequestError = createError(status || 0, error);
-			e.status = status;
-			e.text = text;
-			throw e;
-		});
+		const e: RequestError = createError(status || 0, error);
+		e.status = status;
+		e.text = text;
+		throw e;
+	});
 }
 
 // other
@@ -477,13 +496,12 @@ function setTransformSafari(element: HTMLElement | undefined, transform: string)
 	}
 }
 
-export const setTransform = (typeof document !== 'undefined' && 'transform' in document.body.style) ?
-	setTransformDefault : setTransformSafari;
+export const setTransform =
+	typeof document !== 'undefined' && 'transform' in document.body.style ? setTransformDefault : setTransformSafari;
 
 export class ObjectCache<T> {
 	private cache: T[] = [];
-	constructor(private limit: number, private ctor: () => T) {
-	}
+	constructor(private limit: number, private ctor: () => T) {}
 	get(): T {
 		return this.cache.pop() || this.ctor();
 	}
@@ -525,15 +543,15 @@ export function isTouch(e: AnyEvent): e is TouchEvent {
 }
 
 export function getButton(e: AnyEvent): number {
-	return ('button' in e) ? (e.button || 0) : 0;
+	return 'button' in e ? e.button || 0 : 0;
 }
 
 export function getX(e: AnyEvent): number {
-	return ('touches' in e && e.touches.length > 0) ? e.touches[0].pageX : (e as any).pageX;
+	return 'touches' in e && e.touches.length > 0 ? e.touches[0].pageX : (e as any).pageX;
 }
 
 export function getY(e: AnyEvent): number {
-	return ('touches' in e && e.touches.length > 0) ? e.touches[0].pageY : (e as any).pageY;
+	return 'touches' in e && e.touches.length > 0 ? e.touches[0].pageY : (e as any).pageY;
 }
 
 export function isKeyEventInvalid(e: KeyboardEvent) {

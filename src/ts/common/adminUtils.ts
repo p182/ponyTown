@@ -3,8 +3,19 @@ import { escape, escapeRegExp, startsWith, range, uniq, compact } from 'lodash';
 import { fromNow, toInt, hasFlag, compareDates, removeItem, includes } from './utils';
 import { DAY } from './constants';
 import {
-	Account, OriginInfo, Document, OriginRef, SupporterFlags, BannedMuted, AccountBase, LogEntry,
-	DuplicateResult, DuplicateBase, Duplicate, Auth, MergeInfo
+	Account,
+	OriginInfo,
+	Document,
+	OriginRef,
+	SupporterFlags,
+	BannedMuted,
+	AccountBase,
+	LogEntry,
+	DuplicateResult,
+	DuplicateBase,
+	Duplicate,
+	Auth,
+	MergeInfo,
 } from './adminInterfaces';
 import { hasRole } from './accountUtils';
 import { filterBadWordsPartial } from './swears';
@@ -19,7 +30,7 @@ export const compareUpdatedAt = (a: UpdatedAt, b: UpdatedAt) => compareDates(a.u
 export const compareOrigins = (a: OriginInfo, b: OriginInfo) => a.ip.localeCompare(b.ip);
 export const compareOriginRefs = (a: OriginRef, b: OriginRef) =>
 	compareDates(b.last, a.last) || compareOrigins(a.origin, b.origin);
-export const compareByName = <T extends { name: string; }>(a: T, b: T) => (a.name || '').localeCompare(b.name || '');
+export const compareByName = <T extends { name: string }>(a: T, b: T) => (a.name || '').localeCompare(b.name || '');
 export const getId = (item: Document) => item._id;
 export const tagBad = (s: string) => `<span class='bad'>${s}</span>`;
 
@@ -104,7 +115,8 @@ function formatChatLine(l: string): HTMLElement {
 	// 00:00:01 [merged][dev][main][Autumn Leafs][ignored] hello world
 
 	/* tslint:disable:max-line-length */
-	const regex = /^([0-9:]+) (\[(?:merged|\d+|\d+:merged|[a-z0-9]{24})\])?\[([a-z0-9_-]+)\](?:\[([a-z0-9_-]+)\])?((?:\[.*?\])?)(?:\[(muted|ignored|ignorepub)\])?\t(.*)$/;
+	const regex =
+		/^([0-9:]+) (\[(?:merged|\d+|\d+:merged|[a-z0-9]{24})\])?\[([a-z0-9_-]+)\](?:\[([a-z0-9_-]+)\])?((?:\[.*?\])?)(?:\[(muted|ignored|ignorepub)\])?\t(.*)$/;
 	const m = regex.exec(l);
 
 	if (m) {
@@ -147,11 +159,7 @@ if (typeof window !== 'undefined') {
 }
 
 export function formatChat(chat: string): HTMLElement[] {
-	return (chat || '<no messages>')
-		.trim()
-		.split(/\r?\n/g)
-		.reverse()
-		.map(formatChatLine);
+	return (chat || '<no messages>').trim().split(/\r?\n/g).reverse().map(formatChatLine);
 }
 
 export interface ChatDate {
@@ -208,20 +216,13 @@ export function createFilter(search: string): (account: Account) => boolean {
 	}
 
 	function filter(account: Account): boolean {
-		if (account._id === search)
-			return true;
-		if (test(account.name))
-			return true;
-		if (test(account.note))
-			return true;
-		if (account.roles && account.roles.some(test))
-			return true;
-		if (account.emails && account.emails.some(test))
-			return true;
-		if (account.auths && account.auths.some(testAuth))
-			return true;
-		if (account.merges && account.merges.some(testMerge))
-			return true;
+		if (account._id === search) return true;
+		if (test(account.name)) return true;
+		if (test(account.note)) return true;
+		if (account.roles && account.roles.some(test)) return true;
+		if (account.emails && account.emails.some(test)) return true;
+		if (account.auths && account.auths.some(testAuth)) return true;
+		if (account.merges && account.merges.some(testMerge)) return true;
 
 		return false;
 	}
@@ -241,34 +242,37 @@ export function createFilter(search: string): (account: Account) => boolean {
 	const exactMatch = (phrase: string) => (account: Account) => account.nameLower === phrase;
 	const isOld = (max: number) => (account: Account) => !account.lastVisit || account.lastVisit.getTime() < max;
 
-	return prefixWithRegex('name:', regex => account => regex.test(account.name))
-		|| prefixWithRegex('note:', regex => account => regex.test(account.note))
-		|| prefixWithRegex('email:', regex => account => !!account.emails && account.emails.some(e => regex.test(e)))
-		|| prefixWith('role:', role => account => hasRole(account, role))
-		|| prefixWith('exact:', phrase => exactMatch(phrase.toLowerCase()))
-		|| prefixWith('disabled!', () => account => !!account.auths && account.auths.some(a => !!a.disabled))
-		|| prefixWith('locked!', () => account => !!account.auths && account.auths.some(a => !!a.banned))
-		|| prefixWithNumber('ignores:', count => account => (account.ignoresCount || 0) >= count)
-		|| prefixWithNumber('ponies:', count => account => account.characterCount >= count)
-		|| prefixWithNumber('auths:', count => account => !!account.auths && account.auths.length >= count)
-		|| prefixWithNumber('old:', days => isOld(fromNow(-days * DAY).getTime()))
-		|| prefixWithNumber('spam:', count => account => !!account.counters && account.counters.spam! >= count)
-		|| prefixWithNumber('swearing:', count => account => !!account.counters && account.counters.swears! >= count)
-		|| prefixWithNumber('timeouts:', count => account => !!account.counters && account.counters.timeouts! >= count)
-		|| prefixWithNumber('limits:', count => account => !!account.counters && account.counters.inviteLimit! >= count)
-		|| filter;
+	return (
+		prefixWithRegex('name:', regex => account => regex.test(account.name)) ||
+		prefixWithRegex('note:', regex => account => regex.test(account.note)) ||
+		prefixWithRegex('email:', regex => account => !!account.emails && account.emails.some(e => regex.test(e))) ||
+		prefixWith('role:', role => account => hasRole(account, role)) ||
+		prefixWith('exact:', phrase => exactMatch(phrase.toLowerCase())) ||
+		prefixWith('disabled!', () => account => !!account.auths && account.auths.some(a => !!a.disabled)) ||
+		prefixWith('locked!', () => account => !!account.auths && account.auths.some(a => !!a.banned)) ||
+		prefixWithNumber('ignores:', count => account => (account.ignoresCount || 0) >= count) ||
+		prefixWithNumber('ponies:', count => account => account.characterCount >= count) ||
+		prefixWithNumber('auths:', count => account => !!account.auths && account.auths.length >= count) ||
+		prefixWithNumber('old:', days => isOld(fromNow(-days * DAY).getTime())) ||
+		prefixWithNumber('spam:', count => account => !!account.counters && account.counters.spam! >= count) ||
+		prefixWithNumber('swearing:', count => account => !!account.counters && account.counters.swears! >= count) ||
+		prefixWithNumber('timeouts:', count => account => !!account.counters && account.counters.timeouts! >= count) ||
+		prefixWithNumber('limits:', count => account => !!account.counters && account.counters.inviteLimit! >= count) ||
+		filter
+	);
 }
 
 function hasAnyBan(account: Account) {
 	return isBanned(account) || isMuted(account) || isShadowed(account);
 }
 
-export function createPotentialDuplicatesFilter(getAccountsByBrowserId: (id: string) => Account[] | undefined): (account: Account) => boolean {
+export function createPotentialDuplicatesFilter(
+	getAccountsByBrowserId: (id: string) => Account[] | undefined,
+): (account: Account) => boolean {
 	return i => {
 		const name = i.nameLower;
 
-		if (name === 'anonymous' || !i.lastBrowserId)
-			return false;
+		if (name === 'anonymous' || !i.lastBrowserId) return false;
 
 		const accounts = getAccountsByBrowserId(i.lastBrowserId);
 
@@ -316,18 +320,12 @@ export function getPotentialDuplicates(account: Account, getAccountsByBrowserId:
 // duplicates
 
 export function compareDuplicates(a: DuplicateBase, b: DuplicateBase): number {
-	if (a.note !== b.note)
-		return b.note - a.note;
-	if (a.emails !== b.emails)
-		return b.emails - a.emails;
-	if (a.name !== b.name)
-		return b.name - a.name;
-	if (a.browserId !== b.browserId)
-		return a.browserId ? -1 : 1;
-	if (a.origins !== b.origins)
-		return b.origins - a.origins;
-	if (a.ponies !== b.ponies)
-		return (b.ponies ? b.ponies.length : 0) - (a.ponies ? a.ponies.length : 0);
+	if (a.note !== b.note) return b.note - a.note;
+	if (a.emails !== b.emails) return b.emails - a.emails;
+	if (a.name !== b.name) return b.name - a.name;
+	if (a.browserId !== b.browserId) return a.browserId ? -1 : 1;
+	if (a.origins !== b.origins) return b.origins - a.origins;
+	if (a.ponies !== b.ponies) return (b.ponies ? b.ponies.length : 0) - (a.ponies ? a.ponies.length : 0);
 	return b.lastVisit.getTime() - a.lastVisit.getTime();
 }
 
@@ -349,16 +347,16 @@ export function createDuplicate(account: Account, base: Account): Duplicate {
 	const indenticalEmail = account.emails && base.emails && account.emails.some(e => base.emails!.indexOf(e) !== -1);
 
 	const isMatch = createEmailMatcher(base.emails || []);
-	const duplicateEmails = isMatch && account.emails
-		&& account.emails.reduce((sum, e) => sum + (isMatch(e) ? 1 : 0), 0);
+	const duplicateEmails = isMatch && account.emails && account.emails.reduce((sum, e) => sum + (isMatch(e) ? 1 : 0), 0);
 
-	const duplicateOrigins = base.originsRefs && account.originsRefs
-		&& account.originsRefs.reduce((sum, o) => sum + (base.originsRefs!.some(r => o.origin.ip === r.origin.ip) ? 1 : 0), 0);
+	const duplicateOrigins =
+		base.originsRefs &&
+		account.originsRefs &&
+		account.originsRefs.reduce((sum, o) => sum + (base.originsRefs!.some(r => o.origin.ip === r.origin.ip) ? 1 : 0), 0);
 
 	const name = account.nameLower !== 'anonymous' && account.nameLower === base.nameLower;
 
-	const note = (account.note && account.note.indexOf(base._id) !== -1)
-		|| (base.note && base.note.indexOf(account._id) !== -1);
+	const note = (account.note && account.note.indexOf(base._id) !== -1) || (base.note && base.note.indexOf(account._id) !== -1);
 
 	const browserId = !!account.lastBrowserId && account.lastBrowserId === base.lastBrowserId;
 	const birthdate = !!(base.birthdate && account.birthdate && base.birthdate.getTime() === account.birthdate.getTime());
@@ -418,11 +416,13 @@ export function supporterLevel(account: AccountBase<any>) {
 
 export function isPastSupporter(account: AccountBase<any>) {
 	const flags = account.supporter!;
-	return (hasFlag(flags, SupporterFlags.PastSupporter) || hasFlag(flags, SupporterFlags.ForcePastSupporter)) &&
-		!hasFlag(flags, SupporterFlags.IgnorePastSupporter);
+	return (
+		(hasFlag(flags, SupporterFlags.PastSupporter) || hasFlag(flags, SupporterFlags.ForcePastSupporter)) &&
+		!hasFlag(flags, SupporterFlags.IgnorePastSupporter)
+	);
 }
 
-const fieldToAction: { [key: string]: string | undefined; } = {
+const fieldToAction: { [key: string]: string | undefined } = {
 	mute: 'Muted',
 	shadow: 'Shadowed',
 	ban: 'Banned',
@@ -486,11 +486,11 @@ export interface SupporterChange {
 export function createSupporterChanges(entries: LogEntry[]): SupporterChange[] {
 	const changes = entries.map(l => ({
 		message: l.message,
-		level: +((/\d+/.exec(l.message) || ['0'])[0]),
+		level: +(/\d+/.exec(l.message) || ['0'])[0],
 		added: /added/i.test(l.message),
 		date: new Date(l.date),
-		icon: /added/i.test(l.message) ? faPlusCircle : (/decline/i.test(l.message) ? faClock : faMinusCircle),
-		class: /added/i.test(l.message) ? 'text-success' : (/decline/i.test(l.message) ? 'text-warning' : 'text-danger'),
+		icon: /added/i.test(l.message) ? faPlusCircle : /decline/i.test(l.message) ? faClock : faMinusCircle,
+		class: /added/i.test(l.message) ? 'text-success' : /decline/i.test(l.message) ? 'text-warning' : 'text-danger',
 	}));
 
 	for (let i = 1; i < changes.length; i++) {
@@ -542,9 +542,7 @@ export function removeFromMap<T>(map: Map<string, T[]>, key: string, item: T) {
 }
 
 export function parsePonies(ponies: string, filterIds?: string[]) {
-	return compact(ponies
-		.split(/\n\r?/g)
-		.map(x => /\[system\] removed pony \[([a-f0-9]{24})\] "(.+)" (\S+)/.exec(x)))
+	return compact(ponies.split(/\n\r?/g).map(x => /\[system\] removed pony \[([a-f0-9]{24})\] "(.+)" (\S+)/.exec(x)))
 		.map(([_, id, name, info]) => ({ id, name, info }))
 		.filter(({ id }) => !filterIds || includes(filterIds, id));
 }

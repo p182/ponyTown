@@ -122,22 +122,22 @@ export function createDirectionSign(x: number, y: number, config: SignConfig) {
 	const downs = config.r ? entities.directionSignDownsLeft : entities.directionSignDownsRight;
 
 	if (config.n) {
-		options.sign.n = config.n.map(x => x ? x.icon : -1);
+		options.sign.n = config.n.map(x => (x ? x.icon : -1));
 		parse(config.n, '↑', ups.slice(skip), 0);
 	}
 
 	if (config.w) {
-		options.sign.w = config.w.map(x => x ? x.icon : -1);
+		options.sign.w = config.w.map(x => (x ? x.icon : -1));
 		parse(config.w, '←', entities.directionSignLefts.slice(skip), -10);
 	}
 
 	if (config.e) {
-		options.sign.e = config.e.map(x => x ? x.icon : -1);
+		options.sign.e = config.e.map(x => (x ? x.icon : -1));
 		parse(config.e, '→', entities.directionSignRights.slice(skip), 10);
 	}
 
 	if (config.s) {
-		options.sign.s = config.s.map(x => x ? x.icon : -1);
+		options.sign.s = config.s.map(x => (x ? x.icon : -1));
 		parse(config.s, '↓', downs.slice(skip), 0);
 	}
 
@@ -149,41 +149,45 @@ export function createDirectionSign(x: number, y: number, config: SignConfig) {
 }
 
 const patchTypes = [
-	entities.cloverPatch3, entities.cloverPatch4, entities.cloverPatch5, entities.cloverPatch6, entities.cloverPatch7
+	entities.cloverPatch3,
+	entities.cloverPatch4,
+	entities.cloverPatch5,
+	entities.cloverPatch6,
+	entities.cloverPatch7,
 ].map(x => x.type);
 
 const eggBasketTypes = entities.eggBaskets.map(b => b.type);
 
 export function pickCandy(client: IClient) {
 	let count = 0;
-	updateAccountState(client.account, state => state.candies = count = toInt(state.candies) + 1);
+	updateAccountState(client.account, state => (state.candies = count = toInt(state.candies) + 1));
 	saySystem(client, `${count} 🍬`);
 }
 
 export function pickGift(client: IClient) {
 	let count = 0;
-	updateAccountState(client.account, state => state.gifts = count = toInt(state.gifts) + 1);
+	updateAccountState(client.account, state => (state.gifts = count = toInt(state.gifts) + 1));
 	saySystem(client, `${count} 🎁`);
 	holdItem(client.pony, entities.gift2.type);
 }
 
 export function pickClover(client: IClient) {
 	let count = 0;
-	updateAccountState(client.account, state => state.clovers = count = toInt(state.clovers) + 1);
+	updateAccountState(client.account, state => (state.clovers = count = toInt(state.clovers) + 1));
 	saySystem(client, `${count} 🍀`);
 	holdItem(client.pony, entities.cloverPick.type);
 }
 
 export function pickEgg(client: IClient) {
 	let count = 0;
-	updateAccountState(client.account, state => state.eggs = count = toInt(state.eggs) + 1);
+	updateAccountState(client.account, state => (state.eggs = count = toInt(state.eggs) + 1));
 	saySystem(client, `${count} 🥚`);
 
 	if (Math.random() < 0.05) {
 		const options = client.pony.options as PonyOptions;
 		const basketIndex = eggBasketTypes.indexOf(options.hold || 0);
 
-		if (basketIndex >= 0 && basketIndex < (eggBasketTypes.length - 1)) {
+		if (basketIndex >= 0 && basketIndex < eggBasketTypes.length - 1) {
 			holdItem(client.pony, eggBasketTypes[basketIndex + 1]);
 		}
 	}
@@ -217,7 +221,8 @@ export function checkBasket(client: IClient) {
 
 export function checkNotCollecting(client: IClient) {
 	const options = client.pony.options as PonyOptions;
-	const canPick = includes(eggBasketTypes, options.hold) ||
+	const canPick =
+		includes(eggBasketTypes, options.hold) ||
 		options.hold === entities.jackoLanternOn.type ||
 		options.hold === entities.jackoLanternOff.type;
 	return !canPick;
@@ -247,8 +252,7 @@ export function createBunny(waypoints: Point[]) {
 	let sleepUntil = 0;
 
 	entity.serverUpdate = (_delta, now) => {
-		if (sleepUntil > now)
-			return;
+		if (sleepUntil > now) return;
 
 		const { x, y } = waypoints[waypoint];
 		const reachedX = Math.abs(entity.x - x) < 0.2;
@@ -276,8 +280,8 @@ export function createBunny(waypoints: Point[]) {
 				sleepUntil = now + random(0.2, 2, true);
 			}
 		} else {
-			const vx = reachedX ? 0 : (x < entity.x ? -bunnySpeed : bunnySpeed);
-			const vy = reachedY ? 0 : (y < entity.y ? -bunnySpeed : bunnySpeed);
+			const vx = reachedX ? 0 : x < entity.x ? -bunnySpeed : bunnySpeed;
+			const vy = reachedY ? 0 : y < entity.y ? -bunnySpeed : bunnySpeed;
 
 			if (entity.vx !== vx || entity.vy !== vy) {
 				updateEntityVelocity(entity, vx, vy, now);

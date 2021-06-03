@@ -1,11 +1,4 @@
-import {
-	faCrown,
-	faPlug,
-	faGamepad,
-	faMobile,
-	faTablet,
-	faTv,
-} from '../generated/fa-icons';
+import { faCrown, faPlug, faGamepad, faMobile, faTablet, faTv } from '../generated/fa-icons';
 
 export {
 	faHashtag,
@@ -142,13 +135,7 @@ import {
 	faYandexInternational,
 } from '../generated/fa-icons';
 
-export {
-	faPatreon,
-	faDeviantart,
-	faTwitter,
-	faTumblr,
-	faGithub,
-} from '../generated/fa-icons';
+export { faPatreon, faDeviantart, faTwitter, faTumblr, faGithub } from '../generated/fa-icons';
 
 export const partyLeaderIcon = faCrown;
 export const offlineIcon = faPlug;
@@ -158,7 +145,7 @@ export const emptyIcon = {
 	icon: [512, 512, [], 'ffff', ''],
 };
 
-export const oauthIcons: { [key: string]: any; } = {
+export const oauthIcons: { [key: string]: any } = {
 	patreon: faPatreon,
 	deviantart: faDeviantart,
 	twitter: faTwitter,
@@ -169,41 +156,41 @@ export const oauthIcons: { [key: string]: any; } = {
 	google: faGoogle,
 };
 
-export const uaIcons: { [key: string]: any; } = {
+export const uaIcons: { [key: string]: any } = {
 	// browser
-	'Chrome': faChrome,
-	'Chromium': faChrome,
-	'IE': faInternetExplorer,
-	'Edge': faEdge,
+	Chrome: faChrome,
+	Chromium: faChrome,
+	IE: faInternetExplorer,
+	Edge: faEdge,
 	'Android Browser': faAndroid,
-	'Firefox': faFirefox,
-	'Safari': faSafari,
+	Firefox: faFirefox,
+	Safari: faSafari,
 	'Mobile Safari': faSafari,
-	'Opera': faOpera,
+	Opera: faOpera,
 	'Opera Mini': faOpera,
-	'Amigo': faAmilia,
-	'YaBrowser': faYandexInternational,
+	Amigo: faAmilia,
+	YaBrowser: faYandexInternational,
 	// os
-	'Windows': faWindows,
+	Windows: faWindows,
 	'Windows Phone': faWindows,
-	'Android': faAndroid,
-	'iOS': faApple,
+	Android: faAndroid,
+	iOS: faApple,
 	'Mac OS': faApple,
-	'Arch': faLinux,
-	'CentOS': faLinux,
-	'Fedora': faLinux,
-	'FreeBSD': faLinux,
-	'OpenBSD': faLinux,
-	'Debian': faLinux,
-	'Ubuntu': faLinux,
-	'Linux': faLinux,
+	Arch: faLinux,
+	CentOS: faLinux,
+	Fedora: faLinux,
+	FreeBSD: faLinux,
+	OpenBSD: faLinux,
+	Debian: faLinux,
+	Ubuntu: faLinux,
+	Linux: faLinux,
 	'Chromium OS': faChrome,
 	'Firefox OS': faFirefox,
-	'Playstation': faGamepad,
-	'Nintendo': faGamepad,
+	Playstation: faGamepad,
+	Nintendo: faGamepad,
 	// device
-	'console': faGamepad,
-	'mobile': faMobile,
-	'tablet': faTablet,
-	'smarttv': faTv,
+	console: faGamepad,
+	mobile: faMobile,
+	tablet: faTablet,
+	smarttv: faTv,
 };

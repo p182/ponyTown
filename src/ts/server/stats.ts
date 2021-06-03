@@ -41,7 +41,7 @@ function encodeCSV(values: any[]) {
 }
 
 function getDate() {
-	return (new Date()).getDate();
+	return new Date().getDate();
 }
 
 function getAverage({ bytes, mbytes }: ByteSize, count: number): string {
@@ -77,40 +77,40 @@ export class StatsTracker {
 	private dailyRequestSize = new ByteSize();
 	private dailySwearing = 0;
 	private dailySpamming = 0;
-	constructor(private statsPath: string) {
-	}
+	constructor(private statsPath: string) {}
 	logRequest = (req: Request, result: any, url?: string) => {
 		if (result && !/^\/api-internal/.test(req.baseUrl)) {
-			this.logStat(
-				url || (req.baseUrl + req.path), typeof result === 'string' ? result.length : JSON.stringify(result).length);
+			this.logStat(url || req.baseUrl + req.path, typeof result === 'string' ? result.length : JSON.stringify(result).length);
 		}
-	}
+	};
 	logSwearing = () => {
 		this.dailySwearing++;
-	}
+	};
 	logSpamming = () => {
 		this.dailySpamming++;
-	}
+	};
 	logRecvStats = (packet: Packet) => {
 		this.logSocketStats(this.recvStats, packet);
-	}
+	};
 	logSendStats = (packet: Packet) => {
 		this.logSocketStats(this.sendStats, packet);
-	}
+	};
 	private logSocketStats(stats: (SocketStats | undefined)[], { id, name, binary, json }: Packet) {
-		const entry = stats[id] || (stats[id] = {
-			id,
-			name,
-			countStr: 0,
-			countBin: 0,
-			size: new ByteSize(),
-			lastHourCountStr: 0,
-			lastHourCountBin: 0,
-			lastHourTotal: '0',
-			lastHourAverage: '0',
-			lastHourOrder: '0',
-			lastHourSize: new ByteSize(),
-		});
+		const entry =
+			stats[id] ||
+			(stats[id] = {
+				id,
+				name,
+				countStr: 0,
+				countBin: 0,
+				size: new ByteSize(),
+				lastHourCountStr: 0,
+				lastHourCountBin: 0,
+				lastHourTotal: '0',
+				lastHourAverage: '0',
+				lastHourOrder: '0',
+				lastHourSize: new ByteSize(),
+			});
 
 		if (!!binary) {
 			entry.countBin++;
@@ -118,7 +118,7 @@ export class StatsTracker {
 			entry.countStr++;
 		}
 
-		entry.size.addBytes(binary ? (binary.length || binary.byteLength) : (json ? json.length : 0));
+		entry.size.addBytes(binary ? binary.length || binary.byteLength : json ? json.length : 0);
 	}
 	getStats(): RequestStats[] {
 		const result: RequestStats[] = [];
@@ -148,10 +148,9 @@ export class StatsTracker {
 	}
 	getSocketStats(): ServerStats {
 		return {
-			actions: [
-				...this.createActionsStats('recv', this.recvStats),
-				...this.createActionsStats('send', this.sendStats),
-			].sort((a, b) => b.order.localeCompare(a.order)),
+			actions: [...this.createActionsStats('recv', this.recvStats), ...this.createActionsStats('send', this.sendStats)].sort(
+				(a, b) => b.order.localeCompare(a.order),
+			),
 		};
 	}
 	private logStat(path: string, bytes: number) {
@@ -182,9 +181,7 @@ export class StatsTracker {
 			this.dailySpamming.toString(),
 		];
 
-		fs.appendFileAsync(statsPath, encodeCSV(statsEntry), { encoding: 'utf8' })
-			.catch(console.error)
-			.done();
+		fs.appendFileAsync(statsPath, encodeCSV(statsEntry), { encoding: 'utf8' }).catch(console.error).done();
 	}
 	startStatTracking() {
 		if (!fs.existsSync(this.statsPath)) {

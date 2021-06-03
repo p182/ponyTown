@@ -75,7 +75,7 @@ function isPonyColliding<T extends Region | undefined>(x: number, y: number, map
 }
 
 function isColliding(x: number, y: number, mask: number, map: IMap<Region | undefined>) {
-	if (x < 0 || x >= (map.width * tileWidth) || y < 0 || y >= (map.height * tileHeight)) {
+	if (x < 0 || x >= map.width * tileWidth || y < 0 || y >= map.height * tileHeight) {
 		return true;
 	} else {
 		const regionX = (x / REGION_WIDTH) | 0;
@@ -85,8 +85,8 @@ function isColliding(x: number, y: number, mask: number, map: IMap<Region | unde
 		if (region === undefined) {
 			return true;
 		} else {
-			const insideX = (x % REGION_WIDTH) | 0;
-			const insideY = (y % REGION_HEIGHT) | 0;
+			const insideX = x % REGION_WIDTH | 0;
+			const insideY = y % REGION_HEIGHT | 0;
 			return (region.collider[insideX + insideY * REGION_WIDTH] & mask) !== 0;
 		}
 	}
@@ -95,7 +95,7 @@ function isColliding(x: number, y: number, mask: number, map: IMap<Region | unde
 export function updatePosition(entity: Entity, delta: number, map: IMap<Region | undefined>) {
 	const ex = entity.x;
 	const ey = entity.y;
-	const speed = (!isFlying(entity) && isInWaterAt(map, ex, ey)) ? 0.5 : 1.0;
+	const speed = !isFlying(entity) && isInWaterAt(map, ex, ey) ? 0.5 : 1.0;
 	const destX = ex + entity.vx * speed * delta;
 	const destY = ey + entity.vy * speed * delta;
 
@@ -146,9 +146,12 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 	const b = srcY - a * srcX;
 	const useGt = srcY < dstY;
 
-	let stepXT = 0 | 0, stepYT = 0 | 0;
-	let stepXF = 0 | 0, stepYF = 0 | 0;
-	let ox = 0, oy = 0;
+	let stepXT = 0 | 0,
+		stepYT = 0 | 0;
+	let stepXF = 0 | 0,
+		stepYF = 0 | 0;
+	let ox = 0,
+		oy = 0;
 
 	const shiftRight = srcX <= dstX;
 	const shiftLeft = srcX >= dstX;
@@ -193,7 +196,7 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 		let tx = 0 | 0;
 		let ty = 0 | 0;
 
-		if (useGt ? (fx > fy) : (fx < fy)) {
+		if (useGt ? fx > fy : fx < fy) {
 			tx = (tx + stepXT) | 0;
 			ty = (ty + stepYT) | 0;
 		} else {
@@ -219,7 +222,8 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 				let canShiftDown = false;
 
 				if (
-					shiftUp && (canShiftUp = !isColliding(actualX, actualY - 1, mask, map)) &&
+					shiftUp &&
+					(canShiftUp = !isColliding(actualX, actualY - 1, mask, map)) &&
 					!isColliding(actualNX, actualY - 1, mask, map)
 				) {
 					actualNX = actualX;
@@ -227,7 +231,8 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 					dstY -= 1;
 					collides = false;
 				} else if (
-					shiftDown && (canShiftDown = !isColliding(actualX, actualY + 1, mask, map)) &&
+					shiftDown &&
+					(canShiftDown = !isColliding(actualX, actualY + 1, mask, map)) &&
 					!isColliding(actualNX, actualY + 1, mask, map)
 				) {
 					actualNX = actualX;
@@ -252,7 +257,8 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 				let canShiftRight = false;
 
 				if (
-					shiftLeft && (canShiftLeft = !isColliding(actualX - 1, actualY, mask, map)) &&
+					shiftLeft &&
+					(canShiftLeft = !isColliding(actualX - 1, actualY, mask, map)) &&
 					!isColliding(actualX - 1, actualNY, mask, map)
 				) {
 					actualNX -= 1;
@@ -260,7 +266,8 @@ export function updatePosition(entity: Entity, delta: number, map: IMap<Region |
 					dstX -= 1;
 					collides = false;
 				} else if (
-					shiftRight && (canShiftRight = !isColliding(actualX + 1, actualY, mask, map)) &&
+					shiftRight &&
+					(canShiftRight = !isColliding(actualX + 1, actualY, mask, map)) &&
 					!isColliding(actualX + 1, actualNY, mask, map)
 				) {
 					actualNX += 1;

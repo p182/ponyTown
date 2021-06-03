@@ -47,7 +47,7 @@ function createDefaultCharacterState(map: ServerMap): CharacterState {
 }
 
 export function getCharacterState(character: ICharacter, serverId: string, map: ServerMap): CharacterState {
-	return character.state && character.state[serverId] || createDefaultCharacterState(map);
+	return (character.state && character.state[serverId]) || createDefaultCharacterState(map);
 }
 
 export async function updateCharacterState(characterId: string, serverId: string, state: CharacterState) {
@@ -55,7 +55,10 @@ export async function updateCharacterState(characterId: string, serverId: string
 }
 
 export function getAndFixCharacterState(
-	server: ServerConfig, character: ICharacter, world: World, states: CounterService<CharacterState>
+	server: ServerConfig,
+	character: ICharacter,
+	world: World,
+	states: CounterService<CharacterState>,
 ): CharacterState {
 	const map = world.getMainMap();
 	const savedState = last(states.get(character._id.toString()).items) || getCharacterState(character, server.id, map);
@@ -178,10 +181,9 @@ export function logRemovedCharacter({ _id, account, name, info }: ICharacter) {
 }
 
 export async function swapCharacter(client: IClient, { server }: World, query: MongoQuery<ICharacter>) {
-	if (client.isSwitchingMap)
-		return;
+	if (client.isSwitchingMap) return;
 
-	if ((Date.now() - client.lastSwap) < SWAP_TIMEOUT) {
+	if (Date.now() - client.lastSwap < SWAP_TIMEOUT) {
 		return;
 	}
 
@@ -196,11 +198,9 @@ export async function swapCharacter(client: IClient, { server }: World, query: M
 	}
 
 	const state = createCharacterState(client.pony, client.map);
-	updateCharacterState(client.characterId, server.id, state)
-		.catch(logger.error);
+	updateCharacterState(client.characterId, server.id, state).catch(logger.error);
 
-	Character.updateOne({ _id: character._id }, { lastUsed: new Date() }).exec()
-		.catch(logger.error);
+	Character.updateOne({ _id: character._id }, { lastUsed: new Date() }).exec().catch(logger.error);
 
 	updateClientCharacter(client, character);
 	updatePony(client.pony, client.account, client.character);
@@ -209,7 +209,8 @@ export async function swapCharacter(client: IClient, { server }: World, query: M
 	options.expr = encodeExpression(undefined);
 	client.pony.state &= ~EntityState.Magic;
 	pushUpdateEntity({
-		entity: client.pony, options: { hold: 0, toy: 0, ...options },
+		entity: client.pony,
+		options: { hold: 0, toy: 0, ...options },
 		flags: UpdateFlags.Info | UpdateFlags.Name | UpdateFlags.Options | UpdateFlags.State,
 	});
 

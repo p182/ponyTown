@@ -33,7 +33,7 @@ export const logger = console({
 			info: format(green),
 			warn: format(yellow),
 			error: format(red),
-		}
+		},
 	],
 } as any);
 
@@ -81,7 +81,12 @@ export function logPerformance(message: string) {
 }
 
 export function chat(
-	server: ServerConfig, client: IClient, text: string, type: ChatType, ignored: boolean, target: IClient | undefined
+	server: ServerConfig,
+	client: IClient,
+	text: string,
+	type: ChatType,
+	ignored: boolean,
+	target: IClient | undefined,
 ) {
 	let prefix = getChatPrefix(type);
 	let mod = '';
@@ -99,7 +104,10 @@ export function chat(
 	}
 
 	const message = formatMessage(
-		client.accountId, `[${server.id}][${client.map.id || 'main'}][${client.characterName}]${mod}`, `${prefix}${text}`);
+		client.accountId,
+		`[${server.id}][${client.map.id || 'main'}][${client.characterName}]${mod}`,
+		`${prefix}${text}`,
+	);
 
 	log(message);
 }

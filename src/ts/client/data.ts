@@ -4,7 +4,7 @@ import { OAuthProvider } from '../common/interfaces';
 
 /* istanbul ignore next */
 function attr(name: string): string | undefined {
-	return typeof document !== 'undefined' ? (document.body.getAttribute(name) || undefined) : undefined;
+	return typeof document !== 'undefined' ? document.body.getAttribute(name) || undefined : undefined;
 }
 
 /* istanbul ignore next */
@@ -30,8 +30,9 @@ export const contactEmail = attr('data-email');
 export const copyrightName = attr('data-copyright');
 
 /* istanbul ignore next */
-export const oauthProviders = json<OAuthProvider[]>('oauth-providers', '[]')
-	.map(a => <OAuthProvider>{ ...a, url: `/auth/${a.id}` });
+export const oauthProviders = json<OAuthProvider[]>('oauth-providers', '[]').map(
+	a => <OAuthProvider>{ ...a, url: `/auth/${a.id}` },
+);
 /* istanbul ignore next */
 export const signUpProviders = oauthProviders.filter(i => !i.connectOnly);
 /* istanbul ignore next */

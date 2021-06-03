@@ -33,12 +33,15 @@ export function getLastPatreonData() {
 export function createPatreonClient(accessToken: string): (path: string) => Promise<PatronData> {
 	const timeoutLimit = 10 * SECOND;
 	const client = patreon(accessToken);
-	client.setStore({ sync() { } });
+	client.setStore({ sync() {} });
 
-	return (path: string) => Promise.race([
-		delay(timeoutLimit).then(() => { throw new Error('Patreon request timed out'); }),
-		client(path),
-	]);
+	return (path: string) =>
+		Promise.race([
+			delay(timeoutLimit).then(() => {
+				throw new Error('Patreon request timed out');
+			}),
+			client(path),
+		]);
 }
 
 export async function fetchPatreonData(client: (path: string) => Promise<PatronData>, log: LogMessage): Promise<PatreonData> {
@@ -80,42 +83,46 @@ export async function fetchPatreonData(client: (path: string) => Promise<PatronD
 
 	log(`fetched patreon data (pages: ${pages}, pledges: ${pledges.length}, rewards: ${rewards.length})`);
 
-	return lastPatreonData = { pledges, rewards };
+	return (lastPatreonData = { pledges, rewards });
 }
 
 export const createUpdatePatreonInfo =
 	(
-		queryAuths: QueryAuths, queryAccounts: QueryAccounts, removeOldSupporters: RemoveOldSupporters,
-		updateSupporters: UpdateSupporters, updateTotalPledged: AddTotalPledged
+		queryAuths: QueryAuths,
+		queryAccounts: QueryAccounts,
+		removeOldSupporters: RemoveOldSupporters,
+		updateSupporters: UpdateSupporters,
+		updateTotalPledged: AddTotalPledged,
 	) =>
-		async ({ pledges }: PatreonData, now: Date) => {
-			const ids = pledges.map(p => p.user);
-			const query = {
-				provider: 'patreon',
-				openId: { $in: ids },
-				account: { $exists: true },
-				banned: { $ne: true },
-				disabled: { $ne: true },
-			};
-
-			const patreonAuths = await queryAuths(query, '_id account openId pledged');
-			const accountsWithPatreon = await queryAccounts({ patreon: { $exists: true, $ne: 0 } }, '_id patreon supporterDeclinedSince');
-			// removes support from accounts without any non-banned patreon auth
-			await removeOldSupporters(patreonAuths, accountsWithPatreon);
-			await updateSupporters(patreonAuths, accountsWithPatreon, pledges, now);
-			await updateTotalPledged(patreonAuths, pledges);
+	async ({ pledges }: PatreonData, now: Date) => {
+		const ids = pledges.map(p => p.user);
+		const query = {
+			provider: 'patreon',
+			openId: { $in: ids },
+			account: { $exists: true },
+			banned: { $ne: true },
+			disabled: { $ne: true },
 		};
 
+		const patreonAuths = await queryAuths(query, '_id account openId pledged');
+		const accountsWithPatreon = await queryAccounts({ patreon: { $exists: true, $ne: 0 } }, '_id patreon supporterDeclinedSince');
+		// removes support from accounts without any non-banned patreon auth
+		await removeOldSupporters(patreonAuths, accountsWithPatreon);
+		await updateSupporters(patreonAuths, accountsWithPatreon, pledges, now);
+		await updateTotalPledged(patreonAuths, pledges);
+	};
+
 export const createRemoveOldSupporters =
-	(updateAccounts: UpdateAccounts, log: LogAccountMessage) =>
-		async (auths: IAuth[], accounts: IAccount[]) => {
-			const clear = accounts
-				.filter(account => auths.every(auth => !auth.account || !account._id.equals(auth.account)))
-				.map(account => account._id);
+	(updateAccounts: UpdateAccounts, log: LogAccountMessage) => async (auths: IAuth[], accounts: IAccount[]) => {
+		const clear = accounts
+			.filter(account => auths.every(auth => !auth.account || !account._id.equals(auth.account)))
+			.map(account => account._id);
 
-			clear.forEach(id => log(`${id}`, `removed supporter`));
+		clear.forEach(id => log(`${id}`, `removed supporter`));
 
-			await updateAccounts({ _id: { $in: clear } }, {
+		await updateAccounts(
+			{ _id: { $in: clear } },
+			{
 				$unset: { patreon: 1, supporterDeclinedSince: 1 },
 				$push: {
 					supporterLog: {
@@ -123,115 +130,124 @@ export const createRemoveOldSupporters =
 						$slice: -supporterLogLimit,
 					},
 				},
-			});
+			},
+		);
 
-			await updateAccounts(
-				{ supporterDeclinedSince: { $exists: true, $lt: fromNow(-2 * MONTH) } },
-				{ $unset: { supporterDeclinedSince: 1 } });
-		};
+		await updateAccounts(
+			{ supporterDeclinedSince: { $exists: true, $lt: fromNow(-2 * MONTH) } },
+			{ $unset: { supporterDeclinedSince: 1 } },
+		);
+	};
 
 export const createUpdateSupporters =
 	(updateAccount: UpdateAccount, log: LogAccountMessage) =>
-		async (auths: IAuth[], accountsWithPatreon: IAccount[], pledges: PatreonPledge[], now: Date) => {
-			const start = Date.now();
-			const pledgesMap = new Map<string, PatreonPledge>();
-			const accountsWithPatreonMap = new Map<string, IAccount>();
+	async (auths: IAuth[], accountsWithPatreon: IAccount[], pledges: PatreonPledge[], now: Date) => {
+		const start = Date.now();
+		const pledgesMap = new Map<string, PatreonPledge>();
+		const accountsWithPatreonMap = new Map<string, IAccount>();
 
-			for (const pledge of pledges) {
-				pledgesMap.set(pledge.user, pledge);
-			}
+		for (const pledge of pledges) {
+			pledgesMap.set(pledge.user, pledge);
+		}
 
-			for (const account of accountsWithPatreon) {
-				accountsWithPatreonMap.set(account._id.toString(), account);
-			}
+		for (const account of accountsWithPatreon) {
+			accountsWithPatreonMap.set(account._id.toString(), account);
+		}
 
-			const setup = auths
-				.filter(auth => auth.account)
-				.map(auth => {
-					const accountId = auth.account!.toString();
-					const pledge = auth.openId && pledgesMap.get(auth.openId);
-					const pledgeFlags = pledge && SUPPORTER_REWARD_IDS[pledge.reward] || PatreonFlags.None;
-					const declinedSince = (pledge && pledge.declinedSince) ? new Date(pledge.declinedSince) : undefined;
-					const account = accountsWithPatreonMap.get(accountId!);
-					const declined = isDeclined(declinedSince, now);
-					const patreon = declined ? PatreonFlags.None : pledgeFlags;
-					const current = account && account.patreon || 0;
-					const declinedChanged = !!account && !datesEqual(account.supporterDeclinedSince, declinedSince);
-					const hadPatreon = !!account;
+		const setup = auths
+			.filter(auth => auth.account)
+			.map(auth => {
+				const accountId = auth.account!.toString();
+				const pledge = auth.openId && pledgesMap.get(auth.openId);
+				const pledgeFlags = (pledge && SUPPORTER_REWARD_IDS[pledge.reward]) || PatreonFlags.None;
+				const declinedSince = pledge && pledge.declinedSince ? new Date(pledge.declinedSince) : undefined;
+				const account = accountsWithPatreonMap.get(accountId!);
+				const declined = isDeclined(declinedSince, now);
+				const patreon = declined ? PatreonFlags.None : pledgeFlags;
+				const current = (account && account.patreon) || 0;
+				const declinedChanged = !!account && !datesEqual(account.supporterDeclinedSince, declinedSince);
+				const hadPatreon = !!account;
 
-					return {
-						account: accountId, patreon, declinedSince, declinedChanged, declined, current, hadPatreon
-					};
-				});
+				return {
+					account: accountId,
+					patreon,
+					declinedSince,
+					declinedChanged,
+					declined,
+					current,
+					hadPatreon,
+				};
+			});
 
-			const grouped = toPairs(groupBy(setup, x => x.account))
-				.map(([account, items]) => {
-					const current = max(items.map(i => i.current))!;
-					const patreon = max(items.map(i => i.patreon))!;
+		const grouped = toPairs(groupBy(setup, x => x.account))
+			.map(([account, items]) => {
+				const current = max(items.map(i => i.current))!;
+				const patreon = max(items.map(i => i.patreon))!;
 
-					return {
-						account,
-						changed: items.some(i => !i.hadPatreon) || current !== patreon,
-						declinedChanged: items.some(i => i.declinedChanged),
-						patreon,
-						declinedSince: items.map(i => i.declinedSince).find(x => !!x),
-						declined: items.some(i => i.declined),
-						hadPatreon: items.some(i => i.hadPatreon),
-					};
-				})
-				.filter(({ changed, declinedChanged }) => changed || declinedChanged);
+				return {
+					account,
+					changed: items.some(i => !i.hadPatreon) || current !== patreon,
+					declinedChanged: items.some(i => i.declinedChanged),
+					patreon,
+					declinedSince: items.map(i => i.declinedSince).find(x => !!x),
+					declined: items.some(i => i.declined),
+					hadPatreon: items.some(i => i.hadPatreon),
+				};
+			})
+			.filter(({ changed, declinedChanged }) => changed || declinedChanged);
 
-			grouped
-				.filter(g => g.changed)
-				.map(g => ({ account: g.account, message: supporterMessage(g.patreon, g.declined, g.hadPatreon) }))
-				.filter(({ message }) => !!message)
-				.forEach(({ account, message }) => log(`${account}`, message!));
+		grouped
+			.filter(g => g.changed)
+			.map(g => ({ account: g.account, message: supporterMessage(g.patreon, g.declined, g.hadPatreon) }))
+			.filter(({ message }) => !!message)
+			.forEach(({ account, message }) => log(`${account}`, message!));
 
-			logPatreon(`update supporters (${Date.now() - start}ms) ` +
+		logPatreon(
+			`update supporters (${Date.now() - start}ms) ` +
 				`[auths: ${auths.length}, grouped: ${grouped.length}, pledges: ${pledges.length}, ` +
-				`accountsWithPatreon: ${accountsWithPatreon.length}]`);
+				`accountsWithPatreon: ${accountsWithPatreon.length}]`,
+		);
 
-			await Bluebird.map(grouped, ({ account, patreon, declinedSince, changed, declined, hadPatreon }) => {
+		await Bluebird.map(
+			grouped,
+			({ account, patreon, declinedSince, changed, declined, hadPatreon }) => {
 				const message = changed ? supporterMessage(patreon, declined, hadPatreon) : undefined;
 
 				return updateAccount(account, {
 					supporterDeclinedSince: declinedSince,
 					...(changed ? { patreon } : {}),
-					...(message ? {
-						$push: {
-							supporterLog: {
-								$each: [{ date: new Date(), message }],
-								$slice: -supporterLogLimit,
-							},
-						}
-					} : {}),
+					...(message
+						? {
+								$push: {
+									supporterLog: {
+										$each: [{ date: new Date(), message }],
+										$slice: -supporterLogLimit,
+									},
+								},
+						  }
+						: {}),
 				});
-			}, { concurrency: 4 });
-		};
+			},
+			{ concurrency: 4 },
+		);
+	};
 
 function isDeclined(declinedSince: Date | undefined, now: Date): boolean {
-	return !!declinedSince && (
-		now.getDate() > declinedDayLimit ||
-		(now.getTime() - declinedSince.getTime()) > declinedTimeLimit);
+	return !!declinedSince && (now.getDate() > declinedDayLimit || now.getTime() - declinedSince.getTime() > declinedTimeLimit);
 }
 
 function supporterMessage(patreon: PatreonFlags, declined: boolean, hadPatreon: boolean) {
-	return patreon ?
-		`added supporter (${patreon})` :
-		(hadPatreon ? `removed supporter${declined ? ' (declined)' : ''}` : undefined);
+	return patreon ? `added supporter (${patreon})` : hadPatreon ? `removed supporter${declined ? ' (declined)' : ''}` : undefined;
 }
 
 function datesEqual(a: Date | undefined, b: Date | undefined) {
 	return (!a && !b) || (a && b && a.getTime() === b.getTime());
 }
 
-export const createAddTotalPledged =
-	(updateAuth: UpdateAuth) =>
-		async (auths: IAuth[], pledges: PatreonPledge[]) => {
-			const setup = auths
-				.map(auth => ({ auth, pledge: pledges.find(p => p.user === auth.openId) }))
-				.filter(({ auth, pledge }) => pledge && pledge.total !== auth.pledged);
+export const createAddTotalPledged = (updateAuth: UpdateAuth) => async (auths: IAuth[], pledges: PatreonPledge[]) => {
+	const setup = auths
+		.map(auth => ({ auth, pledge: pledges.find(p => p.user === auth.openId) }))
+		.filter(({ auth, pledge }) => pledge && pledge.total !== auth.pledged);
 
-			await Bluebird.map(setup, ({ auth, pledge }) =>
-				updateAuth(auth._id, { pledged: pledge!.total }), { concurrency: 4 });
-		};
+	await Bluebird.map(setup, ({ auth, pledge }) => updateAuth(auth._id, { pledged: pledge!.total }), { concurrency: 4 });
+};

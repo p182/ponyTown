@@ -1,7 +1,16 @@
 import { writeFileAsync, readFileAsync, writeFileSync } from 'fs';
 import { fromByteArray } from 'base64-js';
 import {
-	TileType, MapInfo, MapState, defaultMapState, Rect, MapType, ServerFlags, EntityFlags, MapFlags, EntityState
+	TileType,
+	MapInfo,
+	MapState,
+	defaultMapState,
+	Rect,
+	MapType,
+	ServerFlags,
+	EntityFlags,
+	MapFlags,
+	EntityState,
 } from '../common/interfaces';
 import { getRegionGlobal, getTile, getRegion } from '../common/worldMap';
 import { distanceSquaredXY, containsPoint, hasFlag } from '../common/utils';
@@ -53,8 +62,13 @@ export interface MapSaveOptions {
 }
 
 export function createServerMap(
-	id: string, type: MapType, regionsX: number, regionsY: number, defaultTile = TileType.None, usage = MapUsage.Public,
-	initRegions = true
+	id: string,
+	type: MapType,
+	regionsX: number,
+	regionsY: number,
+	defaultTile = TileType.None,
+	usage = MapUsage.Public,
+	initRegions = true,
 ): ServerMap {
 	const width = regionsX * REGION_SIZE;
 	const height = regionsY * REGION_SIZE;
@@ -76,25 +90,69 @@ export function createServerMap(
 	}
 
 	return {
-		id, usage, type, flags: MapFlags.None, width, height, state, regions, regionsX, regionsY, defaultTile, spawnArea,
-		lockedTiles, spawns: new Map(), instance: undefined, lastUsed: Date.now(), controllers: [],
-		dontUpdateTilesAndColliders: false, tilesLocked: false, editableEntityLimit: 0, editingLocked: false,
+		id,
+		usage,
+		type,
+		flags: MapFlags.None,
+		width,
+		height,
+		state,
+		regions,
+		regionsX,
+		regionsY,
+		defaultTile,
+		spawnArea,
+		lockedTiles,
+		spawns: new Map(),
+		instance: undefined,
+		lastUsed: Date.now(),
+		controllers: [],
+		dontUpdateTilesAndColliders: false,
+		tilesLocked: false,
+		editableEntityLimit: 0,
+		editingLocked: false,
 	};
 }
 
 export function serverMapInstanceFromTemplate(map: ServerMap): ServerMap {
 	const {
-		id, usage, type, flags, width, height, state, regionsX, regionsY, defaultTile, spawnArea, lockedTiles,
-		editableEntityLimit
+		id,
+		usage,
+		type,
+		flags,
+		width,
+		height,
+		state,
+		regionsX,
+		regionsY,
+		defaultTile,
+		spawnArea,
+		lockedTiles,
+		editableEntityLimit,
 	} = map;
 
 	return {
-		id, usage, type, flags, width, height, state: { ...state },
+		id,
+		usage,
+		type,
+		flags,
+		width,
+		height,
+		state: { ...state },
 		regions: map.regions.map(cloneServerRegion),
-		regionsX, regionsY, defaultTile, spawnArea,
-		lockedTiles, spawns: new Map(), instance: undefined, lastUsed: Date.now(), controllers: [],
-		dontUpdateTilesAndColliders: true, tilesLocked: map.tilesLocked,
-		editableEntityLimit, editingLocked: false,
+		regionsX,
+		regionsY,
+		defaultTile,
+		spawnArea,
+		lockedTiles,
+		spawns: new Map(),
+		instance: undefined,
+		lastUsed: Date.now(),
+		controllers: [],
+		dontUpdateTilesAndColliders: true,
+		tilesLocked: map.tilesLocked,
+		editableEntityLimit,
+		editingLocked: false,
 	};
 }
 
@@ -175,7 +233,7 @@ export function serializeTiles(map: ServerMap) {
 		const tile = tilesData[i];
 		let count = 1;
 
-		while (tilesData.length > (i + 1) && tilesData[i + 1] === tile && count < 255) {
+		while (tilesData.length > i + 1 && tilesData[i + 1] === tile && count < 255) {
 			count++;
 			i++;
 		}
@@ -215,8 +273,7 @@ export function saveMap(map: ServerMap, saveOptions: MapSaveOptions): MapData {
 		for (const region of map.regions) {
 			for (const entity of region.entities) {
 				if (!hasFlag(entity.serverFlags, ServerFlags.DoNotSave) && !hasFlag(entity.flags, EntityFlags.Debug)) {
-					if (saveOptions.saveOnlyEditableEntities && !hasFlag(entity.state, EntityState.Editable))
-						continue;
+					if (saveOptions.saveOnlyEditableEntities && !hasFlag(entity.state, EntityState.Editable)) continue;
 
 					const options = entity.options && Object.keys(entity.options).length > 0 ? entity.options : undefined;
 					const name = entity.name;
@@ -259,7 +316,7 @@ export async function saveMapToFileBinaryAlt(map: ServerMap, fileName: string) {
 	buffer.writeUInt32LE(map.height, 4);
 
 	for (let y = 0, i = 8; y < map.height; y++) {
-		for (let x = 0; x < map.width; x++ , i++) {
+		for (let x = 0; x < map.width; x++, i++) {
 			buffer.writeUInt8(getTile(map, x, y), i);
 		}
 	}
@@ -284,8 +341,7 @@ export function loadMap(world: World, map: ServerMap, data: MapData, loadOptions
 		deserializeMap(map, data, loadOptions);
 	}
 
-	if (loadOptions.loadOnlyTiles)
-		return;
+	if (loadOptions.loadOnlyTiles) return;
 
 	if (loadOptions.loadEntitiesAsEditable) {
 		const entitiesToRemove: ServerEntity[] = [];
@@ -343,9 +399,9 @@ export function saveRegionCollider(region: ServerRegion) {
 
 	context.fillStyle = '#eee';
 
-	for (let y = 0, i = 0; y < REGION_SIZE; y++ , i++) {
-		for (let x = 0; x < REGION_SIZE; x++ , i++) {
-			if ((i % 2) === 0) {
+	for (let y = 0, i = 0; y < REGION_SIZE; y++, i++) {
+		for (let x = 0; x < REGION_SIZE; x++, i++) {
+			if (i % 2 === 0) {
 				context.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
 			}
 		}
@@ -370,13 +426,16 @@ function distanceSquaredToRegion(x: number, y: number, region: ServerRegion) {
 	const top = region.y * REGION_SIZE;
 	const right = left + REGION_SIZE;
 	const bottom = top + REGION_SIZE;
-	const dx = x < left ? (left - x) : (x > right ? (x - right) : 0);
-	const dy = y < left ? (top - y) : (y > bottom ? (y - bottom) : 0);
+	const dx = x < left ? left - x : x > right ? x - right : 0;
+	const dy = y < left ? top - y : y > bottom ? y - bottom : 0;
 	return dx * dx + dy * dy;
 }
 
 export function findClosestEntity(
-	map: ServerMap, originX: number, originY: number, predicate: (entity: ServerEntity) => boolean
+	map: ServerMap,
+	originX: number,
+	originY: number,
+	predicate: (entity: ServerEntity) => boolean,
 ): ServerEntity | undefined {
 	let minX = Math.floor(originX / REGION_SIZE);
 	let minY = Math.floor(originY / REGION_SIZE);
@@ -390,7 +449,7 @@ export function findClosestEntity(
 		let regionsChecked = 0;
 
 		for (let y = minY; y <= maxY; y++) {
-			for (let x = minX; x <= maxX; x = (x === maxX || y === minY || y === maxY) ? x + 1 : maxX) {
+			for (let x = minX; x <= maxX; x = x === maxX || y === minY || y === maxY ? x + 1 : maxX) {
 				if (x >= 0 && y >= 0 && x < map.regionsX && y < map.regionsY) {
 					const region = getRegion(map, x, y);
 

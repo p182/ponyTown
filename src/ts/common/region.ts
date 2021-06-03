@@ -27,7 +27,10 @@ export function createRegion(x: number, y: number, tileData?: Uint8Array): Regio
 	}
 
 	return {
-		x, y, tiles, tileIndices,
+		x,
+		y,
+		tiles,
+		tileIndices,
 		randoms,
 		// elevation,
 		entities: [],
@@ -96,7 +99,7 @@ export function generateRegionCollider<T extends Region | undefined>(region: Reg
 	regionCollider.fill(0);
 
 	for (let ty = 0, i = 0; ty < REGION_SIZE; ty++) {
-		for (let tx = 0; tx < REGION_SIZE; tx++ , i++) {
+		for (let tx = 0; tx < REGION_SIZE; tx++, i++) {
 			const type = tileTypes[i];
 
 			if (type === TileType.None) {
@@ -132,8 +135,7 @@ export function generateRegionCollider<T extends Region | undefined>(region: Reg
 		for (let rx = minX; rx <= maxX; rx++) {
 			const r = getRegion(map, rx, ry);
 
-			if (r === undefined)
-				continue;
+			if (r === undefined) continue;
 
 			for (const entity of r.colliders) {
 				const entityX = toScreenX(entity.x - baseX) | 0;
@@ -144,8 +146,10 @@ export function generateRegionCollider<T extends Region | undefined>(region: Reg
 				const ecbY = entityY + cBounds.y;
 
 				if (
-					(ecbX + pbX0) > REGION_WIDTH || (ecbY + pbY0) > REGION_HEIGHT ||
-					(ecbX + cBounds.w + pbX1) < 0 || (ecbY + cBounds.h + pbY1) < 0
+					ecbX + pbX0 > REGION_WIDTH ||
+					ecbY + pbY0 > REGION_HEIGHT ||
+					ecbX + cBounds.w + pbX1 < 0 ||
+					ecbY + cBounds.h + pbY1 < 0
 				) {
 					continue;
 				}

@@ -10,8 +10,7 @@ export interface ClientUpdate {
 }
 
 export class ClientAdminActions {
-	constructor(private model: AdminModel) {
-	}
+	constructor(private model: AdminModel) {}
 	connected() {
 		this.model.initialize(true);
 		this.model.connectedToSocket();

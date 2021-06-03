@@ -24,7 +24,7 @@ export interface TextOptions {
 	monospace?: boolean;
 }
 
-type Charset = { code: number; sprite: Sprite; }[];
+type Charset = { code: number; sprite: Sprite }[];
 type Batch = SpriteBatch | PaletteSpriteBatch;
 
 const SPACE = ' '.charCodeAt(0);
@@ -71,14 +71,30 @@ export function createSpriteFont(charset: Charset, emojiCharset: Charset, spaceW
 	const defaultChar = chars.get(DEFAULT)!;
 
 	return {
-		lineSpacing, letterSpacing, letterShiftX, letterShiftY, letterShiftWidth, letterShiftHeight,
-		letterHeight, letterHeightReal, letterWidth, chars, emoji, defaultChar,
+		lineSpacing,
+		letterSpacing,
+		letterShiftX,
+		letterShiftY,
+		letterShiftWidth,
+		letterShiftHeight,
+		letterHeight,
+		letterHeightReal,
+		letterWidth,
+		chars,
+		emoji,
+		defaultChar,
 	};
 }
 
 function drawChars(
-	batch: Batch, chars: Uint32Array, length: number, font: SpriteFont, color: number, x: number, y: number,
-	options: TextOptions
+	batch: Batch,
+	chars: Uint32Array,
+	length: number,
+	font: SpriteFont,
+	color: number,
+	x: number,
+	y: number,
+	options: TextOptions,
 ) {
 	const { lineSpacing = font.lineSpacing, monospace = false } = options;
 	x = Math.round(x) | 0;
@@ -99,15 +115,27 @@ function drawChars(
 }
 
 export function drawText(
-	batch: Batch, text: string, font: SpriteFont, color: number, x: number, y: number, options = defaultOptions
+	batch: Batch,
+	text: string,
+	font: SpriteFont,
+	color: number,
+	x: number,
+	y: number,
+	options = defaultOptions,
 ) {
 	const length = stringToCodesTemp(text);
 	drawChars(batch, codesBuffer, length, font, color, x, y, options);
 }
 
 export function drawOutlinedText(
-	batch: Batch, text: string, font: SpriteFont, color: number, outlineColor: number, x: number, y: number,
-	options = defaultOptions
+	batch: Batch,
+	text: string,
+	font: SpriteFont,
+	color: number,
+	outlineColor: number,
+	x: number,
+	y: number,
+	options = defaultOptions,
 ) {
 	const length = stringToCodesTemp(text);
 
@@ -129,8 +157,14 @@ export function drawOutlinedText(
 }
 
 export function drawTextAligned(
-	spriteBatch: Batch, text: string, font: SpriteFont, color: number, rect: Rect, halign = HAlign.Left, valign = VAlign.Top,
-	options: TextOptions = defaultOptions
+	spriteBatch: Batch,
+	text: string,
+	font: SpriteFont,
+	color: number,
+	rect: Rect,
+	halign = HAlign.Left,
+	valign = VAlign.Top,
+	options: TextOptions = defaultOptions,
 ) {
 	const length = stringToCodesTemp(text);
 	const { x, y } = alignChars(font, codesBuffer, length, rect, halign, valign);
@@ -168,7 +202,7 @@ export function lineBreak(text: string, font: SpriteFont, width: number) {
 	return lines.map(x => x.join(' ')).join('\n');
 }
 
-function measureChars(chars: Uint32Array, length: number, font: SpriteFont): { w: number; h: number; } {
+function measureChars(chars: Uint32Array, length: number, font: SpriteFont): { w: number; h: number } {
 	let maxW = 0;
 	let lines = 1;
 	let w = 0;
@@ -190,7 +224,7 @@ function measureChars(chars: Uint32Array, length: number, font: SpriteFont): { w
 
 	return {
 		w: Math.max(maxW, w),
-		h: lines * font.letterHeight + (lines - 1) * font.lineSpacing
+		h: lines * font.letterHeight + (lines - 1) * font.lineSpacing,
 	};
 }
 
@@ -219,7 +253,13 @@ function measureChar(font: SpriteFont, code: number): number {
 }
 
 function drawChar(
-	batch: Batch, font: SpriteFont, code: number, color: number, x: number, y: number, options: TextOptions
+	batch: Batch,
+	font: SpriteFont,
+	code: number,
+	color: number,
+	x: number,
+	y: number,
+	options: TextOptions,
 ): number {
 	const emote = font.emoji.get(code);
 	const px = x + font.letterShiftX;
@@ -260,11 +300,11 @@ function alignChars(font: SpriteFont, chars: Uint32Array, length: number, rect: 
 		const size = measureChars(chars, length, font);
 
 		if (halign !== HAlign.Left) {
-			x += halign === HAlign.Center ? (rect.w - size.w) / 2 : (rect.w - size.w);
+			x += halign === HAlign.Center ? (rect.w - size.w) / 2 : rect.w - size.w;
 		}
 
 		if (valign !== VAlign.Top) {
-			y += valign === VAlign.Middle ? (rect.h - size.h) / 2 : (rect.h - size.h);
+			y += valign === VAlign.Middle ? (rect.h - size.h) / 2 : rect.h - size.h;
 		}
 	}
 

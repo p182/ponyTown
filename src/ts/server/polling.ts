@@ -1,7 +1,12 @@
 import * as fs from 'fs';
 import * as Bluebird from 'bluebird';
 import {
-	InternalGameServerState, BannedMuted, Settings, ServerConfig, InternalLoginServerState, SupporterFlags
+	InternalGameServerState,
+	BannedMuted,
+	Settings,
+	ServerConfig,
+	InternalLoginServerState,
+	SupporterFlags,
 } from '../common/adminInterfaces';
 import { fromNow, delay } from '../common/utils';
 import { logger, logPatreon, system, logPerformance } from './logger';
@@ -9,8 +14,12 @@ import { Auth, updateAccounts, updateAccount, queryAuths, queryAccounts, updateA
 import { getDiskSpace, getCertificateExpirationDate, getMemoryUsage } from './serverUtils';
 import { HOUR, MINUTE, DAY, SECOND, YEAR } from '../common/constants';
 import {
-	fetchPatreonData, createPatreonClient, createUpdatePatreonInfo, createRemoveOldSupporters,
-	createUpdateSupporters, createAddTotalPledged
+	fetchPatreonData,
+	createPatreonClient,
+	createUpdatePatreonInfo,
+	createRemoveOldSupporters,
+	createUpdateSupporters,
+	createAddTotalPledged,
 } from './patreon';
 import { create } from './reporter';
 import { servers, serverStatus, loginServers, RemovedDocument } from './internal';
@@ -28,15 +37,20 @@ async function updatePatreonDataInternal(server: ServerConfig, accessToken: stri
 		const updateSupporters = createUpdateSupporters(updateAccount, system);
 		const addTotalPledged = createAddTotalPledged(updateAuth);
 		const updatePatreonInfo = createUpdatePatreonInfo(
-			queryAuths, queryAccounts, removeOldSupporters, updateSupporters, addTotalPledged);
+			queryAuths,
+			queryAccounts,
+			removeOldSupporters,
+			updateSupporters,
+			addTotalPledged,
+		);
 
 		const client = createPatreonClient(accessToken);
 		const data = await fetchPatreonData(client, logPatreon);
 		await updatePatreonInfo(data, new Date());
 
-		serverStatus.lastPatreonUpdate = (new Date()).toISOString();
+		serverStatus.lastPatreonUpdate = new Date().toISOString();
 	} catch (e) {
-		const message = e.error ? (e.error.message || e.error.statusText || `${e}`) : e.message;
+		const message = e.error ? e.error.message || e.error.statusText || `${e}` : e.message;
 		const stack = (e.error ? e.error.stack : e.stack) || '';
 		create(server).danger('Patreon update failed', `${message}\n${stack}`.trim());
 		logger.error(e);
@@ -47,16 +61,19 @@ async function updatePatreonDataInternal(server: ServerConfig, accessToken: stri
 
 export async function updatePatreonData(server: ServerConfig, { patreonToken }: Settings) {
 	if (patreonToken && config.supporterLink) {
-		return updatingPatreonPromise = updatingPatreonPromise || updatePatreonDataInternal(server, patreonToken);
+		return (updatingPatreonPromise = updatingPatreonPromise || updatePatreonDataInternal(server, patreonToken));
 	}
 }
 
 async function clearOldIgnores() {
 	const start = Date.now();
-	await updateAccounts({
-		ignores: { $exists: true, $not: { $size: 0 } },
-		lastVisit: { $lt: fromNow(-YEAR) },
-	}, { ignores: [] });
+	await updateAccounts(
+		{
+			ignores: { $exists: true, $not: { $size: 0 } },
+			lastVisit: { $lt: fromNow(-YEAR) },
+		},
+		{ ignores: [] },
+	);
 	logPerformance(`[async] clearOldIgnores (${Date.now() - start}ms)`);
 }
 
@@ -84,23 +101,27 @@ async function cleanupMerges() {
 
 async function cleanupAccountAlerts() {
 	const start = Date.now();
-	await updateAccounts(
-		{ alert: { $exists: true }, 'alert.expires': { $lt: new Date() } } as any,
-		{ $unset: { alert: 1 } });
+	await updateAccounts({ alert: { $exists: true }, 'alert.expires': { $lt: new Date() } } as any, { $unset: { alert: 1 } });
 	logPerformance(`[async] cleanupAccountAlerts (${Date.now() - start}ms)`);
 }
 
 export async function updatePastSupporters() {
 	const start = Date.now();
-	const auths = await Auth.find({
-		pledged: { $exists: true, $gt: 0 },
-		disabled: { $ne: true },
-		banned: { $ne: true }
-	}, 'account').exec();
+	const auths = await Auth.find(
+		{
+			pledged: { $exists: true, $gt: 0 },
+			disabled: { $ne: true },
+			banned: { $ne: true },
+		},
+		'account',
+	).exec();
 
-	const accounts = await Account.find({
-		supporter: { $exists: true, $bitsAllSet: SupporterFlags.PastSupporter }
-	}, '_id').exec();
+	const accounts = await Account.find(
+		{
+			supporter: { $exists: true, $bitsAllSet: SupporterFlags.PastSupporter },
+		},
+		'_id',
+	).exec();
 
 	const shouldBeFlagged = new Set<string>();
 	const areFlagged = new Set<string>();
@@ -132,16 +153,15 @@ export async function updatePastSupporters() {
 	logPerformance(`[async] cleanupAccountAlerts (${Date.now() - start}ms)`);
 }
 
-const cleanupStrayAuths = (removedDocument: RemovedDocument) =>
-	async () => {
-		const start = Date.now();
-		const date = fromNow(-1 * DAY);
-		const query = { account: { $exists: false }, updatedAt: { $lt: date }, createdAt: { $lt: date } };
-		const items = await queryAuths(query, '_id');
-		await Auth.deleteMany(query).exec();
-		await Bluebird.map(items, item => removedDocument('auths', item._id.toString()), { concurrency: 4 });
-		logPerformance(`[async] cleanupAccountAlerts (${Date.now() - start}ms)`);
-	};
+const cleanupStrayAuths = (removedDocument: RemovedDocument) => async () => {
+	const start = Date.now();
+	const date = fromNow(-1 * DAY);
+	const query = { account: { $exists: false }, updatedAt: { $lt: date }, createdAt: { $lt: date } };
+	const items = await queryAuths(query, '_id');
+	await Auth.deleteMany(query).exec();
+	await Bluebird.map(items, item => removedDocument('auths', item._id.toString()), { concurrency: 4 });
+	logPerformance(`[async] cleanupAccountAlerts (${Date.now() - start}ms)`);
+};
 
 async function updateServerState(server: InternalGameServerState | InternalLoginServerState) {
 	try {
@@ -152,17 +172,17 @@ async function updateServerState(server: InternalGameServerState | InternalLogin
 	}
 }
 
-let lastVisitedTodayCheck = (new Date()).getDate();
+let lastVisitedTodayCheck = new Date().getDate();
 
 async function countUsersVisitedToday() {
 	const start = Date.now();
-	const day = (new Date()).getDate();
+	const day = new Date().getDate();
 
 	if (lastVisitedTodayCheck !== day) {
 		lastVisitedTodayCheck = day;
 		const statsFile = paths.pathTo('settings', `user-counts.log`);
 		const count = await Account.countDocuments({ lastVisit: { $gt: fromNow(-1 * DAY) } }).exec();
-		const json = JSON.stringify({ count, date: (new Date()).toISOString() });
+		const json = JSON.stringify({ count, date: new Date().toISOString() });
 		await fs.appendFileAsync(statsFile, `${json}\n`, 'utf8');
 		logPerformance(`[async] countUsersVisitedToday (${Date.now() - start}ms)`);
 	}
@@ -204,12 +224,11 @@ export function pollPatreon(server: ServerConfig, settings: Settings) {
 	return poll(() => updatePatreonData(server, settings), 10 * MINUTE);
 }
 
-export const pollDiskSpace = () => pollImmediate(() =>
-	getDiskSpace().then(value => serverStatus.diskSpace = value), HOUR);
-export const pollMemoryUsage = () => pollImmediate(() =>
-	getMemoryUsage().then(value => serverStatus.memoryUsage = value), 10 * MINUTE);
-export const pollCertificateExpirationDate = () => pollImmediate(() =>
-	getCertificateExpirationDate().then(value => serverStatus.certificateExpiration = value), HOUR);
+export const pollDiskSpace = () => pollImmediate(() => getDiskSpace().then(value => (serverStatus.diskSpace = value)), HOUR);
+export const pollMemoryUsage = () =>
+	pollImmediate(() => getMemoryUsage().then(value => (serverStatus.memoryUsage = value)), 10 * MINUTE);
+export const pollCertificateExpirationDate = () =>
+	pollImmediate(() => getCertificateExpirationDate().then(value => (serverStatus.certificateExpiration = value)), HOUR);
 
 export const startBansCleanup = () => poll(cleanupBans, DAY + 10 * MINUTE);
 export const startMergesCleanup = () => poll(cleanupMerges, DAY + 15 * MINUTE);

@@ -1,12 +1,36 @@
 import {
-	Entity, Point, TileType, Rect, MapInfo, Camera, Region, IMap, MapState, defaultMapState, Pony,
-	MapType, EntityFlags, WorldMap, Weather, EntityState, canWalk, MapFlags,
+	Entity,
+	Point,
+	TileType,
+	Rect,
+	MapInfo,
+	Camera,
+	Region,
+	IMap,
+	MapState,
+	defaultMapState,
+	Pony,
+	MapType,
+	EntityFlags,
+	WorldMap,
+	Weather,
+	EntityState,
+	canWalk,
+	MapFlags,
 } from './interfaces';
 import { contains, removeItem, boundsIntersect, array, pushUniq, containsPoint, removeItemFast } from './utils';
-import { isBoundsVisible, } from './camera';
+import { isBoundsVisible } from './camera';
 import {
-	getRegionTile, setRegionTile, setRegionTileDirty, getRegionElevation, setRegionElevation,
-	getRegionTileIndex, worldToRegionX, worldToRegionY, generateRegionCollider, invalidateRegionsCollider
+	getRegionTile,
+	setRegionTile,
+	setRegionTileDirty,
+	getRegionElevation,
+	setRegionElevation,
+	getRegionTileIndex,
+	worldToRegionX,
+	worldToRegionY,
+	generateRegionCollider,
+	invalidateRegionsCollider,
 } from './region';
 import { weatherRain, splash } from './entities';
 import { releaseEntity, isMoving, isHidden, isDrawable, isPonyFlying } from './entityUtils';
@@ -87,16 +111,14 @@ function pickAnyEvenLights(entity: Entity, point: Point): boolean {
 }
 
 function pick(entity: Entity, point: Point, pickHidden: boolean, pickEditable: boolean): boolean {
-	const editableOrInteractive = pickEditable ?
-		(entity.type !== PONY_TYPE && ((entity.state & EntityState.Editable) !== 0)) :
-		((entity.flags & EntityFlags.Interactive) !== 0);
+	const editableOrInteractive = pickEditable
+		? entity.type !== PONY_TYPE && (entity.state & EntityState.Editable) !== 0
+		: (entity.flags & EntityFlags.Interactive) !== 0;
 
 	return editableOrInteractive && (!isHidden(entity) || pickHidden) && pickAny(entity, point);
 }
 
-function pickEntity(
-	entity: Entity, point: Point, ignorePonies: boolean, pickHidden: boolean, pickEditable: boolean
-): boolean {
+function pickEntity(entity: Entity, point: Point, ignorePonies: boolean, pickHidden: boolean, pickEditable: boolean): boolean {
 	return (!ignorePonies || entity.type !== PONY_TYPE) && pick(entity, point, pickHidden, pickEditable);
 }
 
@@ -126,8 +148,7 @@ export function pickEntitiesByRect(map: WorldMap, rect: Rect, ignorePonies: bool
 }
 
 export function removeRegions(map: WorldMap, coords: number[]) {
-	if (coords.length === 0)
-		return;
+	if (coords.length === 0) return;
 
 	const entitiesToRemove = new Set<Entity>();
 
@@ -216,8 +237,7 @@ export function removeEntityDirectly(map: WorldMap, entity: Entity) {
 export function setTile(map: WorldMap, worldX: number, worldY: number, type: TileType) {
 	const region = getRegionGlobal(map, worldX, worldY);
 
-	if (!region)
-		return;
+	if (!region) return;
 
 	const x = Math.floor(worldX - region.x * REGION_SIZE);
 	const y = Math.floor(worldY - region.y * REGION_SIZE);
@@ -238,7 +258,7 @@ export function setColliderDirty(map: IMap<Region | undefined>, region: Region, 
 	if (x === 0) {
 		const r = getRegionUnsafe(map, region.x - 1, region.y);
 		r && (r.colliderDirty = true);
-	} else if (x === (REGION_SIZE - 1)) {
+	} else if (x === REGION_SIZE - 1) {
 		const r = getRegionUnsafe(map, region.x + 1, region.y);
 		r && (r.colliderDirty = true);
 	}
@@ -246,7 +266,7 @@ export function setColliderDirty(map: IMap<Region | undefined>, region: Region, 
 	if (y === 0) {
 		const r = getRegionUnsafe(map, region.x, region.y - 1);
 		r && (r.colliderDirty = true);
-	} else if (y === (REGION_SIZE - 1)) {
+	} else if (y === REGION_SIZE - 1) {
 		const r = getRegionUnsafe(map, region.x, region.y + 1);
 		r && (r.colliderDirty = true);
 	}
@@ -312,7 +332,10 @@ function updateMinMaxRegion(map: WorldMap) {
 }
 
 function doRelativeToRegion(
-	map: IMap<Region | undefined>, x: number, y: number, action: (region: Region, x: number, y: number) => void
+	map: IMap<Region | undefined>,
+	x: number,
+	y: number,
+	action: (region: Region, x: number, y: number) => void,
 ) {
 	const region = getRegionGlobal(map, x, y);
 
@@ -348,9 +371,13 @@ export function addEntityToMapRegion(map: WorldMap, region: Region, entity: Enti
 		const existing = map.entitiesById.get(entity.id);
 
 		if (existing) {
-			DEVELOPMENT && !TESTS && console.error(`Adding duplicate entity ${entity.id} (` +
-				`${worldToRegionX(existing.x, map)}, ${worldToRegionY(existing.y, map)} => ` +
-				`${worldToRegionX(entity.x, map)}, ${worldToRegionY(entity.y, map)})`);
+			DEVELOPMENT &&
+				!TESTS &&
+				console.error(
+					`Adding duplicate entity ${entity.id} (` +
+						`${worldToRegionX(existing.x, map)}, ${worldToRegionY(existing.y, map)} => ` +
+						`${worldToRegionX(entity.x, map)}, ${worldToRegionY(entity.y, map)})`,
+				);
 
 			removeEntity(map, existing);
 		}
@@ -534,8 +561,7 @@ export function updateEntitiesCoverLifted(map: WorldMap, player: Entity, hideObj
 
 export function updateEntitiesTriggers(map: WorldMap, player: Pony, game: PonyTownGame) {
 	for (const e of map.entitiesTriggers) {
-		const on = (e.triggerTall || isPonyOnTheGround(player)) &&
-			containsPoint(e.x, e.y, e.triggerBounds!, player.x, player.y);
+		const on = (e.triggerTall || isPonyOnTheGround(player)) && containsPoint(e.x, e.y, e.triggerBounds!, player.x, player.y);
 
 		if (e.triggerOn !== on) {
 			if (on) {
@@ -662,8 +688,7 @@ export function invalidatePalettes(entities: Entity[]) {
 export function ensureAllVisiblePoniesAreDecoded(map: WorldMap, camera: Camera, paletteManager: PaletteManager) {
 	const poniesToDecode = map.poniesToDecode;
 
-	if (!poniesToDecode.length)
-		return;
+	if (!poniesToDecode.length) return;
 
 	const decode = new Set<number>();
 
@@ -675,8 +700,7 @@ export function ensureAllVisiblePoniesAreDecoded(map: WorldMap, camera: Camera, 
 		}
 	}
 
-	if (!decode.size)
-		return;
+	if (!decode.size) return;
 
 	if (decode.size > 100) {
 		paletteManager.deduplicate = false;
@@ -733,7 +757,8 @@ function removeWeatherEffects(map: WorldMap) {
 
 function addRainEffects(map: WorldMap) {
 	forEachRegion(map, region => {
-		if (region.x === 3 && region.y === 4) { // TEMP: testing
+		if (region.x === 3 && region.y === 4) {
+			// TEMP: testing
 			const entity = weatherRain((region.x + 0.5) * REGION_SIZE, (region.y + 0.5) * REGION_SIZE);
 			addEntity(map, entity);
 		}

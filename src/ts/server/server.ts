@@ -32,17 +32,36 @@ import { settings, reloadSettings } from './settings';
 import { SocketErrorHandler } from './utils/socketErrorHandler';
 import { tokenService } from './serverUtils';
 import {
-	admin as isAdmin, auth, blockMaps, wrapApi, internal, initLogRequest, notFound, inMemoryStaticFiles
+	admin as isAdmin,
+	auth,
+	blockMaps,
+	wrapApi,
+	internal,
+	initLogRequest,
+	notFound,
+	inMemoryStaticFiles,
 } from './requestUtils';
 import { StatsTracker } from './stats';
 import { start } from './start';
 import { createServerActionsFactory } from './serverActionsManager';
 import { init, createRemovedDocument } from './internal';
 import {
-	pollServers, pollDiskSpace, pollCertificateExpirationDate, pollPatreon, startBansCleanup, pollMemoryUsage,
-	startMergesCleanup, startStrayAuthsCleanup, startClearOldIgnores, startCollectingUsersVisitedCount,
-	startSupporterInvitesCleanup, startPotentialDuplicatesCleanup, startAccountAlertsCleanup, startUpdatePastSupporters,
-	startClearTo10Origns, startClearVeryOldOrigns
+	pollServers,
+	pollDiskSpace,
+	pollCertificateExpirationDate,
+	pollPatreon,
+	startBansCleanup,
+	pollMemoryUsage,
+	startMergesCleanup,
+	startStrayAuthsCleanup,
+	startClearOldIgnores,
+	startCollectingUsersVisitedCount,
+	startSupporterInvitesCleanup,
+	startPotentialDuplicatesCleanup,
+	startAccountAlertsCleanup,
+	startUpdatePastSupporters,
+	startClearTo10Origns,
+	startClearVeryOldOrigns,
 } from './polling';
 import { pathTo } from './paths';
 import { liveSettings } from './liveSettings';
@@ -84,14 +103,16 @@ const limit = !production || args.tools ? '100mb' : '100kb';
 
 Bluebird.config({ warnings: false, longStackTraces: !production });
 
-const rollbar = config.rollbar && Rollbar.init({
-	accessToken: config.rollbar.serverToken,
-	environment: config.rollbar.environment,
-	handleUncaughtExceptions: true,
-	handleUnhandledRejections: true,
-	captureUncaught: true,
-	checkIgnore: rollbarCheckIgnore,
-} as any);
+const rollbar =
+	config.rollbar &&
+	Rollbar.init({
+		accessToken: config.rollbar.serverToken,
+		environment: config.rollbar.environment,
+		handleUncaughtExceptions: true,
+		handleUnhandledRejections: true,
+		captureUncaught: true,
+		checkIgnore: rollbarCheckIgnore,
+	} as any);
 
 let assetsPath = pathTo('build', 'assets');
 let adminAssetsPath = pathTo('build', 'assets-admin');
@@ -164,13 +185,11 @@ app.use(require('cookie-parser')());
 if (args.login || args.admin) {
 	passport.serializeUser<IAccount, string>((account, done) => done(null, account._id.toString()));
 	passport.deserializeUser<IAccount | false, string>((id, done) =>
-		Account.findById(id, (err, a) => done(err, a && !isBanned(a) ? a : false)));
+		Account.findById(id, (err, a) => done(err, a && !isBanned(a) ? a : false)),
+	);
 }
 
-const ignore = [
-	'RangeNotSatisfiableError',
-	'PreconditionFailedError',
-];
+const ignore = ['RangeNotSatisfiableError', 'PreconditionFailedError'];
 
 app.use((err: any, req: any, res: express.Response, next: any) => {
 	const ignored = err instanceof Error && includes(ignore, err.name);
@@ -191,15 +210,16 @@ if (!production) {
 
 const httpServer = http.createServer(app);
 const errorHandler = new SocketErrorHandler(rollbar, server);
-const createSession = () => expressSession({
-	secret: config.secret,
-	resave: false,
-	saveUninitialized: false,
-	cookie: {
-		maxAge: WEEK * 2,
-	},
-	store: new MongoStore({ mongooseConnection: mongoose.connection }),
-});
+const createSession = () =>
+	expressSession({
+		secret: config.secret,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			maxAge: WEEK * 2,
+		},
+		store: new MongoStore({ mongooseConnection: mongoose.connection }),
+	});
 
 const statsPath = pathTo('logs', `stats-${server.id}.csv`);
 const stats = new StatsTracker(statsPath);
@@ -221,35 +241,36 @@ const host = createServerHost(httpServer, {
 });
 
 let theWorld: World | undefined = undefined;
-let sent = 0, received = 0;
-let sentPackets = 0, receivedPackets = 0;
+let sent = 0,
+	received = 0;
+let sentPackets = 0,
+	receivedPackets = 0;
 
 if (args.game) {
 	const getSettings = () => settings.servers[server.id] || {};
 
-	const { world, createServerActions, hiding } = createServerActionsFactory(
-		server, settings, getSettings, {
-			stats: () => {
-				const result = { sent, received, sentPackets, receivedPackets };
-				sent = 0;
-				received = 0;
-				sentPackets = 0;
-				receivedPackets = 0;
-				return result;
-			}
-		});
+	const { world, createServerActions, hiding } = createServerActionsFactory(server, settings, getSettings, {
+		stats: () => {
+			const result = { sent, received, sentPackets, receivedPackets };
+			sent = 0;
+			received = 0;
+			sentPackets = 0;
+			receivedPackets = 0;
+			return result;
+		},
+	});
 
 	const options = {
 		...socketOptionsBase,
 		verifyClient: () => !getSettings().isServerOffline && !liveSettings.shutdown,
 		forceBinary: true,
 		onSend: (packet: Packet) => {
-			sent += packet.binary ? packet.binary.byteLength : (packet.json ? packet.json.length : 0);
+			sent += packet.binary ? packet.binary.byteLength : packet.json ? packet.json.length : 0;
 			sentPackets++;
 			stats.logSendStats(packet);
 		},
 		onRecv: (packet: Packet) => {
-			received += packet.binary ? packet.binary.byteLength : (packet.json ? packet.json.length : 0);
+			received += packet.binary ? packet.binary.byteLength : packet.json ? packet.json.length : 0;
 			receivedPackets++;
 			stats.logRecvStats(packet);
 		},
@@ -263,8 +284,7 @@ if (args.game) {
 
 	theWorld = world;
 
-	const apiInternal = createInternalApi(
-		world, server, reloadSettings, getSettings, tokens, hiding, stats, liveSettings);
+	const apiInternal = createInternalApi(world, server, reloadSettings, getSettings, tokens, hiding, stats, liveSettings);
 	app.use('/api-internal', internal(config, server), wrapApi(server, apiInternal));
 }
 
@@ -296,7 +316,16 @@ if (args.admin) {
 
 if (args.tools) {
 	const toolsPage = index.user(
-		production, '/tools/', 'style-tools.css', 'bootstrap-tools.js', 'bootstrap-tools.js', undefined, true, !!args.local, false);
+		production,
+		'/tools/',
+		'style-tools.css',
+		'bootstrap-tools.js',
+		'bootstrap-tools.js',
+		undefined,
+		true,
+		!!args.local,
+		false,
+	);
 
 	app.get('/tools', ...sessionMiddlewares(), auth, (_, res) => res.send(toolsPage.page));
 	app.get('/tools/*', ...sessionMiddlewares(), auth, (_, res) => res.send(toolsPage.page));
@@ -308,7 +337,16 @@ if (args.tools) {
 if (args.login) {
 	const socketOptions = createClientOptions(ServerActions, ClientActions, socketOptionsBase);
 	const userPage = index.user(
-		production, '/', 'style.css', 'bootstrap.js', 'bootstrap-es.js', socketOptions, false, !!args.local, !production);
+		production,
+		'/',
+		'style.css',
+		'bootstrap.js',
+		'bootstrap-es.js',
+		socketOptions,
+		false,
+		!!args.local,
+		!production,
+	);
 	const offlinePage = fs.readFileSync(pathTo('public', 'offline.html'), 'utf8');
 
 	const script = `${config.host}${index.getRevScript('bootstrap.js')}`;
@@ -317,23 +355,26 @@ if (args.login) {
 	// const workbox = 'https://storage.googleapis.com/workbox-cdn';
 	// const rollbarScripts =
 	// rollbar ? 'https://d37gvrvc0wt4s1.cloudfront.net https://cdnjs.cloudflare.com/ajax/libs/rollbar.js/' : '';
-	const csp = `object-src 'none';`
-		+ `frame-src 'self';`
-		+ `frame-ancestors 'self';`
-		+ `worker-src ${config.host}sw.js;`
-		+ `script-src 'unsafe-eval' ${script} ${scriptES} ${analytics};`
-		// + `report-uri /api2/csp`
-		;
-
-	const linkPreloads: string[] = [
-		...userPage.preload,
-	];
+	const csp =
+		`object-src 'none';` +
+		`frame-src 'self';` +
+		`frame-ancestors 'self';` +
+		`worker-src ${config.host}sw.js;` +
+		`script-src 'unsafe-eval' ${script} ${scriptES} ${analytics};`;
+	// + `report-uri /api2/csp`
+	const linkPreloads: string[] = [...userPage.preload];
 
 	app.use('/assets-admin', ...adminMiddlewares(), express.static(adminAssetsPath, { maxAge, etag }));
-	app.use('/auth', ...sessionMiddlewares(), authRoutes(
-		config.host, server, settings, liveSettings, args.local || DEVELOPMENT, removedDocument));
-	app.use('/api', ...sessionMiddlewares(), api(
-		server, settings, { version, host: config.host, debug: DEVELOPMENT, local: !!args.local }, removedDocument));
+	app.use(
+		'/auth',
+		...sessionMiddlewares(),
+		authRoutes(config.host, server, settings, liveSettings, args.local || DEVELOPMENT, removedDocument),
+	);
+	app.use(
+		'/api',
+		...sessionMiddlewares(),
+		api(server, settings, { version, host: config.host, debug: DEVELOPMENT, local: !!args.local }, removedDocument),
+	);
 	app.use('/api1', ...sessionMiddlewares(), api1(server, settings));
 	app.use('/api2', api2(settings, liveSettings, stats));
 

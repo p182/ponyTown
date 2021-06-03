@@ -101,8 +101,14 @@ export function axisDirection(axis: number, direction: number): AxisDirection {
 }
 
 export function axes(
-	lx: number, ly: number, rx: number, ry: number, dpadX?: Index | PositiveNegative, dpadY?: Index | PositiveNegative,
-	lt?: Index | Positive, rt?: Index | Positive
+	lx: number,
+	ly: number,
+	rx: number,
+	ry: number,
+	dpadX?: Index | PositiveNegative,
+	dpadY?: Index | PositiveNegative,
+	lt?: Index | Positive,
+	rt?: Index | Positive,
 ): AxesTable {
 	const result: AxesTable = [];
 	result[GamepadAxes.LeftStickX] = index(lx);

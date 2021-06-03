@@ -3,10 +3,8 @@ import { SpriteAnimation } from '../common/animationPlayer';
 import { AnimatedRenderable } from '../common/mixins';
 import { Sprite } from '../common/interfaces';
 
-export const zzzAnimation1 = createSpriteAnimation(
-	sprites.emote_sleep1, 8, 8, 4, 7, true, sprites.emote_sleep1_flip.frames);
-export const zzzAnimation2 = createSpriteAnimation(
-	sprites.emote_sleep2, 12, 13, 13, 12, true, sprites.emote_sleep2_flip.frames);
+export const zzzAnimation1 = createSpriteAnimation(sprites.emote_sleep1, 8, 8, 4, 7, true, sprites.emote_sleep1_flip.frames);
+export const zzzAnimation2 = createSpriteAnimation(sprites.emote_sleep2, 12, 13, 13, 12, true, sprites.emote_sleep2_flip.frames);
 export const zzzAnimations = [zzzAnimation1, zzzAnimation2];
 
 export const cryAnimation = createSpriteAnimation(sprites.emote_cry2, 12, 0, 13, 0);
@@ -24,7 +22,12 @@ export const holdPoofAnimation = createSpriteAnimation(sprites.hold_poof, 12, 0,
 export const magicAnimation = createSpriteAnimation(sprites.magic2, 8, 2, 6, 0, true);
 
 function createSpriteAnimation(
-	{ frames, palette }: AnimatedRenderable, fps: number, start: number, middle: number, end: number, loop = true,
+	{ frames, palette }: AnimatedRenderable,
+	fps: number,
+	start: number,
+	middle: number,
+	end: number,
+	loop = true,
 	flipFrames?: Sprite[],
 ): SpriteAnimation {
 	return { start, middle, end, fps, palette, frames, loop, flipFrames };

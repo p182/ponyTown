@@ -2,8 +2,16 @@ import { isCommand, processCommand, hasFlag, includes, point } from '../common/u
 import { canPonyLie, canPonyFlyUp, canPonyStand, canPonySit, doBoopPonyAction } from '../common/pony';
 import { PonyTownGame } from './game';
 import {
-	setPonyState, canBoop, isPonyLying, isPonyFlying, isPonyStanding, isPonySitting, getInteractBounds,
-	isFacingRight, closestEntity, entityInRange
+	setPonyState,
+	canBoop,
+	isPonyLying,
+	isPonyFlying,
+	isPonyStanding,
+	isPonySitting,
+	getInteractBounds,
+	isFacingRight,
+	closestEntity,
+	entityInRange,
 } from '../common/entityUtils';
 import { EntityState, Action, Pony, ChatType, EntityFlags, Point, TileType } from '../common/interfaces';
 import { FLY_DELAY } from '../common/constants';
@@ -175,13 +183,13 @@ export function toggleWall(game: PonyTownGame, hover: Point) {
 	const dy = hover.y - y;
 
 	if (dx > dy) {
-		if ((dx + dy) < 1) {
+		if (dx + dy < 1) {
 			game.send(server => server.changeTile(x, y, TileType.WallH));
 		} else {
 			game.send(server => server.changeTile(x + 1, y, TileType.WallV));
 		}
 	} else {
-		if ((dx + dy) < 1) {
+		if (dx + dy < 1) {
 			game.send(server => server.changeTile(x, y, TileType.WallV));
 		} else {
 			game.send(server => server.changeTile(x, y + 1, TileType.WallH));
@@ -214,16 +222,18 @@ export function editorDragEntities(game: PonyTownGame, hover: Point, buttonPress
 			e.y = roundPositionY(e.draggingStart!.y + dy);
 		});
 	} else {
-		game.apply(() => game.editor.draggingEntities = false);
-		game.send(server => server.editorAction({
-			type: 'move',
-			entities: game.editor.selectedEntities.map(({ id, x, y }) => ({ id, x, y })),
-		}));
+		game.apply(() => (game.editor.draggingEntities = false));
+		game.send(server =>
+			server.editorAction({
+				type: 'move',
+				entities: game.editor.selectedEntities.map(({ id, x, y }) => ({ id, x, y })),
+			}),
+		);
 	}
 }
 
 export function editorMoveEntities(game: PonyTownGame, hover: Point) {
 	game.editor.draggingEntities = true;
 	game.editor.draggingStart = hover;
-	game.editor.selectedEntities.forEach(e => e.draggingStart = point(e.x, e.y));
+	game.editor.selectedEntities.forEach(e => (e.draggingStart = point(e.x, e.y)));
 }

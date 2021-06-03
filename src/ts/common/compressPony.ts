@@ -9,8 +9,14 @@ import { getColorCount } from '../client/spriteUtils';
 import * as sprites from '../generated/sprites';
 import { parseColorFast, colorToHexRGB } from './color';
 import {
-	SLEEVED_ACCESSORIES, frontHooves, mergedFacialHair, mergedBackAccessories, mergedManes,
-	mergedBackManes, mergedExtraAccessories, mergedHeadAccessories
+	SLEEVED_ACCESSORIES,
+	frontHooves,
+	mergedFacialHair,
+	mergedBackAccessories,
+	mergedManes,
+	mergedBackManes,
+	mergedExtraAccessories,
+	mergedHeadAccessories,
 } from '../client/ponyUtils';
 import { CM_SIZE } from './constants';
 
@@ -59,9 +65,14 @@ function emptyOrUnlocked<T>(set: SpriteSet<T> | undefined): boolean {
 }
 
 function emptyOrZeroLocked<T>(set: SpriteSet<T> | undefined, customOutlines: boolean): boolean {
-	return !set || (
-		set.type === 0 && set.pattern === 0 && set.lockFills !== undefined && set.lockFills[0] === true &&
-		(!customOutlines || (set.lockOutlines !== undefined && set.lockOutlines[0] === true)));
+	return (
+		!set ||
+		(set.type === 0 &&
+			set.pattern === 0 &&
+			set.lockFills !== undefined &&
+			set.lockFills[0] === true &&
+			(!customOutlines || (set.lockOutlines !== undefined && set.lockOutlines[0] === true)))
+	);
 }
 
 function empty<T>(set: SpriteSet<T> | undefined): boolean {
@@ -69,8 +80,7 @@ function empty<T>(set: SpriteSet<T> | undefined): boolean {
 }
 
 function omitMane(info: PonyInfoNumber) {
-	return empty(info.mane) && emptyOrUnlocked(info.backMane)
-		&& emptyOrUnlocked(info.tail) && emptyOrUnlocked(info.facialHair);
+	return empty(info.mane) && emptyOrUnlocked(info.backMane) && emptyOrUnlocked(info.tail) && emptyOrUnlocked(info.facialHair);
 }
 
 function omitHead(info: PonyInfoNumber): boolean {
@@ -137,9 +147,12 @@ const booleanFields: FieldDefinition<boolean>[] = [
 	{ name: 'lockEyeColor' },
 	{ name: 'lockCoatOutline', omit: info => !info.customOutlines },
 	{
-		name: 'lockBackLegAccessory', omit: info =>
-			empty(info.frontLegAccessory) && empty(info.backLegAccessory) &&
-			empty(info.frontLegAccessoryRight) && empty(info.backLegAccessoryRight)
+		name: 'lockBackLegAccessory',
+		omit: info =>
+			empty(info.frontLegAccessory) &&
+			empty(info.backLegAccessory) &&
+			empty(info.frontLegAccessoryRight) &&
+			empty(info.backLegAccessoryRight),
 	},
 	{ name: 'eyeshadow' },
 	{ name: 'cmFlip', omit: info => info.cm === undefined || info.cm.every(not) },
@@ -174,12 +187,9 @@ const colorFields: FieldDefinition<number>[] = [
 	{ name: 'magicColor', default: WHITE },
 ];
 
-const omittableFields: FieldDefinition<any>[] = [
-	...setFields,
-	...booleanFields,
-	...numberFields,
-	...colorFields,
-].filter(f => !!f.omit);
+const omittableFields: FieldDefinition<any>[] = [...setFields, ...booleanFields, ...numberFields, ...colorFields].filter(
+	f => !!f.omit,
+);
 
 const VERSION_BITS = 6; // max 63
 const COLORS_LENGTH_BITS = 10; // max 1024
@@ -198,8 +208,7 @@ if (DEVELOPMENT) {
 				.filter(key => verify(obj[key]))
 				.filter(key => defs.every(d => d.name !== key));
 
-			const unnecessary = defs
-				.filter(({ name }) => !verify(obj[name]));
+			const unnecessary = defs.filter(({ name }) => !verify(obj[name]));
 
 			if (missing.length || unnecessary.length) {
 				throw new Error(`Incorrect fields (${missing} / ${unnecessary})`);
@@ -224,7 +233,7 @@ if (DEVELOPMENT) {
 
 function trimRight<T>(items: T[]) {
 	const index = findLastIndex(items, x => !!x);
-	return (index !== (items.length - 1)) ? items.slice(0, index + 1) : items;
+	return index !== items.length - 1 ? items.slice(0, index + 1) : items;
 }
 
 export function precompressCM<T>(cm: (T | undefined)[] | undefined, addColor: (color: T | undefined) => number): number[] {
@@ -249,7 +258,7 @@ export function precompressCM<T>(cm: (T | undefined)[] | undefined, addColor: (c
 
 export function compressLockSet(set: boolean[] | undefined, count: number): number {
 	const locks = set && set.slice ? set.slice(0, count) : [];
-	return locks.reduce((result, l, i) => result | (l ? (1 << i) : 0), 0);
+	return locks.reduce((result, l, i) => result | (l ? 1 << i : 0), 0);
 }
 
 export function decompressLockSet(set: number, count: number, defaultValues: boolean[]): boolean[] {
@@ -265,7 +274,11 @@ export function decompressLockSet(set: number, count: number, defaultValues: boo
 // colors
 
 export function precompressColorSet<T>(
-	set: (T | undefined)[] | undefined, count: number, locks: number, defaultColor: T, addColor: (color: T) => number
+	set: (T | undefined)[] | undefined,
+	count: number,
+	locks: number,
+	defaultColor: T,
+	addColor: (color: T) => number,
 ): number[] {
 	const result: number[] = [];
 
@@ -282,7 +295,11 @@ export function precompressColorSet<T>(
 }
 
 export function postdecompressColorSet<T>(
-	colors: number[], count: number, locks: number, colorList: number[], parseColor: (color: number) => T
+	colors: number[],
+	count: number,
+	locks: number,
+	colorList: number[],
+	parseColor: (color: number) => T,
 ): T[] {
 	const result: T[] = [];
 
@@ -301,15 +318,17 @@ const ALL_UNLOCKED = array(MAX_COLORS, false);
 const ALL_LOCKED = array(MAX_COLORS, true);
 
 export function precompressSet<T>(
-	set: SpriteSet<T> | undefined, def: SetDefinition, customOutlines: boolean, defaultColor: T, addColor: (color: T) => number
+	set: SpriteSet<T> | undefined,
+	def: SetDefinition,
+	customOutlines: boolean,
+	defaultColor: T,
+	addColor: (color: T) => number,
 ): PrecompressedSet | undefined {
-	if (!set)
-		return undefined;
+	if (!set) return undefined;
 
 	const type = clamp(toInt(set.type), 0, def.sets.length - 1);
 
-	if (type === 0 && !def.preserveOnZero)
-		return undefined;
+	if (type === 0 && !def.preserveOnZero) return undefined;
 
 	const patterns = at(def.sets, type);
 	const pattern = clamp(toInt(set.pattern), 0, patterns ? patterns.length - 1 : 0);
@@ -317,8 +336,7 @@ export function precompressSet<T>(
 	const colors = Math.max(getColorCount(sprite), def.minColors || 0);
 
 	/* istanbul ignore next */
-	if (type === 0 && pattern === 0 && colors === 0)
-		return undefined;
+	if (type === 0 && pattern === 0 && colors === 0) return undefined;
 
 	const fillLocks = compressLockSet(set.lockFills, colors);
 	const fills = precompressColorSet(set.fills, colors, fillLocks, defaultColor, addColor);
@@ -329,16 +347,20 @@ export function precompressSet<T>(
 }
 
 export function postdecompressSet<T>(
-	set: PrecompressedSet, _def: SetDefinition, customOutlines: boolean, colorList: number[], parseColor: (color: number) => T
+	set: PrecompressedSet,
+	_def: SetDefinition,
+	customOutlines: boolean,
+	colorList: number[],
+	parseColor: (color: number) => T,
 ): SpriteSet<T> | undefined {
 	return {
 		type: set.type,
 		pattern: set.pattern,
 		lockFills: decompressLockSet(set.fillLocks, set.colors, /*def.defaultLockFills ||*/ ALL_UNLOCKED),
 		fills: postdecompressColorSet(set.fills, set.colors, set.fillLocks, colorList, parseColor),
-		lockOutlines: customOutlines ?
-			decompressLockSet(set.outlineLocks, set.colors, /*def.defaultLockOutlines ||*/ ALL_LOCKED) :
-			ALL_LOCKED,
+		lockOutlines: customOutlines
+			? decompressLockSet(set.outlineLocks, set.colors, /*def.defaultLockOutlines ||*/ ALL_LOCKED)
+			: ALL_LOCKED,
 		outlines: customOutlines ? postdecompressColorSet(set.outlines, set.colors, set.outlineLocks, colorList, parseColor) : [],
 	};
 }
@@ -346,19 +368,28 @@ export function postdecompressSet<T>(
 // helpers
 
 function precompressFields<TDef extends FieldDefinition<TResult>, TValue, TResult>(
-	data: any, defs: TDef[], defaultValue: TResult, encode: (value: TValue | undefined, def: TDef) => TResult
+	data: any,
+	defs: TDef[],
+	defaultValue: TResult,
+	encode: (value: TValue | undefined, def: TDef) => TResult,
 ): TResult[] {
-	return trimRight(defs.map(def => {
-		if (def.dontSave || (def.omit && def.omit(data))) {
-			return defaultValue;
-		} else {
-			return encode(data[def.name], def);
-		}
-	}));
+	return trimRight(
+		defs.map(def => {
+			if (def.dontSave || (def.omit && def.omit(data))) {
+				return defaultValue;
+			} else {
+				return encode(data[def.name], def);
+			}
+		}),
+	);
 }
 
 function postdecompressFields<TDef extends FieldDefinition<TValue>, TValue, TResult>(
-	result: any, defs: TDef[], values: (TValue | undefined)[], defaultValue: TValue, decode: (value: TValue, def: TDef) => TResult
+	result: any,
+	defs: TDef[],
+	values: (TValue | undefined)[],
+	defaultValue: TValue,
+	decode: (value: TValue, def: TDef) => TResult,
 ) {
 	for (let i = 0; i < defs.length; i++) {
 		const def = defs[i];
@@ -384,10 +415,12 @@ export function precompressPony<T>(info: Info<T>, defaultColor: T, parseColor: (
 		colors,
 		booleanFields: precompressFields(info, booleanFields, false as boolean, x => !!x),
 		numberFields: precompressFields(info, numberFields, 0, toInt),
-		colorFields: precompressFields(info, colorFields, 0,
-			(x: T | undefined, def) => (x === undefined || parseColor(x) === (def.default || BLACK)) ? 0 : addColor(x)),
-		setFields: precompressFields(info, setFields, undefined,
-			(x: SpriteSet<T> | undefined, def: SetDefinition) => precompressSet(x, def, customOutlines, defaultColor, addColor)),
+		colorFields: precompressFields(info, colorFields, 0, (x: T | undefined, def) =>
+			x === undefined || parseColor(x) === (def.default || BLACK) ? 0 : addColor(x),
+		),
+		setFields: precompressFields(info, setFields, undefined, (x: SpriteSet<T> | undefined, def: SetDefinition) =>
+			precompressSet(x, def, customOutlines, defaultColor, addColor),
+		),
 		cm: precompressCM(info.cm, addColor),
 	};
 }
@@ -414,39 +447,50 @@ function fixVersion<T>(result: Info<T>, data: Precompressed, parseColor: (color:
 }
 
 export function createPostDecompressPony() {
-	return new Function('postdecompressSet', 'setFields', 'ommitableFields', 'fixVersion', [
-		'function identity(x) { return x; }',
-		'function getColor(colors, i) { return (i >= 0 && i < colors.length) ? colors[i] : 0; }',
-		'function getCM(cm, colors) {',
-		'  var result = [];',
-		'  for(var i = 0; i < cm.length; i++) { result.push(getColor(colors, cm[i] - 1) || 0); }',
-		'  return result;',
-		'}',
-		...omittableFields.map((def, i) => `var omit_${def.name} = ommitableFields[${i}].omit;`),
-		'return function (data) {',
-		'  var dataColors = data.colors;',
-		'  var bools = data.booleanFields;',
-		'  var numbers = data.numberFields;',
-		'  var colors = data.colorFields;',
-		'  var sets = data.setFields;',
-		'  var result = {};',
-		...booleanFields.map((def, i) => `  result.${def.name} = bools.length > ${i} ? bools[${i}] : false;`),
-		...numberFields.map((def, i) => `  result.${def.name} = numbers.length > ${i} ? numbers[${i}] : 0;`),
-		...colorFields.map((def, i) => `  result.${def.name} = colors.length > ${i} ? ` +
-			`getColor(dataColors, colors[${i}] - 1) || ${def.default || BLACK} : ${def.default || BLACK};`),
-		'  var customOutlines = !!result.customOutlines;',
-		...setFields.map((def, i) => `  result.${def.name} = sets.length > ${i} && sets[${i}] !== undefined ? ` +
-			`postdecompressSet(sets[${i}], setFields[${i}], customOutlines, data.colors, identity) : undefined;`),
-		`  result.cm = data.cm.length ? getCM(data.cm, dataColors) : undefined;`,
-		...omittableFields.map(def => `  if (omit_${def.name}(result)) result.${def.name} = undefined;`),
-		'  fixVersion(result, data, identity);',
-		'  return result;',
-		'};',
-	].join('\n'));
+	return new Function(
+		'postdecompressSet',
+		'setFields',
+		'ommitableFields',
+		'fixVersion',
+		[
+			'function identity(x) { return x; }',
+			'function getColor(colors, i) { return (i >= 0 && i < colors.length) ? colors[i] : 0; }',
+			'function getCM(cm, colors) {',
+			'  var result = [];',
+			'  for(var i = 0; i < cm.length; i++) { result.push(getColor(colors, cm[i] - 1) || 0); }',
+			'  return result;',
+			'}',
+			...omittableFields.map((def, i) => `var omit_${def.name} = ommitableFields[${i}].omit;`),
+			'return function (data) {',
+			'  var dataColors = data.colors;',
+			'  var bools = data.booleanFields;',
+			'  var numbers = data.numberFields;',
+			'  var colors = data.colorFields;',
+			'  var sets = data.setFields;',
+			'  var result = {};',
+			...booleanFields.map((def, i) => `  result.${def.name} = bools.length > ${i} ? bools[${i}] : false;`),
+			...numberFields.map((def, i) => `  result.${def.name} = numbers.length > ${i} ? numbers[${i}] : 0;`),
+			...colorFields.map(
+				(def, i) =>
+					`  result.${def.name} = colors.length > ${i} ? ` +
+					`getColor(dataColors, colors[${i}] - 1) || ${def.default || BLACK} : ${def.default || BLACK};`,
+			),
+			'  var customOutlines = !!result.customOutlines;',
+			...setFields.map(
+				(def, i) =>
+					`  result.${def.name} = sets.length > ${i} && sets[${i}] !== undefined ? ` +
+					`postdecompressSet(sets[${i}], setFields[${i}], customOutlines, data.colors, identity) : undefined;`,
+			),
+			`  result.cm = data.cm.length ? getCM(data.cm, dataColors) : undefined;`,
+			...omittableFields.map(def => `  if (omit_${def.name}(result)) result.${def.name} = undefined;`),
+			'  fixVersion(result, data, identity);',
+			'  return result;',
+			'};',
+		].join('\n'),
+	);
 }
 
-export const fastPostdecompressPony = createPostDecompressPony()(
-	postdecompressSet, setFields, omittableFields, fixVersion);
+export const fastPostdecompressPony = createPostDecompressPony()(postdecompressSet, setFields, omittableFields, fixVersion);
 
 export function postdecompressPony<T>(data: Precompressed, parseColor: (color: number) => T): Info<T> {
 	// NOTE: when updating also update createPostDecompressPony()
@@ -454,11 +498,13 @@ export function postdecompressPony<T>(data: Precompressed, parseColor: (color: n
 	const result: Info<T> = {} as any;
 	postdecompressFields(result, booleanFields, data.booleanFields, false as boolean, identity);
 	postdecompressFields(result, numberFields, data.numberFields, 0 as number, identity);
-	postdecompressFields(result, colorFields, data.colorFields, 0 as number,
-		(x, def) => parseColor(data.colors[x - 1] || def.default || BLACK));
+	postdecompressFields(result, colorFields, data.colorFields, 0 as number, (x, def) =>
+		parseColor(data.colors[x - 1] || def.default || BLACK),
+	);
 	const customOutlines = !!result.customOutlines;
-	postdecompressFields(result, setFields, data.setFields, undefined,
-		(x, def) => x === undefined ? undefined : postdecompressSet(x, def, customOutlines, data.colors, parseColor));
+	postdecompressFields(result, setFields, data.setFields, undefined, (x, def) =>
+		x === undefined ? undefined : postdecompressSet(x, def, customOutlines, data.colors, parseColor),
+	);
 
 	result.cm = data.cm.length ? data.cm.map(x => parseColor(data.colors[x - 1] || TRANSPARENT)) : undefined;
 
@@ -578,15 +624,17 @@ function readPonyFromBuffer(info: Uint8Array): Precompressed {
 }
 
 function readPonyFromString(info: string): Precompressed {
-	return info ? readPonyFromBuffer(toByteArray(info)) : {
-		version: VERSION,
-		colors: [],
-		booleanFields: [],
-		numberFields: [],
-		colorFields: [],
-		setFields: [],
-		cm: [],
-	};
+	return info
+		? readPonyFromBuffer(toByteArray(info))
+		: {
+				version: VERSION,
+				colors: [],
+				booleanFields: [],
+				numberFields: [],
+				colorFields: [],
+				setFields: [],
+				cm: [],
+		  };
 }
 
 // compress

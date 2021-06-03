@@ -2,7 +2,16 @@
 
 import { range, dropRight, compact, max, zip } from 'lodash';
 import {
-	Eye, Iris, Muzzle, ExpressionExtra, Sprite, ColorExtraSets, PonyInfoBase, SpriteSetBase, ColorExtra, ColorExtraSet
+	Eye,
+	Iris,
+	Muzzle,
+	ExpressionExtra,
+	Sprite,
+	ColorExtraSets,
+	PonyInfoBase,
+	SpriteSetBase,
+	ColorExtra,
+	ColorExtraSet,
 } from '../common/interfaces';
 import * as sprites from '../generated/sprites';
 import { HEAD_ACCESSORY_OFFSETS, EXTRA_ACCESSORY_OFFSETS, EAR_ACCESSORY_OFFSETS } from '../common/offsets';
@@ -19,15 +28,10 @@ export const NO_MANE_HEAD_ACCESSORIES = [0, 16];
 export type Sprites = (Sprite | undefined)[];
 export type Sets = ColorExtraSets[]; // [frame][type][pattern]
 
-export const headCenter = [
-	undefined,
-	[[0].map(i => sprites.head[2]![0]![i])],
-];
+export const headCenter = [undefined, [[0].map(i => sprites.head[2]![0]![i])]];
 
-export const claws: Sets = sprites.frontLegHooves
-	.map(f => f && [undefined, undefined, undefined, f[4], undefined, undefined]);
-export const frontHooves: Sets = sprites.frontLegHooves
-	.map(f => f && [...f.slice(0, 4), ...f.slice(5)]);
+export const claws: Sets = sprites.frontLegHooves.map(f => f && [undefined, undefined, undefined, f[4], undefined, undefined]);
+export const frontHooves: Sets = sprites.frontLegHooves.map(f => f && [...f.slice(0, 4), ...f.slice(5)]);
 
 export const frontHoovesInFront = [false, false, true, true, false, false];
 export const backHoovesInFront = [false, false, true, false, false];
@@ -61,12 +65,12 @@ function createCompleteSets(sets: Sets, frameCount: number): Sets {
 }
 
 export function canFly(info: PonyInfoBase<any, SpriteSetBase>) {
-	const type = info.wings && info.wings.type || 0;
+	const type = (info.wings && info.wings.type) || 0;
 	return type > 0;
 }
 
 export function canMagic(info: PonyInfoBase<any, SpriteSetBase>) {
-	const type = info.horn && info.horn.type || 0;
+	const type = (info.horn && info.horn.type) || 0;
 	return type === 1 || type === 2 || type === 3 || type === 14;
 }
 
@@ -91,10 +95,12 @@ export function flipFaceAccessoryType(type: number) {
 }
 
 export function flipFaceAccessoryPattern(type: number, pattern: number) {
-	if (type === 2) { // dark glasses
+	if (type === 2) {
+		// dark glasses
 		if (pattern === 1) return 2;
 		if (pattern === 2) return 1;
-	} else if (type === 11) { // large dark glasses
+	} else if (type === 11) {
+		// large dark glasses
 		if (pattern === 1) return 2;
 		if (pattern === 2) return 1;
 	}
@@ -114,7 +120,7 @@ export const defaultExpression = {
 export const blinkFrames: Eye[][] = [];
 
 function setupBlinkFrames(frames: Eye[]) {
-	dropRight(frames, 1).forEach((f, i) => blinkFrames[f] = blinkFrames[f] || frames.slice(i + 1));
+	dropRight(frames, 1).forEach((f, i) => (blinkFrames[f] = blinkFrames[f] || frames.slice(i + 1)));
 }
 
 setupBlinkFrames([Eye.Neutral, Eye.Neutral2, Eye.Neutral3, Eye.Neutral4, Eye.Neutral5, Eye.Closed]);
@@ -142,8 +148,9 @@ function mergeSpriteSets(...sets: ColorExtraSets[]): ColorExtraSets {
 	return zip(...sets).map(mergeSprites);
 }
 
-export const backLegSleeves: Sets = sprites.backLegSleeves
-	.map(sets => sets && [undefined, undefined, undefined, undefined, undefined, ...sets]);
+export const backLegSleeves: Sets = sprites.backLegSleeves.map(
+	sets => sets && [undefined, undefined, undefined, undefined, undefined, ...sets],
+);
 
 // TEMP: remove summer hat
 sprites.headAccessoriesBehind.pop();
@@ -156,10 +163,18 @@ export const mergedEarAccessories = mergeSpriteSets(sprites.earAccessoriesBehind
 export const mergedHeadAccessories = mergeSpriteSets(sprites.headAccessoriesBehind, sprites.headAccessories)!;
 export const mergedFaceAccessories = mergeSpriteSets(sprites.faceAccessories, sprites.faceAccessories2)!;
 export const mergedChestAccessories = mergeSpriteSets(sprites.chestAccessoriesBehind[1], sprites.chestAccessories[1])!;
-export const mergedBackAccessories = mergeSpriteSets(
-	backAccessories[1], [undefined, undefined, undefined, undefined, undefined, ...sprites.backLegSleeves[1]!])!;
-export const mergedExtraAccessories = mergeSpriteSets(sprites.extraAccessoriesBehind, sprites.extraAccessories)!
-	.slice(0, DEVELOPMENT ? 100 : 2);
+export const mergedBackAccessories = mergeSpriteSets(backAccessories[1], [
+	undefined,
+	undefined,
+	undefined,
+	undefined,
+	undefined,
+	...sprites.backLegSleeves[1]!,
+])!;
+export const mergedExtraAccessories = mergeSpriteSets(sprites.extraAccessoriesBehind, sprites.extraAccessories)!.slice(
+	0,
+	DEVELOPMENT ? 100 : 2,
+);
 
 if (DEVELOPMENT) {
 	assertSizes('HEAD_ACCESSORY_OFFSETS', HEAD_ACCESSORY_OFFSETS, mergedManes);

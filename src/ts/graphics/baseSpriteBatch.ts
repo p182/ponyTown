@@ -34,7 +34,7 @@ import { isIdentity } from '../common/mat2d';
 const WHITE_FLOAT = colorToFloat(WHITE);
 
 export function getColorFloat(color: number, alpha: number) {
-	return (color === WHITE && alpha === 1) ? WHITE_FLOAT : colorToFloatAlpha(color, alpha);
+	return color === WHITE && alpha === 1 ? WHITE_FLOAT : colorToFloatAlpha(color, alpha);
 }
 
 export abstract class BaseSpriteBatch extends BaseStateBatch implements SpriteBatchBase {
@@ -95,7 +95,7 @@ export abstract class BaseSpriteBatch extends BaseStateBatch implements SpriteBa
 
 		const batchSpriteCount = (batch.length / this.floatsPerSprite) | 0;
 
-		if (this.capacity < (this.spritesCount + batchSpriteCount)) {
+		if (this.capacity < this.spritesCount + batchSpriteCount) {
 			this.flush();
 		}
 
@@ -137,8 +137,7 @@ export abstract class BaseSpriteBatch extends BaseStateBatch implements SpriteBa
 		// releaseBuffer(batch);
 	}
 	flush() {
-		if (this.index === 0)
-			return;
+		if (this.index === 0) return;
 
 		if (!this.vao || !this.vertexBuffer) {
 			throw new Error('Disposed');

@@ -1,8 +1,21 @@
 import { clamp } from 'lodash';
 import * as sprites from '../generated/sprites';
 import {
-	EntityPart, Sprite, Rect, SpriteBatch, PaletteManager, Palette, PaletteRenderable, PaletteSpriteBatch,
-	DrawOptions, getAnimationFromEntityState, EntityState, SignEntityOptions, EntityFlags, Collider, MixinEntity,
+	EntityPart,
+	Sprite,
+	Rect,
+	SpriteBatch,
+	PaletteManager,
+	Palette,
+	PaletteRenderable,
+	PaletteSpriteBatch,
+	DrawOptions,
+	getAnimationFromEntityState,
+	EntityState,
+	SignEntityOptions,
+	EntityFlags,
+	Collider,
+	MixinEntity,
 	Season,
 } from './interfaces';
 import { at, att, hasFlag, invalidEnum } from './utils';
@@ -28,16 +41,7 @@ export interface AnimatedRenderable1 {
 	frames: (Sprite | undefined)[];
 }
 
-const predefinedSteps = [
-	[],
-	[1],
-	[3, 1],
-	[3, 2, 1],
-	[4, 2, 1, 1],
-	[5, 3, 2, 1, 1],
-	[9, 5, 3, 2, 1, 1],
-	[14, 9, 5, 3, 2, 1, 1],
-];
+const predefinedSteps = [[], [1], [3, 1], [3, 2, 1], [4, 2, 1, 1], [5, 3, 2, 1, 1], [9, 5, 3, 2, 1, 1], [14, 9, 5, 3, 2, 1, 1]];
 
 let paletteManager: PaletteManager | undefined;
 
@@ -74,7 +78,7 @@ export function getRenderableBounds({ color, shadow }: Renderable, dx: number, d
 }
 
 function getBoundsForFrames(frames: (Sprite | undefined)[], dx: number, dy: number) {
-	return frames.reduce((bounds, f) => f ? addRects(bounds, getBounds(f, dx, dy)) : bounds, rect(0, 0, 0, 0));
+	return frames.reduce((bounds, f) => (f ? addRects(bounds, getBounds(f, dx, dy)) : bounds), rect(0, 0, 0, 0));
 }
 
 export function pickable(pickableX: number, pickableY: number): EntityPart {
@@ -162,7 +166,7 @@ export function mixColliders(...list: Collider[]): MixinEntity {
 export function taperColliderSE(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = w - 2; iy < h; iy++ , ix -= ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = w - 2; iy < h; iy++, ix -= iy % 3 ? 1 : 2) {
 		colliders.push(collider(x + ix, y + iy, w - ix, 1, tall));
 	}
 
@@ -172,7 +176,7 @@ export function taperColliderSE(x: number, y: number, w: number, h: number, tall
 export function taperColliderSW(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = w - 2; iy < h; iy++ , ix -= ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = w - 2; iy < h; iy++, ix -= iy % 3 ? 1 : 2) {
 		colliders.push(collider(x, y + iy, w - ix, 1, tall));
 	}
 
@@ -182,7 +186,7 @@ export function taperColliderSW(x: number, y: number, w: number, h: number, tall
 export function taperColliderNW(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x, y + iy, w - ix, 1, tall));
 	}
 
@@ -192,7 +196,7 @@ export function taperColliderNW(x: number, y: number, w: number, h: number, tall
 export function taperColliderNE(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x + ix, y + iy, w - ix, 1, tall));
 	}
 
@@ -202,7 +206,7 @@ export function taperColliderNE(x: number, y: number, w: number, h: number, tall
 export function skewColliderNW(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x - ix, y + iy, w, 1, tall));
 	}
 
@@ -212,7 +216,7 @@ export function skewColliderNW(x: number, y: number, w: number, h: number, tall?
 export function skewColliderNE(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x + ix, y + iy, w, 1, tall));
 	}
 
@@ -222,7 +226,7 @@ export function skewColliderNE(x: number, y: number, w: number, h: number, tall?
 export function triangleColliderNW(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x - ix, y + iy, w + ix, 1, tall));
 	}
 
@@ -232,7 +236,7 @@ export function triangleColliderNW(x: number, y: number, w: number, h: number, t
 export function triangleColliderNE(x: number, y: number, w: number, h: number, tall?: boolean) {
 	const colliders: Collider[] = [];
 
-	for (let iy = 0, ix = 2; iy < h; iy++ , ix += ((iy % 3) ? 1 : 2)) {
+	for (let iy = 0, ix = 2; iy < h; iy++, ix += iy % 3 ? 1 : 2) {
 		colliders.push(collider(x, y + iy, w + ix, 1, tall));
 	}
 
@@ -258,7 +262,7 @@ export function mixInteractAt(interactRange?: number): MixinEntity {
 
 export function mixMinimap(color: number, rect: Rect, order = 1): MixinEntity {
 	const minimap = { color, rect, order };
-	return base => base.minimap = minimap;
+	return base => (base.minimap = minimap);
 }
 
 export interface AnimatedMixinOptions {
@@ -271,14 +275,17 @@ export interface AnimatedMixinOptions {
 }
 
 export function mixAnimation(
-	anim: AnimatedRenderable, fps: number, dx: number, dy: number,
-	{ color = WHITE, repeat = true, animations, lightSprite, useGameTime, flipped = false }: AnimatedMixinOptions = {}
+	anim: AnimatedRenderable,
+	fps: number,
+	dx: number,
+	dy: number,
+	{ color = WHITE, repeat = true, animations, lightSprite, useGameTime, flipped = false }: AnimatedMixinOptions = {},
 ): MixinEntity {
 	const bounds = getBoundsForFrames(anim.frames, -dx, -dy);
 	const lightSpriteBounds = lightSprite ? getBoundsForFrames(lightSprite.frames, -dx, -dy) : rect(0, 0, 0, 0);
 
 	if (SERVER && !TESTS) {
-		return base => base.bounds = bounds;
+		return base => (base.bounds = bounds);
 	}
 
 	return base => {
@@ -303,7 +310,7 @@ export function mixAnimation(
 
 				return at(animations[animation], frameNumber) || 0;
 			} else {
-				return repeat ? (frameNumber % anim.frames.length) : Math.min(frameNumber, anim.frames.length - 1);
+				return repeat ? frameNumber % anim.frames.length : Math.min(frameNumber, anim.frames.length - 1);
 			}
 		};
 
@@ -376,8 +383,14 @@ export function mixAnimation(
 }
 
 export function mixDrawWindow(
-	sprite: PaletteRenderable, dx: number, dy: number, paletteIndex: number,
-	padLeft: number, padTop: number, padRight: number, padBottom: number,
+	sprite: PaletteRenderable,
+	dx: number,
+	dy: number,
+	paletteIndex: number,
+	padLeft: number,
+	padTop: number,
+	padRight: number,
+	padBottom: number,
 ): MixinEntity {
 	const bounds = getRenderableBounds(sprite, dx, dy);
 
@@ -402,8 +415,13 @@ export function mixDrawWindow(
 				}
 
 				if (sprite.color !== undefined) {
-					batch.drawRect(options.lightColor,
-						x + padLeft, y + padTop, sprite.color.w - (padLeft + padRight), sprite.color.h - (padTop + padBottom));
+					batch.drawRect(
+						options.lightColor,
+						x + padLeft,
+						y + padTop,
+						sprite.color.w - (padLeft + padRight),
+						sprite.color.h - (padTop + padBottom),
+					);
 					batch.drawSprite(sprite.color, WHITE, palette, x, y);
 				}
 			};
@@ -578,20 +596,28 @@ const dirUpDown = [
 		shadowDown: sprites.direction_shadow_down_right.shadow,
 		spriteUp: sprites.direction_up_left.color,
 		spriteDown: sprites.direction_down_right.color,
-		shadowUpDX: -6, shadowUpDY: -9,
-		shadowDownDX: -1, shadowDownDY: 3,
-		upDX: -6, upDY: -7,
-		downDX: -1, downDY: 5,
+		shadowUpDX: -6,
+		shadowUpDY: -9,
+		shadowDownDX: -1,
+		shadowDownDY: 3,
+		upDX: -6,
+		upDY: -7,
+		downDX: -1,
+		downDY: 5,
 	},
 	{
 		shadowUp: sprites.direction_shadow_up_right.shadow,
 		shadowDown: sprites.direction_shadow_down_left.shadow,
 		spriteUp: sprites.direction_up_right.color,
 		spriteDown: sprites.direction_down_left.color,
-		shadowUpDX: 1, shadowUpDY: -9,
-		shadowDownDX: -4, shadowDownDY: 3,
-		upDX: 1, upDY: -7,
-		downDX: -5, downDY: 4,
+		shadowUpDX: 1,
+		shadowUpDY: -9,
+		shadowDownDX: -4,
+		shadowDownDY: 3,
+		upDX: 1,
+		upDY: -7,
+		downDX: -5,
+		downDY: 4,
 	},
 ];
 
@@ -611,12 +637,21 @@ export function mixDrawDirectionSign(): MixinEntity {
 		base.bounds = rect(-20, -boundsH, 40, boundsH);
 		base.options = options;
 
-		if (SERVER && !TESTS)
-			return;
+		if (SERVER && !TESTS) return;
 
 		const {
-			shadowUp, shadowDown, spriteUp, spriteDown, upDX, upDY, downDX, downDY,
-			shadowUpDX, shadowUpDY, shadowDownDX, shadowDownDY,
+			shadowUp,
+			shadowDown,
+			spriteUp,
+			spriteDown,
+			upDX,
+			upDY,
+			downDX,
+			downDY,
+			shadowUpDX,
+			shadowUpDY,
+			shadowDownDX,
+			shadowDownDY,
 		} = dirUpDown[r];
 		const leftShadow = !!w.length;
 		const rightShadow = !!e.length;
@@ -681,8 +716,7 @@ export function mixLight(color: number, dx: number, dy: number, w: number, h: nu
 			base.lightScaleAdjust = 1;
 			base.lightBounds = rect(-(dx + w / 2), -(dy + h / 2), w, h);
 			base.drawLight = function (batch: SpriteBatch) {
-				if (!this.lightOn)
-					return;
+				if (!this.lightOn) return;
 
 				const x = toScreenX(this.x);
 				const y = toScreenYWithZ(this.y, this.z);
@@ -706,8 +740,7 @@ export function mixLightSprite(sprite: Sprite, color: number, dx: number, dy: nu
 			base.lightSpriteColor = color;
 			base.lightSpriteBounds = getBounds(sprite, -dx, -dy);
 			base.drawLightSprite = function (batch: SpriteBatch) {
-				if (!this.lightSpriteOn)
-					return;
+				if (!this.lightSpriteOn) return;
 
 				const x = toScreenX(this.x) - this.lightSpriteX!;
 				const y = toScreenYWithZ(this.y, this.z) - this.lightSpriteY!;
@@ -725,8 +758,7 @@ export function mixDrawRain(): MixinEntity {
 	return base => {
 		base.bounds = bounds;
 
-		if (SERVER && !TESTS)
-			return;
+		if (SERVER && !TESTS) return;
 
 		let time = 0;
 		const palette = createPalette(sprites.defaultPalette);
@@ -781,17 +813,14 @@ export function toggleWalls() {
 	fullWalls = !fullWalls;
 }
 
-export function mixDrawWall(
-	full: PaletteRenderable, half: PaletteRenderable, dx: number, dy: number, dy2: number
-): MixinEntity {
+export function mixDrawWall(full: PaletteRenderable, half: PaletteRenderable, dx: number, dy: number, dy2: number): MixinEntity {
 	const fullBounds = getRenderableBounds(full, dx, dy);
 	// const halfBounds = getRenderableBounds(half, dx, dy2);
 
 	return base => {
 		base.bounds = fullBounds; // fullWalls ? fullBounds : halfBounds
 
-		if (SERVER && !TESTS)
-			return;
+		if (SERVER && !TESTS) return;
 
 		const fullPalette = createPalette(att(full.palettes, 0));
 		const halfPalette = createPalette(att(half.palettes, 0));
@@ -810,25 +839,21 @@ export function mixDrawWall(
 	};
 }
 
-export function mixDrawSpider(
-	sprite: PaletteRenderable, dx: number, dy: number
-): MixinEntity {
+export function mixDrawSpider(sprite: PaletteRenderable, dx: number, dy: number): MixinEntity {
 	const heightOffset = 30;
 	const spriteColor = sprite.color;
 	const baseBounds = getRenderableBounds(sprite, dx, dy);
 
-	if (!spriteColor)
-		throw new Error('Missing sprite');
+	if (!spriteColor) throw new Error('Missing sprite');
 
 	return base => {
-		const { height, time } = base.options as { height: number; time: number; };
+		const { height, time } = base.options as { height: number; time: number };
 		const bounds = { ...baseBounds };
-		bounds.y -= (height + heightOffset);
+		bounds.y -= height + heightOffset;
 		bounds.h += height;
 		base.bounds = bounds;
 
-		if (SERVER && !TESTS)
-			return;
+		if (SERVER && !TESTS) return;
 
 		const palette = createPalette(sprite.palettes && sprite.palettes[0]);
 		base.palettes = [palette];

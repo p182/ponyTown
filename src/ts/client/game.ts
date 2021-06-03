@@ -2,23 +2,72 @@ import { Injectable, NgZone } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { debounce } from 'lodash';
 import {
-	EntityState, Pony, Notification, TileType, Action, IServerActions, Season, WorldState, Holiday,
-	TileSets, ChatMessage, PartyInfo, Entity, DrawOptions, Engine, defaultDrawOptions, PonyStateFlags,
-	DoAction, ChatType, WorldStateFlags, DebugFlags, MessageType, AccountSettings, Matrix4,
-	FakeEntity, SelectFlags, WorldMap, MapType, MapFlags, EntityFlags, houseTiles, isValidTile
+	EntityState,
+	Pony,
+	Notification,
+	TileType,
+	Action,
+	IServerActions,
+	Season,
+	WorldState,
+	Holiday,
+	TileSets,
+	ChatMessage,
+	PartyInfo,
+	Entity,
+	DrawOptions,
+	Engine,
+	defaultDrawOptions,
+	PonyStateFlags,
+	DoAction,
+	ChatType,
+	WorldStateFlags,
+	DebugFlags,
+	MessageType,
+	AccountSettings,
+	Matrix4,
+	FakeEntity,
+	SelectFlags,
+	WorldMap,
+	MapType,
+	MapFlags,
+	EntityFlags,
+	houseTiles,
+	isValidTile,
 } from '../common/interfaces';
+import { clamp, lengthOfXY, setFlag, hasFlag, boundsIntersect, point, toInt, lerpColor, distanceXY } from '../common/utils';
 import {
-	clamp, lengthOfXY, setFlag, hasFlag, boundsIntersect, point, toInt, lerpColor, distanceXY
-} from '../common/utils';
-import {
-	OFFLINE_PONY, MAX_SCALE, SUPPORTER_PONY, HOUR, MIN_SCALE, CAMERA_WIDTH_MIN, CAMERA_WIDTH_MAX,
-	CAMERA_HEIGHT_MIN, CAMERA_HEIGHT_MAX, SECOND, TILE_CHANGE_RANGE, MINUTE, PONY_TYPE,
-	REGION_SIZE, tileWidth, tileHeight
+	OFFLINE_PONY,
+	MAX_SCALE,
+	SUPPORTER_PONY,
+	HOUR,
+	MIN_SCALE,
+	CAMERA_WIDTH_MIN,
+	CAMERA_WIDTH_MAX,
+	CAMERA_HEIGHT_MIN,
+	CAMERA_HEIGHT_MAX,
+	SECOND,
+	TILE_CHANGE_RANGE,
+	MINUTE,
+	PONY_TYPE,
+	REGION_SIZE,
+	tileWidth,
+	tileHeight,
 } from '../common/constants';
 import {
-	ensureAllVisiblePoniesAreDecoded, invalidatePalettes, updateMap, updateEntities,
-	getMapHeightAt, updateEntitiesWithNames, updateEntitiesCoverLifted, getTile,
-	pickEntities, updateEntitiesTriggers, getElevation, setElevation, createWorldMap
+	ensureAllVisiblePoniesAreDecoded,
+	invalidatePalettes,
+	updateMap,
+	updateEntities,
+	getMapHeightAt,
+	updateEntitiesWithNames,
+	updateEntitiesCoverLifted,
+	getTile,
+	pickEntities,
+	updateEntitiesTriggers,
+	getElevation,
+	setElevation,
+	createWorldMap,
 } from '../common/worldMap';
 import { updateCamera, centerCameraOn, screenToWorld, createCamera } from '../common/camera';
 import { WHITE, BLACK, SHADOW_COLOR, getTileColor, RED, CAVE_LIGHT, CAVE_SHADOW } from '../common/colors';
@@ -42,8 +91,16 @@ import { roundPositionX, roundPositionY, toScreenX, toScreenY } from '../common/
 import { StorageService } from '../components/services/storageService';
 import { SettingsService } from '../components/services/settingsService';
 import {
-	isPonyLying, isPonySitting, setPonyState, getInteractBounds, entityInRange, isFacingRight,
-	isHidden, updateEntityVelocity, releaseEntity, addChatBubble
+	isPonyLying,
+	isPonySitting,
+	setPonyState,
+	getInteractBounds,
+	entityInRange,
+	isFacingRight,
+	isHidden,
+	updateEntityVelocity,
+	releaseEntity,
+	addChatBubble,
 } from '../common/entityUtils';
 import { vectorToDir, dirToVector, flagsToSpeed, encodeMovement, isMovingRight } from '../common/movementUtils';
 import { createDefaultButtonActions, useAction, deserializeActions } from './buttonActions';
@@ -53,8 +110,15 @@ import { restorePlayerPosition, savePlayerPosition } from './sec';
 import { drawEntityLights, drawEntityLightSprites, drawMap, drawDebugRegions } from './draw';
 import { updateTileSets, initializeTileHeightmaps } from './tileUtils';
 import {
-	downAction, upAction, turnHeadAction, boopAction, interact, toggleWall, editorMoveEntities,
-	editorSelectEntities, editorDragEntities
+	downAction,
+	upAction,
+	turnHeadAction,
+	boopAction,
+	interact,
+	toggleWall,
+	editorMoveEntities,
+	editorSelectEntities,
+	editorDragEntities,
 } from './playerActions';
 import { fontSmallPal, fontSmall, font, fontMono } from './fonts';
 import { drawText, drawOutlinedText, measureText } from '../graphics/spriteFont';
@@ -66,7 +130,11 @@ import { bindFrameBuffer, unbindFrameBuffer, resizeFrameBuffer } from '../graphi
 import { WebGL, initWebGL, disposeWebGL, initWebGLResources } from './webgl';
 import { bindTexture } from '../graphics/webgl/texture2d';
 import {
-	normalSpriteSheet, paletteSpriteSheet, defaultPalette, wall_h_placeholder, wall_v_placeholder
+	normalSpriteSheet,
+	paletteSpriteSheet,
+	defaultPalette,
+	wall_h_placeholder,
+	wall_v_placeholder,
 } from '../generated/sprites';
 import { createMat4, ortho } from '../common/mat4';
 import { Model } from '../components/services/model';
@@ -130,10 +198,10 @@ function integerPixelRatio() {
 function getMovementFlag(x: number, y: number, walkKey: boolean) {
 	const len = lengthOfXY(x, y);
 	const walk = len < 0.5 || walkKey;
-	return (x || y) ? (walk ? EntityState.PonyWalking : EntityState.PonyTrotting) : EntityState.None;
+	return x || y ? (walk ? EntityState.PonyWalking : EntityState.PonyTrotting) : EntityState.None;
 }
 
-export const actionButtons: { dirty: boolean; draw(): void; }[] = [];
+export const actionButtons: { dirty: boolean; draw(): void }[] = [];
 
 export function redrawActionButtons(force: boolean) {
 	for (const button of actionButtons) {
@@ -146,7 +214,7 @@ export function redrawActionButtons(force: boolean) {
 @Injectable({ providedIn: 'root' })
 export class PonyTownGame implements Game {
 	fallbackPonies = new Map<number, Pony>();
-	positions: { x: number; y: number; moved: boolean; }[] = [];
+	positions: { x: number; y: number; moved: boolean }[] = [];
 	lastChatMessageType = ChatType.Say;
 	nextFriendsCRC = 0;
 	editingActions = false;
@@ -183,12 +251,12 @@ export class PonyTownGame implements Game {
 	onFrame = new Subject<void>();
 	onMessage = new Subject<ChatMessage>();
 	messageQueue: ChatMessage[] = [];
-	lastWhisperFrom: { entityId: number; accountId?: string; } | undefined = undefined;
+	lastWhisperFrom: { entityId: number; accountId?: string } | undefined = undefined;
 	onPonyAddOrUpdate = new Subject<Pony>();
 	onActionsUpdate = new Subject<void>();
 	onPartyUpdate = new Subject<void>();
 	announcements = new Subject<string>();
-	onEntityIdUpdate = new Subject<{ old: number; new: number; }>();
+	onEntityIdUpdate = new Subject<{ old: number; new: number }>();
 	loaded = false;
 	fullyLoaded = false;
 	fps = 0;
@@ -278,7 +346,7 @@ export class PonyTownGame implements Game {
 		this.audio.setVolume(this.volume);
 		this.debug = storage.getJSON('debug', {});
 		this.drawOptions.error = message => errorReporter.reportError(message);
-		this.onActionsUpdate.subscribe(() => this.actionsChanged = true);
+		this.onActionsUpdate.subscribe(() => (this.actionsChanged = true));
 
 		if (DEVELOPMENT) {
 			attachDebugMethod('setScale', (x: number) => this.setScale(x));
@@ -292,10 +360,10 @@ export class PonyTownGame implements Game {
 		return !!this.settings.browser.lowGraphicsMode || this.failedFBO;
 	}
 	get frameDelay() {
-		return (this.settings.browser.powerSaving || this.editingActions) ? (1000 / 45) : 0;
+		return this.settings.browser.powerSaving || this.editingActions ? 1000 / 45 : 0;
 	}
 	get engine() {
-		return BETA ? (this.debug.engine || Engine.Default) : Engine.Default;
+		return BETA ? this.debug.engine || Engine.Default : Engine.Default;
 	}
 	set engine(value: Engine) {
 		if (BETA) {
@@ -308,8 +376,8 @@ export class PonyTownGame implements Game {
 	}
 	apply = (func: () => void) => {
 		return this.zone.run(func);
-	}
-	applyChanges = () => this.zone.run(() => { });
+	};
+	applyChanges = () => this.zone.run(() => {});
 	private getScale() {
 		const defaultScale = pixelRatio() > 1 ? 3 : 2;
 		const scale = toInt(this.settings.browser.scale) || defaultScale;
@@ -347,11 +415,9 @@ export class PonyTownGame implements Game {
 		this.setScale(Math.max(1, this.scale - 1));
 	}
 	select(pony: Pony | undefined) {
-		if (this.selected === pony)
-			return;
+		if (this.selected === pony) return;
 
-		if (pony && isHidden(pony) && !this.mod)
-			return;
+		if (pony && isHidden(pony) && !this.mod) return;
 
 		this.zone.run(() => {
 			if (this.selected) {
@@ -378,8 +444,7 @@ export class PonyTownGame implements Game {
 		this.send(server => server.select(id, fetchEx ? SelectFlags.FetchEx : SelectFlags.None));
 	}, 300);
 	load() {
-		return loadAndInitSpriteSheets()
-			.then(initializeTileHeightmaps);
+		return loadAndInitSpriteSheets().then(initializeTileHeightmaps);
 	}
 	init() {
 		this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -444,13 +509,25 @@ export class PonyTownGame implements Game {
 			});
 
 			[
-				Key.KEY_1, Key.KEY_2, Key.KEY_3, Key.KEY_4, Key.KEY_5, Key.KEY_6,
-				Key.KEY_7, Key.KEY_8, Key.KEY_9, Key.KEY_0, Key.DASH, Key.EQUALS,
-			].forEach((key, index) => this.input.onPressed(key, () => {
-				if (this.actions[index]) {
-					this.zone.run(() => useAction(this, this.actions[index].action));
-				}
-			}));
+				Key.KEY_1,
+				Key.KEY_2,
+				Key.KEY_3,
+				Key.KEY_4,
+				Key.KEY_5,
+				Key.KEY_6,
+				Key.KEY_7,
+				Key.KEY_8,
+				Key.KEY_9,
+				Key.KEY_0,
+				Key.DASH,
+				Key.EQUALS,
+			].forEach((key, index) =>
+				this.input.onPressed(key, () => {
+					if (this.actions[index]) {
+						this.zone.run(() => useAction(this, this.actions[index].action));
+					}
+				}),
+			);
 
 			const addDebugShortcut = (num: number, name: string, action: () => void) => {
 				this.input.onPressed(numpad[num], () => {
@@ -479,28 +556,35 @@ export class PonyTownGame implements Game {
 						this.send(server => server.editorAction({ type: 'undo' }));
 					}
 				});
-				this.input.onPressed(Key.DELETE, this.applied(() => {
-					const entities = this.editor.selectedEntities.map(e => e.id);
-					this.send(server => server.editorAction({ type: 'remove', entities }));
-					this.editor.selectedEntities.length = 0;
-				}));
+				this.input.onPressed(
+					Key.DELETE,
+					this.applied(() => {
+						const entities = this.editor.selectedEntities.map(e => e.id);
+						this.send(server => server.editorAction({ type: 'remove', entities }));
+						this.editor.selectedEntities.length = 0;
+					}),
+				);
 
 				[
 					{ key: Key.LEFT, dx: -1 / tileWidth, dy: 0 },
 					{ key: Key.RIGHT, dx: 1 / tileWidth, dy: 0 },
 					{ key: Key.UP, dx: 0, dy: -1 / tileHeight },
 					{ key: Key.DOWN, dx: 0, dy: 1 / tileHeight },
-				].forEach(({ key, dx, dy }) => this.input.onPressed(key, () => {
-					this.editor.selectedEntities.forEach(({ id, x, y }) => {
-						this.send(server => server.editorAction({
-							type: 'move',
-							entities: [{ id, x: x + dx, y: y + dy }],
-						}));
-					});
-				}));
+				].forEach(({ key, dx, dy }) =>
+					this.input.onPressed(key, () => {
+						this.editor.selectedEntities.forEach(({ id, x, y }) => {
+							this.send(server =>
+								server.editorAction({
+									type: 'move',
+									entities: [{ id, x: x + dx, y: y + dy }],
+								}),
+							);
+						});
+					}),
+				);
 
 				// debug
-				this.input.onReleased(Key.KEY_M, () => this.showMinimap = !this.showMinimap);
+				this.input.onReleased(Key.KEY_M, () => (this.showMinimap = !this.showMinimap));
 				this.input.onPressed(Key.KEY_G, () => {
 					if (this.input.isPressed(Key.SHIFT)) {
 						let faceDir = 0;
@@ -587,8 +671,7 @@ export class PonyTownGame implements Game {
 					this.debug.showPalette = !this.debug.showPalette;
 					this.saveDebug();
 				});
-				this.input.onPressed(Key.F8, () => {
-				});
+				this.input.onPressed(Key.F8, () => {});
 
 				let loseContext: WEBGL_lose_context | null = null;
 
@@ -604,25 +687,29 @@ export class PonyTownGame implements Game {
 				this.input.onPressed(Key.F10, () => {
 					this.settings.browser.brightNight = !this.settings.browser.brightNight;
 				});
-				this.input.onPressed(Key.KEY_R, this.applied(() => {
-					if (!Date.now() && this.player) {
-						const bounds = getInteractBounds(this.player);
-						const entities = this.map.entities.filter(e =>
-							e !== this.player && boundsIntersect(e.x, e.y, e.bounds, 0, 0, bounds));
+				this.input.onPressed(
+					Key.KEY_R,
+					this.applied(() => {
+						if (!Date.now() && this.player) {
+							const bounds = getInteractBounds(this.player);
+							const entities = this.map.entities.filter(
+								e => e !== this.player && boundsIntersect(e.x, e.y, e.bounds, 0, 0, bounds),
+							);
 
-						if (entities.length) {
-							const entity = entities[0];
-							const typeName = getEntityTypeName(entity.type);
-							this.announce(`${typeName}${entities.length > 1 ? ` (1 of ${entities.length})` : ''}`);
-						} else {
-							this.announce('nothing');
+							if (entities.length) {
+								const entity = entities[0];
+								const typeName = getEntityTypeName(entity.type);
+								this.announce(`${typeName}${entities.length > 1 ? ` (1 of ${entities.length})` : ''}`);
+							} else {
+								this.announce('nothing');
+							}
 						}
-					}
 
-					// if (this.player) this.player.swimming = !this.player.swimming;
-					// this.editorElevation = '';
-					// this.editorSpecial = this.editorSpecial ? '' : 'ramp-e';
-				}));
+						// if (this.player) this.player.swimming = !this.player.swimming;
+						// this.editorElevation = '';
+						// this.editorSpecial = this.editorSpecial ? '' : 'ramp-e';
+					}),
+				);
 				this.input.onPressed(Key.KEY_J, () => {
 					if (this.player) {
 						this.player.ponyState.headTilt = (this.player.ponyState.headTilt || 0) + 0.5;
@@ -640,7 +727,8 @@ export class PonyTownGame implements Game {
 					if (this.player) {
 						console.log(
 							`position: ${this.player.x.toFixed(2)}, ${this.player.y.toFixed(2)} ` +
-							`region: ${Math.floor(this.player.x / REGION_SIZE)}, ${Math.floor(this.player.y / REGION_SIZE)}`);
+								`region: ${Math.floor(this.player.x / REGION_SIZE)}, ${Math.floor(this.player.y / REGION_SIZE)}`,
+						);
 					}
 				});
 				this.input.onReleased(Key.KEY_I, () => {
@@ -652,8 +740,8 @@ export class PonyTownGame implements Game {
 				// this.input.onPressed(Key.KEY_G, () => this.wind = Math.max(0, this.wind - 1));
 				// this.input.onReleased(Key.KEY_M, () => this.send(server => server.editorAction({ type: 'party' })));
 				this.input.onPressed(Key.F8, () => toggleWalls());
-				this.input.onPressed(Key.COMMA, () => this.deltaMultiplier = 0.5);
-				this.input.onPressed(Key.PERIOD, () => this.deltaMultiplier = 2);
+				this.input.onPressed(Key.COMMA, () => (this.deltaMultiplier = 0.5));
+				this.input.onPressed(Key.PERIOD, () => (this.deltaMultiplier = 2));
 			}
 
 			window.addEventListener('resize', () => {
@@ -798,10 +886,15 @@ export class PonyTownGame implements Game {
 		this.nextFriendsCRC = performance.now() + 5 * SECOND;
 
 		if (DEVELOPMENT) {
-			initLogger(message => this.onMessage.next({
-				id: 1, crc: 1, name: 'log', type: MessageType.System,
-				message: `[${((performance.now() | 0) % 10000)}] ${message}`
-			}));
+			initLogger(message =>
+				this.onMessage.next({
+					id: 1,
+					crc: 1,
+					name: 'log',
+					type: MessageType.System,
+					message: `[${(performance.now() | 0) % 10000}] ${message}`,
+				}),
+			);
 		}
 
 		if (DEVELOPMENT && LOG_POSITION) {
@@ -825,8 +918,7 @@ export class PonyTownGame implements Game {
 
 		updateMap(this.map, delta);
 
-		if (!this.socket || !this.socket.isConnected || !this.element)
-			return;
+		if (!this.socket || !this.socket.isConnected || !this.element) return;
 
 		this.updateGameTime(delta);
 
@@ -876,7 +968,7 @@ export class PonyTownGame implements Game {
 			const x = this.fullyLoaded ? input.axisX : 0;
 			const y = this.fullyLoaded ? input.axisY : 0;
 			const dir = vectorToDir(x, y);
-			const vec = (x || y) ? dirToVector(dir) : { x: 0, y: 0 };
+			const vec = x || y ? dirToVector(dir) : { x: 0, y: 0 };
 			const walk = input.isMovementFromButtons ? (this.settings.browser.walkByDefault ? !shift : shift) : false;
 			const flags = getMovementFlag(x, y, walk);
 			const speed = flagsToSpeed(flags);
@@ -971,8 +1063,8 @@ export class PonyTownGame implements Game {
 						}
 					} else if (BETA && this.editor.tile !== -1) {
 						if (this.editor.brushSize > 1) {
-							const x = Math.floor((hover.x - (this.editor.brushSize / 2)));
-							const y = Math.floor((hover.y - (this.editor.brushSize / 2)));
+							const x = Math.floor(hover.x - this.editor.brushSize / 2);
+							const y = Math.floor(hover.y - this.editor.brushSize / 2);
 							server.editorAction({ type: 'tile', x, y, tile: this.editor.tile, size: this.editor.brushSize });
 						} else {
 							const x = hover.x | 0;
@@ -1042,9 +1134,9 @@ export class PonyTownGame implements Game {
 				const isHeadTurned = hasFlag(player.state, EntityState.HeadTurned);
 				const isHeadFacingRight = right ? !isHeadTurned : isHeadTurned;
 
-				if (((input.axis2X < 0 && isHeadFacingRight) || (input.axis2X > 0 && !isHeadFacingRight))) {
+				if ((input.axis2X < 0 && isHeadFacingRight) || (input.axis2X > 0 && !isHeadFacingRight)) {
 					if (server.action(Action.TurnHead) as any) {
-						player.state = (player.state) ^ EntityState.HeadTurned;
+						player.state = player.state ^ EntityState.HeadTurned;
 					}
 				}
 			}
@@ -1122,8 +1214,8 @@ export class PonyTownGame implements Game {
 		this.timeSize += delta;
 
 		if (this.timeSize > 1) {
-			this.sent = 8 * this.socket!.sentSize / this.timeSize / 1024;
-			this.recv = 8 * this.socket!.receivedSize / this.timeSize / 1024;
+			this.sent = (8 * this.socket!.sentSize) / this.timeSize / 1024;
+			this.recv = (8 * this.socket!.receivedSize) / this.timeSize / 1024;
 			this.socket!.sentSize = 0;
 			this.socket!.receivedSize = 0;
 			this.timeSize = 0;
@@ -1170,8 +1262,7 @@ export class PonyTownGame implements Game {
 		redrawActionButtons(this.actionsChanged);
 		this.actionsChanged = false;
 
-		if (!this.webgl)
-			return;
+		if (!this.webgl) return;
 
 		if (this.webgl.gl.isContextLost()) {
 			DEVELOPMENT && console.warn('Context is lost');
@@ -1181,14 +1272,14 @@ export class PonyTownGame implements Game {
 		// start frame
 		const now = performance.now();
 
-		if ((now - this.lastDraw) < this.frameDelay) {
+		if (now - this.lastDraw < this.frameDelay) {
 			return;
 		}
 
 		this.frames++;
 
-		if ((now - this.lastFps) > 1000) {
-			this.drawFps = this.frames * 1000 / (now - this.lastFps);
+		if (now - this.lastFps > 1000) {
+			this.drawFps = (this.frames * 1000) / (now - this.lastFps);
 			this.frames = 0;
 			this.lastFps = now;
 		}
@@ -1196,10 +1287,8 @@ export class PonyTownGame implements Game {
 		this.lastDraw = now;
 
 		// draw
-		const {
-			gl, frameBuffer, frameBufferSheet, spriteShader, spriteBatch, lightShader, paletteBatch, paletteShader,
-			palettes,
-		} = this.webgl;
+		const { gl, frameBuffer, frameBufferSheet, spriteShader, spriteBatch, lightShader, paletteBatch, paletteShader, palettes } =
+			this.webgl;
 
 		TIMING && timeStart('draw');
 
@@ -1405,10 +1494,8 @@ export class PonyTownGame implements Game {
 		paletteBatch.begin();
 
 		if (!this.hideText) {
-			drawNames(
-				paletteBatch, this.map.entitiesWithNames, this.player, this.party, this.camera, this.hover, this.mod, palettes);
-			drawChat(
-				paletteBatch, this.map.entitiesWithChat, this.camera, this.mod, palettes, this.hidePublicChat);
+			drawNames(paletteBatch, this.map.entitiesWithNames, this.player, this.party, this.camera, this.hover, this.mod, palettes);
+			drawChat(paletteBatch, this.map.entitiesWithChat, this.camera, this.mod, palettes, this.hidePublicChat);
 		}
 
 		if (!this.socket || !this.socket.isConnected) {
@@ -1419,7 +1506,7 @@ export class PonyTownGame implements Game {
 			} else {
 				this.drawMessage(this.webgl, 'Loading...');
 			}
-		} else if ((performance.now() - this.socket.lastPacket) > CONNECTION_ISSUE_TIMEOUT) {
+		} else if (performance.now() - this.socket.lastPacket > CONNECTION_ISSUE_TIMEOUT) {
 			// this.drawMessage('Connection issues...');
 		}
 
@@ -1447,13 +1534,13 @@ export class PonyTownGame implements Game {
 
 			if (x >= 0 && y >= 0 && x < this.map.width && y < this.map.height) {
 				if (dx > dy) {
-					if ((dx + dy) < 1) {
+					if (dx + dy < 1) {
 						paletteBatch.drawSprite(wall_h_placeholder.color, color, palette, screenX, screenY - 15);
 					} else {
 						paletteBatch.drawSprite(wall_v_placeholder.color, color, palette, screenX + tileWidth - 4, screenY - 12);
 					}
 				} else {
-					if ((dx + dy) < 1) {
+					if (dx + dy < 1) {
 						paletteBatch.drawSprite(wall_v_placeholder.color, color, palette, screenX - 4, screenY - 12);
 					} else {
 						paletteBatch.drawSprite(wall_h_placeholder.color, color, palette, screenX, screenY + tileHeight - 15);
@@ -1612,7 +1699,14 @@ export class PonyTownGame implements Game {
 			bindTexture(gl, 1, this.paletteManager.texture);
 			paletteBatch.begin();
 			this.entitiesDrawn = drawMap(
-				paletteBatch, map, this.camera, this.player, options, this.tileSets, this.editor.selectedEntities);
+				paletteBatch,
+				map,
+				this.camera,
+				this.player,
+				options,
+				this.tileSets,
+				this.editor.selectedEntities,
+			);
 			paletteBatch.end();
 
 			if (this.highlightEntity && this.highlightEntity.draw) {
@@ -1660,11 +1754,11 @@ export class PonyTownGame implements Game {
 		let w = Math.ceil(this.windowWidth * ratio);
 		let h = Math.ceil(this.windowHeight * ratio);
 
-		while ((w % 12) !== 0) {
+		while (w % 12 !== 0) {
 			w++;
 		}
 
-		while ((h % 12) !== 0) {
+		while (h % 12 !== 0) {
 			h++;
 		}
 
@@ -1696,7 +1790,7 @@ export class PonyTownGame implements Game {
 	}
 	changePlaceEntity(reverse: boolean) {
 		if (reverse) {
-			this.placeEntity = this.placeEntity === 0 ? (placeableEntities.length - 1) : (this.placeEntity - 1);
+			this.placeEntity = this.placeEntity === 0 ? placeableEntities.length - 1 : this.placeEntity - 1;
 		} else {
 			this.placeEntity = (this.placeEntity + 1) % placeableEntities.length;
 		}
@@ -1707,7 +1801,7 @@ export class PonyTownGame implements Game {
 	}
 	changePlaceTile(reverse: boolean) {
 		if (reverse) {
-			this.placeTile = this.placeTile === 0 ? (houseTiles.length - 1) : (this.placeTile - 1);
+			this.placeTile = this.placeTile === 0 ? houseTiles.length - 1 : this.placeTile - 1;
 		} else {
 			this.placeTile = (this.placeTile + 1) % houseTiles.length;
 		}
@@ -1722,17 +1816,19 @@ export class PonyTownGame implements Game {
 	private updateStatsText() {
 		const { gl, spriteBatch, paletteBatch } = this.webgl!;
 
-		if ((performance.now() - this.lastStats) > SECOND) {
+		if (performance.now() - this.lastStats > SECOND) {
 			TIMING && timingCollate();
 
 			if (TIMING) {
 				const timings = timingCollate();
 				this.timingsText = timings
-					.map(({ selfTime, selfPercent, totalPercent, count, name }) =>
-						`${selfTime.toFixed(2).padStart(6)}ms` +
-						`${selfPercent.toFixed(2).padStart(6)}%` +
-						`${totalPercent.toFixed(2).padStart(6)}%` +
-						`${count.toString().padStart(6)} ${name}`)
+					.map(
+						({ selfTime, selfPercent, totalPercent, count, name }) =>
+							`${selfTime.toFixed(2).padStart(6)}ms` +
+							`${selfPercent.toFixed(2).padStart(6)}%` +
+							`${totalPercent.toFixed(2).padStart(6)}%` +
+							`${count.toString().padStart(6)} ${name}`,
+					)
 					.join('\n');
 			}
 
@@ -1754,8 +1850,8 @@ export class PonyTownGame implements Game {
 					const low = this.disableLighting ? ' LOW' : '';
 					const extraStats = this.extraStats;
 					const palSize = ` pal ${this.paletteManager.textureSize}`;
-					value = `${extraStats}${engine} ${fps} fps ${sent}/${recv} kb/s ${ponies} ` +
-						`ponies ${extra}${gl2}${low}${palSize}`.trim();
+					value =
+						`${extraStats}${engine} ${fps} fps ${sent}/${recv} kb/s ${ponies} ` + `ponies ${extra}${gl2}${low}${palSize}`.trim();
 				}
 
 				if (value !== this.statsTextValue) {

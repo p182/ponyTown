@@ -46,8 +46,7 @@ export function loadImageAsCanvas(filePath: string): HTMLCanvasElement {
 }
 
 export function generateDiff(expectedPath: string, actualPath: string) {
-	spawnSync(
-		'magick', ['compare', actualPath, expectedPath, actualPath.replace(/\.png$/, '-diff.png')], { encoding: 'utf8' });
+	spawnSync('magick', ['compare', actualPath, expectedPath, actualPath.replace(/\.png$/, '-diff.png')], { encoding: 'utf8' });
 }
 
 export async function clearCompareResults(group: string) {
@@ -55,16 +54,16 @@ export async function clearCompareResults(group: string) {
 }
 
 export function compareCanvases(
-	expected: HTMLCanvasElement | undefined, actual: HTMLCanvasElement | undefined,
-	filePath: string, group: string, diff = true
+	expected: HTMLCanvasElement | undefined,
+	actual: HTMLCanvasElement | undefined,
+	filePath: string,
+	group: string,
+	diff = true,
 ) {
 	try {
-		if (expected === actual)
-			return;
-		if (!expected)
-			throw new Error(`Expected canvas is null`);
-		if (!actual)
-			throw new Error(`Actual canvas is null`);
+		if (expected === actual) return;
+		if (!expected) throw new Error(`Expected canvas is null`);
+		if (!actual) throw new Error(`Actual canvas is null`);
 		if (expected.width !== actual.width || expected.height !== actual.height)
 			throw new Error(`Canvas size is different than expected`);
 
@@ -75,7 +74,7 @@ export function compareCanvases(
 		for (let i = 0; i < length; i++) {
 			if (expectedData.data[i] !== actualData.data[i]) {
 				const x = Math.floor(i / 4) % actualData.width;
-				const y = Math.floor((i / 4) / actualData.width);
+				const y = Math.floor(i / 4 / actualData.width);
 				throw new Error(`Actual canvas different than expected at (${x}, ${y})`);
 			}
 		}
@@ -97,7 +96,8 @@ export function compareCanvases(
 const testsPath = pathTo('src', 'tests', 'filters');
 
 export function readTestsFile(fileName: string): string[] {
-	const lines = fs.readFileSync(path.join(testsPath, fileName), 'utf8')
+	const lines = fs
+		.readFileSync(path.join(testsPath, fileName), 'utf8')
 		.split(/\r?\n/g)
 		.map(x => x.trim())
 		.filter(x => !!x);
@@ -114,7 +114,7 @@ export function readTestsFile(fileName: string): string[] {
 export function createFunctionWithPromiseHandler(ctor: any, ...deps: any[]): any {
 	return (...args: any[]) => {
 		let result: any;
-		const func = ctor(...deps, (promise: Promise<any>, handleError: any) => result = promise.catch(handleError));
+		const func = ctor(...deps, (promise: Promise<any>, handleError: any) => (result = promise.catch(handleError)));
 		func(...args);
 		return result;
 	};

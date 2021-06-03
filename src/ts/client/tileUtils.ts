@@ -1,6 +1,16 @@
 import {
-	PaletteManager, Season, TileSets, Region, TileType, Camera, PaletteSpriteBatch, DrawOptions, WorldMap, IMap,
-	Sprite, MapType
+	PaletteManager,
+	Season,
+	TileSets,
+	Region,
+	TileType,
+	Camera,
+	PaletteSpriteBatch,
+	DrawOptions,
+	WorldMap,
+	IMap,
+	Sprite,
+	MapType,
 } from '../common/interfaces';
 import * as sprites from '../generated/sprites';
 import { getRegionTile, getRegionElevation } from '../common/region';
@@ -13,12 +23,21 @@ import { releasePalette } from '../graphics/paletteManager';
 import { drawPixelText } from '../graphics/graphicsUtils';
 import { toScreenX, toScreenY, toWorldZ } from '../common/positionUtils';
 
-const TILE_COUNTS = [[0, 4], [2, 3], [4, 3], [6, 3], [8, 3], [13, 3], [14, 3], [47, 4]];
+const TILE_COUNTS = [
+	[0, 4],
+	[2, 3],
+	[4, 3],
+	[6, 3],
+	[8, 3],
+	[13, 3],
+	[14, 3],
+	[47, 4],
+];
 export const TILE_COUNT_MAP: number[] = [];
 export const TILE_MAP_MAP: number[] = [];
 
 TILE_COUNTS.forEach(([tile, count]) => {
-	while (TILE_COUNT_MAP.length < (tile + 1)) {
+	while (TILE_COUNT_MAP.length < tile + 1) {
 		TILE_COUNT_MAP.push(1);
 	}
 
@@ -38,32 +57,262 @@ for (let i = 0; i <= 47; i++) {
 // ----+----+----
 //  32 | 64 | 128
 export const TILE_MAP = [
-	46, 46, 22, 22, 46, 46, 22, 22, 21, 21, // 0-9
-	17, 11, 21, 21, 17, 11, 19, 19, 18, 18, // 10-19
-	19, 19, 12, 12, 14, 14, 24, 28, 14, 14, // 20-29
-	30, 6, 46, 46, 22, 22, 46, 46, 22, 22, // 30-39
-	21, 21, 17, 11, 21, 21, 17, 11, 19, 19, // 40-49
-	18, 18, 19, 19, 12, 12, 14, 14, 24, 28, // 50-59
-	14, 14, 30, 6, 20, 20, 13, 13, 20, 20, // 60-69
-	13, 13, 16, 16, 23, 32, 16, 16, 23, 32, // 70-79
-	15, 15, 25, 25, 15, 15, 34, 34, 26, 26, // 80-89
-	45, 41, 26, 26, 42, 36, 20, 20, 13, 13, // 90-99
-	20, 20, 13, 13, 10, 10, 31, 4, 10, 10, // 100-109
-	31, 4, 15, 15, 25, 25, 15, 15, 34, 34, // 110-119
-	27, 27, 43, 37, 27, 27, 35, 5, 46, 46, // 120-129
-	22, 22, 46, 46, 22, 22, 21, 21, 17, 11, // 130-139
-	21, 21, 17, 11, 19, 19, 18, 18, 19, 19, // 140-149
-	12, 12, 14, 14, 24, 28, 14, 14, 30, 6, // 150-159
-	46, 46, 22, 22, 46, 46, 22, 22, 21, 21, // 160-169
-	17, 11, 21, 21, 17, 11, 19, 19, 18, 18, // 170-179
-	19, 19, 12, 12, 14, 14, 24, 28, 14, 14, // 180-189
-	30, 6, 20, 20, 13, 13, 20, 20, 13, 13, // 190-199
-	16, 16, 23, 32, 16, 16, 23, 32, 9, 9, // 200-209
-	33, 33, 9, 9, 8, 8, 29, 29, 44, 39, // 210-219
-	29, 29, 38, 7, 20, 20, 13, 13, 20, 20, // 220-229
-	13, 13, 10, 10, 31, 4, 10, 10, 31, 4, // 230-239
-	9, 9, 33, 33, 9, 9, 8, 8, 2, 2, // 240-249
-	40, 3, 2, 2, 1, 0 // 250-255
+	46,
+	46,
+	22,
+	22,
+	46,
+	46,
+	22,
+	22,
+	21,
+	21, // 0-9
+	17,
+	11,
+	21,
+	21,
+	17,
+	11,
+	19,
+	19,
+	18,
+	18, // 10-19
+	19,
+	19,
+	12,
+	12,
+	14,
+	14,
+	24,
+	28,
+	14,
+	14, // 20-29
+	30,
+	6,
+	46,
+	46,
+	22,
+	22,
+	46,
+	46,
+	22,
+	22, // 30-39
+	21,
+	21,
+	17,
+	11,
+	21,
+	21,
+	17,
+	11,
+	19,
+	19, // 40-49
+	18,
+	18,
+	19,
+	19,
+	12,
+	12,
+	14,
+	14,
+	24,
+	28, // 50-59
+	14,
+	14,
+	30,
+	6,
+	20,
+	20,
+	13,
+	13,
+	20,
+	20, // 60-69
+	13,
+	13,
+	16,
+	16,
+	23,
+	32,
+	16,
+	16,
+	23,
+	32, // 70-79
+	15,
+	15,
+	25,
+	25,
+	15,
+	15,
+	34,
+	34,
+	26,
+	26, // 80-89
+	45,
+	41,
+	26,
+	26,
+	42,
+	36,
+	20,
+	20,
+	13,
+	13, // 90-99
+	20,
+	20,
+	13,
+	13,
+	10,
+	10,
+	31,
+	4,
+	10,
+	10, // 100-109
+	31,
+	4,
+	15,
+	15,
+	25,
+	25,
+	15,
+	15,
+	34,
+	34, // 110-119
+	27,
+	27,
+	43,
+	37,
+	27,
+	27,
+	35,
+	5,
+	46,
+	46, // 120-129
+	22,
+	22,
+	46,
+	46,
+	22,
+	22,
+	21,
+	21,
+	17,
+	11, // 130-139
+	21,
+	21,
+	17,
+	11,
+	19,
+	19,
+	18,
+	18,
+	19,
+	19, // 140-149
+	12,
+	12,
+	14,
+	14,
+	24,
+	28,
+	14,
+	14,
+	30,
+	6, // 150-159
+	46,
+	46,
+	22,
+	22,
+	46,
+	46,
+	22,
+	22,
+	21,
+	21, // 160-169
+	17,
+	11,
+	21,
+	21,
+	17,
+	11,
+	19,
+	19,
+	18,
+	18, // 170-179
+	19,
+	19,
+	12,
+	12,
+	14,
+	14,
+	24,
+	28,
+	14,
+	14, // 180-189
+	30,
+	6,
+	20,
+	20,
+	13,
+	13,
+	20,
+	20,
+	13,
+	13, // 190-199
+	16,
+	16,
+	23,
+	32,
+	16,
+	16,
+	23,
+	32,
+	9,
+	9, // 200-209
+	33,
+	33,
+	9,
+	9,
+	8,
+	8,
+	29,
+	29,
+	44,
+	39, // 210-219
+	29,
+	29,
+	38,
+	7,
+	20,
+	20,
+	13,
+	13,
+	20,
+	20, // 220-229
+	13,
+	13,
+	10,
+	10,
+	31,
+	4,
+	10,
+	10,
+	31,
+	4, // 230-239
+	9,
+	9,
+	33,
+	33,
+	9,
+	9,
+	8,
+	8,
+	2,
+	2, // 240-249
+	40,
+	3,
+	2,
+	2,
+	1,
+	0, // 250-255
 ];
 
 const enum TileTypeNumber {
@@ -82,13 +331,9 @@ const enum TileTypeNumber {
 	Boat = 12,
 }
 
-const waterFrames: number[] = [
-	TileTypeNumber.Water, TileTypeNumber.Water2, TileTypeNumber.Water3, TileTypeNumber.Water4
-];
+const waterFrames: number[] = [TileTypeNumber.Water, TileTypeNumber.Water2, TileTypeNumber.Water3, TileTypeNumber.Water4];
 
-export function updateTileSets(
-	paletteManager: PaletteManager, tileSets: TileSets | undefined, season: Season, mapType: MapType
-) {
+export function updateTileSets(paletteManager: PaletteManager, tileSets: TileSets | undefined, season: Season, mapType: MapType) {
 	if (tileSets) {
 		tileSets.forEach(t => releasePalette(t.palette));
 	}
@@ -101,64 +346,76 @@ export function createTileSets(paletteManager: PaletteManager, season: Season, m
 	const isAutumn = season === Season.Autumn;
 	const isCave = mapType === MapType.Cave;
 
-	const grassTiles = isCave ? sprites.caveTiles : (isWinter ? sprites.snowTiles : sprites.grassTiles);
-	const grassPalette = grassTiles.palettes[isCave ? 0 : (isAutumn ? 1 : 0)];
-	const icePaletteIndex = isWinter ? 2 : (isAutumn ? 1 : 0);
-	const waterPaletteIndex = isCave ? 3 : (isWinter ? 2 : (isAutumn ? 1 : 0));
+	const grassTiles = isCave ? sprites.caveTiles : isWinter ? sprites.snowTiles : sprites.grassTiles;
+	const grassPalette = grassTiles.palettes[isCave ? 0 : isAutumn ? 1 : 0];
+	const icePaletteIndex = isWinter ? 2 : isAutumn ? 1 : 0;
+	const waterPaletteIndex = isCave ? 3 : isWinter ? 2 : isAutumn ? 1 : 0;
 	const waterPalette = sprites.waterTiles1.palettes[waterPaletteIndex];
 
 	// indexes equal to TileTypeNumber values
 	return [
-		{ // 0
+		{
+			// 0
 			sprites: [sprites.tile_none.color],
 			palette: paletteManager.addArray(sprites.tile_none.palettes![0]),
 		},
-		{ // 1
+		{
+			// 1
 			sprites: grassTiles.sprites,
 			palette: paletteManager.addArray(grassPalette),
 		},
-		{ // 2
+		{
+			// 2
 			sprites: sprites.waterTiles1.sprites,
 			palette: paletteManager.addArray(waterPalette),
 		},
-		{ // 3
+		{
+			// 3
 			sprites: sprites.woodTiles.sprites,
 			palette: paletteManager.addArray(sprites.woodTiles.palettes[0]),
 		},
-		{ // 4
+		{
+			// 4
 			sprites: sprites.grassTilesNew.sprites,
 			palette: paletteManager.addArray(sprites.grassTilesNew.palettes[0]),
 		},
 		// water frames
-		{ // 5
+		{
+			// 5
 			sprites: sprites.waterTiles2.sprites,
 			palette: paletteManager.addArray(waterPalette),
 		},
-		{ // 6
+		{
+			// 6
 			sprites: sprites.waterTiles3.sprites,
 			palette: paletteManager.addArray(waterPalette),
 		},
-		{ // 7
+		{
+			// 7
 			sprites: sprites.waterTiles4.sprites,
 			palette: paletteManager.addArray(waterPalette),
 		},
 		// ice
-		{ // 8
+		{
+			// 8
 			sprites: sprites.iceTiles.sprites,
 			palette: paletteManager.addArray(sprites.iceTiles.palettes[icePaletteIndex]),
 		},
 		// snow on ice
-		{ // 9
+		{
+			// 9
 			sprites: sprites.snowOnIceTiles.sprites,
 			palette: paletteManager.addArray(sprites.snowOnIceTiles.palettes[0]),
 		},
 		// stone
-		{ // 10
+		{
+			// 10
 			sprites: sprites.stoneTiles.sprites,
 			palette: paletteManager.addArray(sprites.stoneTiles.palettes[0]),
 		},
 		// stone 2
-		{ // 11
+		{
+			// 11
 			sprites: sprites.stone2Tiles.sprites,
 			palette: paletteManager.addArray(sprites.stone2Tiles.palettes[0]),
 		},
@@ -166,7 +423,12 @@ export function createTileSets(paletteManager: PaletteManager, season: Season, m
 }
 
 export function drawTiles(
-	batch: PaletteSpriteBatch, region: Region, camera: Camera, map: WorldMap, tileSets: TileSets, options: DrawOptions
+	batch: PaletteSpriteBatch,
+	region: Region,
+	camera: Camera,
+	map: WorldMap,
+	tileSets: TileSets,
+	options: DrawOptions,
 ) {
 	const { tileIndices } = region;
 	const { tileTime } = map;
@@ -184,9 +446,11 @@ export function drawTiles(
 				const tileIndex = tileIndices[x | (y << 3)];
 
 				if (tileIndex === -1) {
-					options.error(`Uninitialized tile index at (${x}, ${y}) ` +
-						`region: (${region.x}, ${region.y}, ${region.tilesDirty}, ${region.lastTileUpdate}) ` +
-						`now: ${performance.now()}`);
+					options.error(
+						`Uninitialized tile index at (${x}, ${y}) ` +
+							`region: (${region.x}, ${region.y}, ${region.tilesDirty}, ${region.lastTileUpdate}) ` +
+							`now: ${performance.now()}`,
+					);
 					region.tilesDirty = true;
 					continue;
 				}
@@ -198,8 +462,10 @@ export function drawTiles(
 				const tileSet = tileSets[tileSetIndex];
 
 				if (!tileSet) {
-					options.error(`Missing tileset: position: (${x}, ${y}) tile: (${getRegionTile(region, x, y)}) ` +
-						`info: (${tileIndex}, ${tileSetIndex}, ${tileTime}, ${tileSpriteIndex}, ${JSON.stringify(waterFrames)})`);
+					options.error(
+						`Missing tileset: position: (${x}, ${y}) tile: (${getRegionTile(region, x, y)}) ` +
+							`info: (${tileIndex}, ${tileSetIndex}, ${tileTime}, ${tileSpriteIndex}, ${JSON.stringify(waterFrames)})`,
+					);
 					tileIndices[x | (y << 3)] = -1;
 					region.tilesDirty = true;
 					continue;
@@ -257,7 +523,12 @@ export function drawTilesDebugInfo(batch: PaletteSpriteBatch, region: Region, ca
 }
 
 export function drawTilesNew(
-	batch: PaletteSpriteBatch, region: Region, camera: Camera, map: WorldMap, tileSets: TileSets, options: DrawOptions
+	batch: PaletteSpriteBatch,
+	region: Region,
+	camera: Camera,
+	map: WorldMap,
+	tileSets: TileSets,
+	options: DrawOptions,
 ) {
 	const regionX = region.x * REGION_SIZE;
 	const regionY = region.y * REGION_SIZE;
@@ -298,7 +569,7 @@ export function drawTilesNew(
 
 					if (cliffBottom) {
 						batch.drawRect(OUTLINE_2_COLOR, tx, ty + tileHeight - 1, tileWidth, 1);
-						batch.drawRect(OUTLINE_2_COLOR, tx, (ty + tileHeight + elevDiff * tileElevation) - 1, tileWidth, 1);
+						batch.drawRect(OUTLINE_2_COLOR, tx, ty + tileHeight + elevDiff * tileElevation - 1, tileWidth, 1);
 					}
 				}
 
@@ -344,7 +615,7 @@ export function drawTilesNew(
 
 export function updateTileIndices(region: Region, map: IMap<Region | undefined>) {
 	for (let y = 0, i = 0; y < REGION_SIZE; y++) {
-		for (let x = 0; x < REGION_SIZE; x++ , i++) {
+		for (let x = 0; x < REGION_SIZE; x++, i++) {
 			if (region.tileIndices[i] === -1) {
 				region.tileIndices[i] = getTileIndex(region, i, x, y, map);
 			}
@@ -417,7 +688,13 @@ function normalizeTileBase(type: TileType) {
 }
 
 function getTileNormal(
-	tiles: Uint8Array, baseX: number, baseY: number, x: number, y: number, map: IMap<Region | undefined>, base: TileType
+	tiles: Uint8Array,
+	baseX: number,
+	baseY: number,
+	x: number,
+	y: number,
+	map: IMap<Region | undefined>,
+	base: TileType,
 ) {
 	if (x >= 0 && y >= 0 && x < REGION_SIZE && y < REGION_SIZE) {
 		return normalizeTile(tiles[x | (y << 3)], base);
@@ -445,17 +722,24 @@ function getTileIndex(region: Region, index: number, x: number, y: number, map: 
 	if (type === TileType.Dirt || type === TileType.ElevatedDirt) {
 		baseTileIndex = 47;
 	} else if (type !== TileType.None) {
-		let topLeft = 0, top = 0, topRight = 0, left = 0, right = 0, bottomLeft = 0, bottom = 0, bottomRight = 0;
+		let topLeft = 0,
+			top = 0,
+			topRight = 0,
+			left = 0,
+			right = 0,
+			bottomLeft = 0,
+			bottom = 0,
+			bottomRight = 0;
 
-		if (x > 1 && y > 1 && x < (REGION_SIZE - 1) && y < (REGION_SIZE - 1)) {
-			topLeft = normalizeTile(tiles[(x - 1) | (y - 1) << 3], type);
-			top = normalizeTile(tiles[(x) | (y - 1) << 3], type);
-			topRight = normalizeTile(tiles[(x + 1) | (y - 1) << 3], type);
-			left = normalizeTile(tiles[(x - 1) | (y) << 3], type);
-			right = normalizeTile(tiles[(x + 1) | (y) << 3], type);
-			bottomLeft = normalizeTile(tiles[(x - 1) | (y + 1) << 3], type);
-			bottom = normalizeTile(tiles[(x) | (y + 1) << 3], type);
-			bottomRight = normalizeTile(tiles[(x + 1) | (y + 1) << 3], type);
+		if (x > 1 && y > 1 && x < REGION_SIZE - 1 && y < REGION_SIZE - 1) {
+			topLeft = normalizeTile(tiles[(x - 1) | ((y - 1) << 3)], type);
+			top = normalizeTile(tiles[x | ((y - 1) << 3)], type);
+			topRight = normalizeTile(tiles[(x + 1) | ((y - 1) << 3)], type);
+			left = normalizeTile(tiles[(x - 1) | (y << 3)], type);
+			right = normalizeTile(tiles[(x + 1) | (y << 3)], type);
+			bottomLeft = normalizeTile(tiles[(x - 1) | ((y + 1) << 3)], type);
+			bottom = normalizeTile(tiles[x | ((y + 1) << 3)], type);
+			bottomRight = normalizeTile(tiles[(x + 1) | ((y + 1) << 3)], type);
 		} else {
 			const baseX = (region.x * REGION_SIZE) | 0;
 			const baseY = (region.y * REGION_SIZE) | 0;
@@ -470,15 +754,16 @@ function getTileIndex(region: Region, index: number, x: number, y: number, map: 
 		}
 
 		const normalized = normalizeTileBase(type);
-		const index = 0
-			| ((topLeft === normalized) ? 1 : 0)
-			| ((top === normalized) ? 2 : 0)
-			| ((topRight === normalized) ? 4 : 0)
-			| ((left === normalized) ? 8 : 0)
-			| ((right === normalized) ? 16 : 0)
-			| ((bottomLeft === normalized) ? 32 : 0)
-			| ((bottom === normalized) ? 64 : 0)
-			| ((bottomRight === normalized) ? 128 : 0);
+		const index =
+			0 |
+			(topLeft === normalized ? 1 : 0) |
+			(top === normalized ? 2 : 0) |
+			(topRight === normalized ? 4 : 0) |
+			(left === normalized ? 8 : 0) |
+			(right === normalized ? 16 : 0) |
+			(bottomLeft === normalized ? 32 : 0) |
+			(bottom === normalized ? 64 : 0) |
+			(bottomRight === normalized ? 128 : 0);
 
 		baseTileIndex = TILE_MAP[index];
 	}
@@ -489,25 +774,87 @@ function getTileIndex(region: Region, index: number, x: number, y: number, map: 
 }
 
 const tileIndices = [
-	47, 47, 0, 0, 13, 19, 21, 20, 15, 16,
-	47, 47, 0, 0, 13, 13, 45, 22, 18, 17,
-	9, 2, 2, 2, 10, 14, 14, 14, 35, 36,
-	8, 5, null, 7, 4, 27, 26, 29, 37, 38,
-	8, null, 46, null, 4, 28, 24, 30, 39, 40,
-	8, 3, null, 1, 4, 23, 31, 32, 41, 42,
-	12, 6, 6, 6, 11, 25, 33, 34, 43, 44,
+	47,
+	47,
+	0,
+	0,
+	13,
+	19,
+	21,
+	20,
+	15,
+	16,
+	47,
+	47,
+	0,
+	0,
+	13,
+	13,
+	45,
+	22,
+	18,
+	17,
+	9,
+	2,
+	2,
+	2,
+	10,
+	14,
+	14,
+	14,
+	35,
+	36,
+	8,
+	5,
+	null,
+	7,
+	4,
+	27,
+	26,
+	29,
+	37,
+	38,
+	8,
+	null,
+	46,
+	null,
+	4,
+	28,
+	24,
+	30,
+	39,
+	40,
+	8,
+	3,
+	null,
+	1,
+	4,
+	23,
+	31,
+	32,
+	41,
+	42,
+	12,
+	6,
+	6,
+	6,
+	11,
+	25,
+	33,
+	34,
+	43,
+	44,
 ];
 
 let tileHeightMaps = new Map<number, number[]>();
 let tileHeightMapsInitialized = false;
 
 function valueToHeight(value: number, bottom: number, top: number) {
-	return bottom + ((value / 255) * (top - bottom));
+	return bottom + (value / 255) * (top - bottom);
 }
 
 export function initializeTileHeightmaps() {
-	if (tileHeightMapsInitialized)
-		return;
+	if (tileHeightMapsInitialized) return;
 
 	function createTileHeightMaps(sprite: Sprite, tileType: TileTypeNumber, bottom: number, top: number) {
 		const sheetData = sprites.normalSpriteSheet.data!;
@@ -520,7 +867,7 @@ export function initializeTileHeightmaps() {
 				const baseY = ty * tileHeight + sprite.y;
 
 				for (let y = 0, i = 0; y < tileHeight; y++) {
-					for (let x = 0; x < tileWidth; x++ , i++) {
+					for (let x = 0; x < tileWidth; x++, i++) {
 						const sx = baseX + x;
 						const sy = baseY + y;
 						const value = sheetData.data[(sx + sy * sheetData.width) * 4];
@@ -570,9 +917,7 @@ export function isInWater(tileIndex: number, x: number, y: number) {
 	return false;
 }
 
-export function getTileHeight(
-	tileType: TileType, tileIndex: number, x: number, y: number, gameTime: number, mapType: MapType
-) {
+export function getTileHeight(tileType: TileType, tileIndex: number, x: number, y: number, gameTime: number, mapType: MapType) {
 	const typeNumber = (tileIndex & 0xff00) >> 8;
 
 	if (

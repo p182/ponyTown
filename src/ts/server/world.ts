@@ -1,16 +1,38 @@
 import { getWriterBuffer } from 'ag-sockets';
 import { remove, compact } from 'lodash';
 import {
-	TileType, WorldState, Season, Holiday, WorldStateFlags, LeaveReason, NotificationFlags, UpdateFlags, Action,
+	TileType,
+	WorldState,
+	Season,
+	Holiday,
+	WorldStateFlags,
+	LeaveReason,
+	NotificationFlags,
+	UpdateFlags,
+	Action,
 } from '../common/interfaces';
 import { removeItem, distance, clamp, randomPoint, includes, fromNow } from '../common/utils';
 import { HOUR_LENGTH, DAY_LENGTH } from '../common/timeUtils';
 import {
-	AFK_TIMEOUT, MAP_DISCARD_TIMEOUT, JOINS_PER_UPDATE, REMOVE_INTERVAL, REMOVE_TIMEOUT,
-	MAP_SWITCHES_PER_UPDATE, MINUTE, SERVER_FPS, HOUR
+	AFK_TIMEOUT,
+	MAP_DISCARD_TIMEOUT,
+	JOINS_PER_UPDATE,
+	REMOVE_INTERVAL,
+	REMOVE_TIMEOUT,
+	MAP_SWITCHES_PER_UPDATE,
+	MINUTE,
+	SERVER_FPS,
+	HOUR,
 } from '../common/constants';
 import {
-	IClient, ServerEntity, Controller, GetSettings, ServerNotification, SocketStats, ServerMap, MapUsage
+	IClient,
+	ServerEntity,
+	Controller,
+	GetSettings,
+	ServerNotification,
+	SocketStats,
+	ServerMap,
+	MapUsage,
 } from './serverInterfaces';
 import { isTileLocked, getMapInfo, setTile, hasAnyClients, createMinimap } from './serverMap';
 import { getModInfo } from './accountUtils';
@@ -21,12 +43,25 @@ import { AroundEntry, ServerLiveSettings, ServerConfig } from '../common/adminIn
 import { fixPosition, updateEntity, pushRemoveEntityToClient, pushUpdateEntityToClient } from './entityUtils';
 import { isBanned, isShadowed } from '../common/adminUtils';
 import {
-	createAndUpdateCharacterState, setEntityExpression, reloadFriends, updateEntityPlayerState, resetClientUpdates, isMutedOrShadowed
+	createAndUpdateCharacterState,
+	setEntityExpression,
+	reloadFriends,
+	updateEntityPlayerState,
+	resetClientUpdates,
+	isMutedOrShadowed,
 } from './playerUtils';
 import {
-	sparseRegionUpdate, addToRegion, removeFromRegion, unsubscribeFromOutOfRangeRegions,
-	subscribeToRegionsInRange, unsubscribeFromAllRegions, commitRegionUpdates, updateRegions, setupTiming,
-	clearTiming, resetEncodeUpdate
+	sparseRegionUpdate,
+	addToRegion,
+	removeFromRegion,
+	unsubscribeFromOutOfRangeRegions,
+	subscribeToRegionsInRange,
+	unsubscribeFromAllRegions,
+	commitRegionUpdates,
+	updateRegions,
+	setupTiming,
+	clearTiming,
+	resetEncodeUpdate,
 } from './regionUtils';
 import { roundPosition, roundPositionXMidPixel, roundPositionYMidPixel } from '../common/positionUtils';
 import { logger } from './logger';
@@ -96,7 +131,9 @@ export class World {
 		partyService.partyChanged.subscribe(client => {
 			if (client.isConnected && client.map.usage === MapUsage.Party) {
 				if (
-					client.party && client.party.leader === client && client.map.instance === client.accountId &&
+					client.party &&
+					client.party.leader === client &&
+					client.map.instance === client.accountId &&
 					!this.maps.some(m => m.id === client.map.id && m.instance === client.party!.id)
 				) {
 					client.map.instance = client.party.id;
@@ -124,8 +161,7 @@ export class World {
 		this.updateWorldState();
 	}
 	setTile(map: ServerMap, x: number, y: number, type: TileType) {
-		if (!BETA && map.tilesLocked)
-			return;
+		if (!BETA && map.tilesLocked) return;
 
 		if (x >= 0 && y >= 0 && x < map.width && y < map.height && !isTileLocked(map, x, y) && type !== getTile(map, x, y)) {
 			setTile(map, x, y, type);
@@ -403,12 +439,9 @@ export class World {
 			const total = updateQueue.offset + regionUpdates.length + saysQueue.length + unsubscribes.length + subscribes.length;
 
 			if (total !== 0) {
-				if (updateQueue.offset > 0)
-					clientsWithAdds++;
-				if (regionUpdates.length > 0)
-					clientsWithUpdates++;
-				if (saysQueue.length > 0)
-					clientsWithSays++;
+				if (updateQueue.offset > 0) clientsWithAdds++;
+				if (regionUpdates.length > 0) clientsWithUpdates++;
+				if (saysQueue.length > 0) clientsWithSays++;
 				totalSays += saysQueue.length;
 
 				setupTiming(client);
@@ -423,7 +456,7 @@ export class World {
 		timingEnd();
 
 		timingStart('joinQueuedClients');
-		if (Date.now() < (started + (1000 / SERVER_FPS))) {
+		if (Date.now() < started + 1000 / SERVER_FPS) {
 			for (let i = 0; i < JOINS_PER_UPDATE && this.joinQueue.length > 0; i++) {
 				this.joinClientToWorld(this.joinQueue.shift()!); // NOTE: creates adds
 			}
@@ -432,11 +465,13 @@ export class World {
 
 		const { isCollidingCount, isCollidingObjectCount } = getCollisionStats();
 
-		timingStart(`adds [${clientsWithAdds}]\n` +
-			`updates [${clientsWithUpdates}]\n` +
-			`says [${totalSays} / ${clientsWithSays}]\n` +
-			`sockets [${this.socketStatsText()}]\n` +
-			`collisions [${isCollidingObjectCount} / ${isCollidingCount}]`);
+		timingStart(
+			`adds [${clientsWithAdds}]\n` +
+				`updates [${clientsWithUpdates}]\n` +
+				`says [${totalSays} / ${clientsWithSays}]\n` +
+				`sockets [${this.socketStatsText()}]\n` +
+				`collisions [${isCollidingObjectCount} / ${isCollidingCount}]`,
+		);
 		this.cleanupOfflineClients();
 		timingEnd();
 
@@ -471,7 +506,7 @@ export class World {
 
 		timingStart('kick afk clients');
 		for (const client of this.clients) {
-			if ((now - client.lastPacket) > AFK_TIMEOUT) {
+			if (now - client.lastPacket > AFK_TIMEOUT) {
 				this.kick(client, 'afk');
 			}
 		}
@@ -524,7 +559,8 @@ export class World {
 		timingStart('cleanup reserved ids');
 		const threshold = Date.now() - 5 * MINUTE;
 
-		for (const key of Array.from(this.reservedIdsByKey.keys())) { // TODO: avoid doing this to save gc
+		for (const key of Array.from(this.reservedIdsByKey.keys())) {
+			// TODO: avoid doing this to save gc
 			const { id, time } = this.reservedIdsByKey.get(key)!;
 
 			if (time < threshold) {
@@ -542,13 +578,15 @@ export class World {
 	}
 	private socketStatsText() {
 		const { sent, received, sentPackets, receivedPackets } = this.socketStats.stats();
-		return `sent: ${(sent / 1024).toFixed(2)} kb (${sentPackets}), ` +
-			`recv: ${(received / 1024).toFixed(2)} kb (${receivedPackets})`;
+		return (
+			`sent: ${(sent / 1024).toFixed(2)} kb (${sentPackets}), ` + `recv: ${(received / 1024).toFixed(2)} kb (${receivedPackets})`
+		);
 	}
 	updatesStats() {
 		timingStart('updatesStats()');
 
-		let totalUpdates = 0, reusedUpdates = 0;
+		let totalUpdates = 0,
+			reusedUpdates = 0;
 
 		for (const map of this.maps) {
 			for (const region of map.regions) {
@@ -566,7 +604,7 @@ export class World {
 	private cleanupOfflineClients() {
 		const now = Date.now();
 
-		if ((now - this.lastCleanup) > REMOVE_INTERVAL) {
+		if (now - this.lastCleanup > REMOVE_INTERVAL) {
 			this.lastCleanup = now;
 			const removeFrom = now - REMOVE_TIMEOUT;
 
@@ -586,10 +624,7 @@ export class World {
 			return clients.filter(c => c.tokenId === tokenId);
 		}
 
-		const clientsToKick = [
-			...findClientsToKick(this.clients),
-			...findClientsToKick(this.joinQueue),
-		];
+		const clientsToKick = [...findClientsToKick(this.clients), ...findClientsToKick(this.joinQueue)];
 
 		for (const client of clientsToKick) {
 			const reason = client.tokenId === tokenId ? 'kicked [joining again]' : 'kicked [alone on ip]';
@@ -697,8 +732,9 @@ export class World {
 					if (entity.client !== undefined && entity !== client.pony && entity.client.accountId === client.accountId) {
 						const sameClients = this.clients.filter(c => c.accountId === client.accountId).length;
 
-						client.reporter.systemLog(`Client pony already on map ` +
-							`(old: ${entity.id}, new: ${client.pony.id}, sameClients: ${sameClients})`);
+						client.reporter.systemLog(
+							`Client pony already on map ` + `(old: ${entity.id}, new: ${client.pony.id}, sameClients: ${sameClients})`,
+						);
 					}
 				}
 			}
@@ -719,7 +755,7 @@ export class World {
 			for (const region of map.regions) {
 				const index = region.entities.indexOf(entity);
 
-				if (index !== - 1) {
+				if (index !== -1) {
 					removeEntityFromRegion(region, entity, map);
 					return map;
 				}
@@ -742,9 +778,11 @@ export class World {
 
 		if (!this.removeEntity(client.pony, client.map)) {
 			const map = this.removeEntityFromAnyMap(client.pony);
-			client.reporter.systemLog(`Removing from any map (` +
-				`expected: ${client.map && client.map.id} [${client.map && client.map.instance}], ` +
-				`actual: ${map && map.id} [${map && map.instance}])`);
+			client.reporter.systemLog(
+				`Removing from any map (` +
+					`expected: ${client.map && client.map.id} [${client.map && client.map.instance}], ` +
+					`actual: ${map && map.id} [${map && map.instance}])`,
+			);
 		}
 
 		unsubscribeFromAllRegions(client, true);
@@ -812,7 +850,11 @@ export class World {
 
 			for (const c of this.clients) {
 				if (c.isMod && c.selected === client.pony) {
-					pushUpdateEntityToClient(c, { entity: client.pony, flags: UpdateFlags.Options, options: { modInfo: getModInfo(client) } });
+					pushUpdateEntityToClient(c, {
+						entity: client.pony,
+						flags: UpdateFlags.Options,
+						options: { modInfo: getModInfo(client) },
+					});
 				}
 			}
 		}
@@ -837,9 +879,8 @@ export class World {
 			}
 		}
 
-		const shouldSendAcl = oldAccount.mute !== newAccount.mute
-			|| oldAccount.ban !== newAccount.ban
-			|| oldAccount.shadow !== newAccount.shadow;
+		const shouldSendAcl =
+			oldAccount.mute !== newAccount.mute || oldAccount.ban !== newAccount.ban || oldAccount.shadow !== newAccount.shadow;
 
 		if (shouldSendAcl) {
 			sendAcl(client);
@@ -901,7 +942,7 @@ export function goToMap(world: World, client: IClient, id: string, spawn?: strin
 	const map = findOrCreateMapForClient(world, id, client);
 
 	if (map) {
-		const area = spawn && map.spawns.get(spawn) || map.spawnArea;
+		const area = (spawn && map.spawns.get(spawn)) || map.spawnArea;
 		const { x, y } = randomPoint(area);
 		world.switchToMap(client, map, x, y);
 	} else {
@@ -960,8 +1001,10 @@ function updateClientCamera(client: IClient) {
 	updateCamera(camera, client.pony, client.map);
 
 	if (
-		client.lastCameraX !== camera.x || client.lastCameraY !== camera.y ||
-		client.lastCameraW !== camera.w || client.lastCameraH !== camera.h
+		client.lastCameraX !== camera.x ||
+		client.lastCameraY !== camera.y ||
+		client.lastCameraW !== camera.w ||
+		client.lastCameraH !== camera.h
 	) {
 		client.lastCameraX = camera.x;
 		client.lastCameraY = camera.y;
@@ -974,8 +1017,7 @@ function updateClientCamera(client: IClient) {
 }
 
 export function findAllOnlineFriends(world: World, client: IClient) {
-	return compact(Array.from(client.friends.keys())
-		.map(account => findClientByAccountId(world, account)));
+	return compact(Array.from(client.friends.keys()).map(account => findClientByAccountId(world, account)));
 }
 
 export function findClientByAccountId(world: World, accountId: string) {
@@ -989,14 +1031,16 @@ export function findClientByCharacterId(world: World, characterId: string) {
 export function findClientsAroundAccountId(world: World, accountId: string): AroundEntry[] {
 	const client = findClientByAccountId(world, accountId);
 
-	return client ? world.clients
-		.filter(c => c !== client && c.map === client.map)
-		.map(c => ({
-			account: c.accountId,
-			distance: distance(client.pony, c.pony),
-			party: !!(c.party && c.party === client.party),
-		}))
-		.filter(x => x.distance < 5 || x.party)
-		.sort((a, b) => a.distance - b.distance)
-		.slice(0, 12) : [];
+	return client
+		? world.clients
+				.filter(c => c !== client && c.map === client.map)
+				.map(c => ({
+					account: c.accountId,
+					distance: distance(client.pony, c.pony),
+					party: !!(c.party && c.party === client.party),
+				}))
+				.filter(x => x.distance < 5 || x.party)
+				.sort((a, b) => a.distance - b.distance)
+				.slice(0, 12)
+		: [];
 }

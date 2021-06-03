@@ -40,9 +40,7 @@ export const CONTRIBUTORS: Contributors[] = [
 	},
 	{
 		group: 'Programmers & Artists',
-		contributors: [
-			{ name: 'CyberPon3', links: ['https://www.deviantart.com/cyberpon3'] },
-		],
+		contributors: [{ name: 'CyberPon3', links: ['https://www.deviantart.com/cyberpon3'] }],
 	},
 	{
 		group: 'Artists',

@@ -4,23 +4,57 @@ import { repeat, flatten } from '../common/utils';
 // body animations
 
 export function createBodyFrame([
-	body = 0, head = 0, wing = 0, tail = 0,
-	frontLeg = 0, frontFarLeg = 0, backLeg = 0, backFarLeg = 0,
-	bodyX = 0, bodyY = 0, headX = 0, headY = 0,
-	frontLegX = 0, frontLegY = 0, frontFarLegX = 0, frontFarLegY = 0,
-	backLegX = 0, backLegY = 0, backFarLegX = 0, backFarLegY = 0
+	body = 0,
+	head = 0,
+	wing = 0,
+	tail = 0,
+	frontLeg = 0,
+	frontFarLeg = 0,
+	backLeg = 0,
+	backFarLeg = 0,
+	bodyX = 0,
+	bodyY = 0,
+	headX = 0,
+	headY = 0,
+	frontLegX = 0,
+	frontLegY = 0,
+	frontFarLegX = 0,
+	frontFarLegY = 0,
+	backLegX = 0,
+	backLegY = 0,
+	backFarLegX = 0,
+	backFarLegY = 0,
 ]: number[]): Readonly<BodyAnimationFrame> {
 	return {
-		body, head, wing, tail,
-		frontLeg, frontFarLeg, backLeg, backFarLeg,
-		bodyX, bodyY, headX, headY,
-		frontLegX, frontLegY, frontFarLegX, frontFarLegY,
-		backLegX, backLegY, backFarLegX, backFarLegY
+		body,
+		head,
+		wing,
+		tail,
+		frontLeg,
+		frontFarLeg,
+		backLeg,
+		backFarLeg,
+		bodyX,
+		bodyY,
+		headX,
+		headY,
+		frontLegX,
+		frontLegY,
+		frontFarLegX,
+		frontFarLegY,
+		backLegX,
+		backLegY,
+		backFarLegX,
+		backFarLegY,
 	};
 }
 
 export function createBodyAnimation(
-	name: string, fps: number, loop: boolean, frames: number[][], shadowOffsets?: number[][]
+	name: string,
+	fps: number,
+	loop: boolean,
+	frames: number[][],
+	shadowOffsets?: number[][],
 ): Readonly<BodyAnimation> {
 	if (shadowOffsets && shadowOffsets.length !== frames.length) {
 		throw new Error(`Incorrect frame count for shadowOffsets for ${name}`);
@@ -31,29 +65,27 @@ export function createBodyAnimation(
 	return { name, loop, fps, frames: frames.map(createBodyFrame), shadow };
 }
 
-export const stand = createBodyAnimation('stand', 24, true, [
-	[1, 1, 0, 0, 1, 1, 1, 1],
-]);
+export const stand = createBodyAnimation('stand', 24, true, [[1, 1, 0, 0, 1, 1, 1, 1]]);
 
 export const swim = createBodyAnimation('swim', 4, true, [
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 14],
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 13],
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 12],
-	[1, 1, 0, 0, 8, 10, 6, 5, 0, 13]
+	[1, 1, 0, 0, 8, 10, 6, 5, 0, 13],
 ]);
 
 export const trotToSwim = createBodyAnimation('trot-to-swim', 24, false, [
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 2],
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 8],
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 10],
-	[1, 1, 0, 0, 8, 10, 6, 5, 0, 16]
+	[1, 1, 0, 0, 8, 10, 6, 5, 0, 16],
 ]);
 
 export const swimToTrot = createBodyAnimation('swim-to-trot', 24, false, [
 	[1, 1, 0, 0, 8, 10, 6, 5, 0, 12],
 	[1, 1, 0, 0, 12, 3, 4, 23, 0, 8],
 	[1, 1, 0, 0, 14, 26, 3, 24, 0, 4],
-	[1, 1, 0, 0, 18, 27, 2, 5]
+	[1, 1, 0, 0, 18, 27, 2, 5],
 ]);
 
 export const flyToSwim = createBodyAnimation('fly-to-swim', 16, false, [
@@ -63,7 +95,7 @@ export const flyToSwim = createBodyAnimation('fly-to-swim', 16, false, [
 	[1, 1, 6, 0, 8, 10, 6, 5, 0, -2],
 	[1, 1, 7, 0, 8, 10, 6, 5, 0, 4],
 	[1, 1, 11, 0, 8, 10, 6, 5, 0, 10],
-	[1, 1, 1, 0, 8, 10, 6, 5, 0, 14]
+	[1, 1, 1, 0, 8, 10, 6, 5, 0, 14],
 ]);
 
 export const flyToSwimBug = createBodyAnimation('fly-to-swim-bug', 16, false, [
@@ -73,7 +105,7 @@ export const flyToSwimBug = createBodyAnimation('fly-to-swim-bug', 16, false, [
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -2],
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, 4],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, 10],
-	[1, 1, 1, 0, 8, 10, 6, 5, 0, 14]
+	[1, 1, 1, 0, 8, 10, 6, 5, 0, 14],
 ]);
 
 export const swimToFly = createBodyAnimation('swim-to-fly', 16, false, [
@@ -88,7 +120,7 @@ export const swimToFly = createBodyAnimation('swim-to-fly', 16, false, [
 	[1, 1, 9, 0, 8, 10, 6, 5, 0, -17],
 	[1, 1, 10, 0, 8, 10, 6, 5, 0, -18],
 	[1, 1, 11, 0, 8, 10, 6, 5, 0, -18],
-	[1, 1, 12, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 12, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 export const swimToFlyBug = createBodyAnimation('swim-to-fly-bug', 16, false, [
@@ -103,7 +135,7 @@ export const swimToFlyBug = createBodyAnimation('swim-to-fly-bug', 16, false, [
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, -17],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -18],
 	[1, 1, 5, 0, 8, 10, 6, 5, 0, -18],
-	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 //const trotSkew = [-1, 0, 1, 0, -1, -2, -3, -2, -1, 0, 1, 0, -1, -2, -3, -2].map(x => (x + 2) * 0.25);
@@ -144,35 +176,47 @@ export const boop = createBodyAnimation('boop', 24, false, [
 	[1, 1, 0, 0, 1, 1, 1, 1],
 ]);
 
-export const boopSit = createBodyAnimation('boop-sit', 24, false, [
-	[9, 1, 2, 2, 34, 34, 26, 26],
-	[9, 1, 2, 2, 13, 34, 26, 26, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 19, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 20, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 21, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 22, 34, 26, 26, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 23, 34, 26, 26, 0, -1, 0, 0, -1, -1, 0, 1, 0, 1, 0, -1],
-	...repeat(5, [9, 1, 2, 2, 23, 34, 26, 26, -1, -2, 0, 0, -2, -2, 1, 2, 1, 2, 1]),
-	[9, 1, 2, 2, 23, 34, 26, 26, 0, -1, 0, 0, -1, -1, 0, 1, 0, 1, 0, -1],
-	[9, 1, 2, 2, 22, 34, 26, 26, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 24, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 25, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 12, 34, 26, 26, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -2],
-	[9, 1, 2, 2, 34, 34, 26, 26],
-], repeat(18, [0, 6]));
+export const boopSit = createBodyAnimation(
+	'boop-sit',
+	24,
+	false,
+	[
+		[9, 1, 2, 2, 34, 34, 26, 26],
+		[9, 1, 2, 2, 13, 34, 26, 26, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 19, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 20, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 21, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 22, 34, 26, 26, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 23, 34, 26, 26, 0, -1, 0, 0, -1, -1, 0, 1, 0, 1, 0, -1],
+		...repeat(5, [9, 1, 2, 2, 23, 34, 26, 26, -1, -2, 0, 0, -2, -2, 1, 2, 1, 2, 1]),
+		[9, 1, 2, 2, 23, 34, 26, 26, 0, -1, 0, 0, -1, -1, 0, 1, 0, 1, 0, -1],
+		[9, 1, 2, 2, 22, 34, 26, 26, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 24, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 25, 34, 26, 26, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 12, 34, 26, 26, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -2],
+		[9, 1, 2, 2, 34, 34, 26, 26],
+	],
+	repeat(18, [0, 6]),
+);
 
-export const boopLie = createBodyAnimation('boop-lie', 24, false, [
-	[15, 1, 0, 2, 38, 38, 26, 26],
-	...repeat(2, [15, 1, 0, 2, 24, 38, 26, 26, 0, 0, 0, 0, 0, 1]),
-	[15, 1, 0, 2, 21, 38, 26, 26, 0, 0, 0, 0, 0, 1],
-	[15, 1, 0, 2, 22, 38, 26, 26, 0, 0, 0, 0, 0, 1],
-	[15, 1, 0, 2, 23, 38, 26, 26, 0, 0, -1, -1, 0, 1],
-	[12, 1, 0, 2, 23, 37, 26, 26, -1, 0, 0, 0, -1, 1, 0, 0, 1, 0, 1],
-	...repeat(4, [12, 1, 0, 2, 23, 37, 26, 26, -1, 0, 0, 0, -2, 1, 0, 0, 1, 0, 1]),
-	[15, 1, 0, 2, 23, 38, 26, 26, 0, 0, 0, 0, 0, 1],
-	[15, 1, 0, 2, 22, 38, 26, 26, 0, 0, 0, 0, 0, 1],
-	[15, 1, 0, 2, 21, 38, 26, 26, 0, 0, 0, 0, 0, 1],
-], repeat(14, [3, 3]));
+export const boopLie = createBodyAnimation(
+	'boop-lie',
+	24,
+	false,
+	[
+		[15, 1, 0, 2, 38, 38, 26, 26],
+		...repeat(2, [15, 1, 0, 2, 24, 38, 26, 26, 0, 0, 0, 0, 0, 1]),
+		[15, 1, 0, 2, 21, 38, 26, 26, 0, 0, 0, 0, 0, 1],
+		[15, 1, 0, 2, 22, 38, 26, 26, 0, 0, 0, 0, 0, 1],
+		[15, 1, 0, 2, 23, 38, 26, 26, 0, 0, -1, -1, 0, 1],
+		[12, 1, 0, 2, 23, 37, 26, 26, -1, 0, 0, 0, -1, 1, 0, 0, 1, 0, 1],
+		...repeat(4, [12, 1, 0, 2, 23, 37, 26, 26, -1, 0, 0, 0, -2, 1, 0, 0, 1, 0, 1]),
+		[15, 1, 0, 2, 23, 38, 26, 26, 0, 0, 0, 0, 0, 1],
+		[15, 1, 0, 2, 22, 38, 26, 26, 0, 0, 0, 0, 0, 1],
+		[15, 1, 0, 2, 21, 38, 26, 26, 0, 0, 0, 0, 0, 1],
+	],
+	repeat(14, [3, 3]),
+);
 
 export const boopSwim = createBodyAnimation('boop-swim', 24, false, [
 	[1, 1, 0, 0, 1, 10, 6, 5, 0, 13],
@@ -188,79 +232,126 @@ export const boopSwim = createBodyAnimation('boop-swim', 24, false, [
 	[1, 1, 0, 0, 24, 10, 6, 5, 0, 13],
 	[1, 1, 0, 0, 25, 10, 6, 5, 0, 14],
 	[1, 1, 0, 0, 18, 10, 6, 5, 0, 14],
-	[1, 1, 0, 0, 1, 10, 6, 5, 0, 14]
+	[1, 1, 0, 0, 1, 10, 6, 5, 0, 14],
 ]);
 
-export const sit = createBodyAnimation('sit', 24, true, [
-	[9, 1, 2, 2, 34, 34, 26, 26],
-], [[0, 6]]);
+export const sit = createBodyAnimation('sit', 24, true, [[9, 1, 2, 2, 34, 34, 26, 26]], [[0, 6]]);
 
 const sitShadow = [0, 0, 0, 1, 1, 2, 3, 4, 5, 6, 6].map(offset => [0, offset]);
 
-export const sitDown = createBodyAnimation('sit-down', 24, false, [
-	[1, 1, 0, 0, 1, 1, 1, 1],
-	...repeat(2, [2, 1, 0, 0, 29, 29, 1, 1]),
-	...repeat(2, [3, 1, 0, 0, 30, 30, 21, 21]),
-	[4, 1, 0, 0, 31, 31, 22, 22],
-	[5, 1, 0, 1, 32, 32, 23, 23],
-	[6, 1, 1, 2, 33, 33, 24, 24],
-	[7, 1, 2, 2, 34, 34, 25, 25],
-	[8, 1, 2, 2, 34, 34, 25, 25],
-	[9, 1, 2, 2, 34, 34, 26, 26],
-], sitShadow);
+export const sitDown = createBodyAnimation(
+	'sit-down',
+	24,
+	false,
+	[
+		[1, 1, 0, 0, 1, 1, 1, 1],
+		...repeat(2, [2, 1, 0, 0, 29, 29, 1, 1]),
+		...repeat(2, [3, 1, 0, 0, 30, 30, 21, 21]),
+		[4, 1, 0, 0, 31, 31, 22, 22],
+		[5, 1, 0, 1, 32, 32, 23, 23],
+		[6, 1, 1, 2, 33, 33, 24, 24],
+		[7, 1, 2, 2, 34, 34, 25, 25],
+		[8, 1, 2, 2, 34, 34, 25, 25],
+		[9, 1, 2, 2, 34, 34, 26, 26],
+	],
+	sitShadow,
+);
 
-export const standUp = createBodyAnimation('stand-up', 24, false, [
-	[9, 1, 2, 2, 34, 34, 26, 26],
-	[8, 1, 2, 2, 34, 34, 25, 25],
-	[7, 1, 2, 2, 34, 34, 25, 25],
-	[6, 1, 1, 2, 33, 33, 24, 24],
-	[5, 1, 0, 1, 32, 32, 23, 23],
-	[4, 1, 0, 0, 31, 31, 22, 22],
-	...repeat(2, [3, 1, 0, 0, 30, 30, 21, 21]),
-	[1, 1, 0, 0, 1, 1, 1, 1],
-], sitShadow.slice(2).reverse());
+export const standUp = createBodyAnimation(
+	'stand-up',
+	24,
+	false,
+	[
+		[9, 1, 2, 2, 34, 34, 26, 26],
+		[8, 1, 2, 2, 34, 34, 25, 25],
+		[7, 1, 2, 2, 34, 34, 25, 25],
+		[6, 1, 1, 2, 33, 33, 24, 24],
+		[5, 1, 0, 1, 32, 32, 23, 23],
+		[4, 1, 0, 0, 31, 31, 22, 22],
+		...repeat(2, [3, 1, 0, 0, 30, 30, 21, 21]),
+		[1, 1, 0, 0, 1, 1, 1, 1],
+	],
+	sitShadow.slice(2).reverse(),
+);
 
-export const sitToTrot = createBodyAnimation('sit-to-trot', 24, false, [
-	[7, 1, 2, 2, 34, 35, 24, 25, 0, -1, 0, 0, 0, 2, 1, 1, 0, -1],
-	[6, 1, 1, 2, 27, 36, 23, 24, 0, -2, 0, 0, 0, -2, 0, 0, 0, 1],
-	[5, 1, 0, 1, 5, 13, 5, 23, 0, -2],
-	[4, 1, 0, 0, 6, 14, 6, 5, 0, -2],
-	[3, 1, 0, 0, 7, 15, 7, 15, 0, -2],
-	[2, 1, 0, 0, 8, 16, 8, 16, 0, -1],
-], [[0, 6], [0, 5], [0, 4], [0, 3], [0, 1], [0, 0]]);
+export const sitToTrot = createBodyAnimation(
+	'sit-to-trot',
+	24,
+	false,
+	[
+		[7, 1, 2, 2, 34, 35, 24, 25, 0, -1, 0, 0, 0, 2, 1, 1, 0, -1],
+		[6, 1, 1, 2, 27, 36, 23, 24, 0, -2, 0, 0, 0, -2, 0, 0, 0, 1],
+		[5, 1, 0, 1, 5, 13, 5, 23, 0, -2],
+		[4, 1, 0, 0, 6, 14, 6, 5, 0, -2],
+		[3, 1, 0, 0, 7, 15, 7, 15, 0, -2],
+		[2, 1, 0, 0, 8, 16, 8, 16, 0, -1],
+	],
+	[
+		[0, 6],
+		[0, 5],
+		[0, 4],
+		[0, 3],
+		[0, 1],
+		[0, 0],
+	],
+);
 
-export const lie = createBodyAnimation('lie', 24, true, [
-	[15, 1, 0, 2, 38, 38, 26, 26],
-], [[3, 3]]);
+export const lie = createBodyAnimation('lie', 24, true, [[15, 1, 0, 2, 38, 38, 26, 26]], [[3, 3]]);
 
-const lieShadow = [[0, 6], [0, 6], [1, 5], [2, 4], [3, 3], [3, 3], [3, 3]];
+const lieShadow = [
+	[0, 6],
+	[0, 6],
+	[1, 5],
+	[2, 4],
+	[3, 3],
+	[3, 3],
+	[3, 3],
+];
 
-export const lieDown = createBodyAnimation('lie-down', 24, false, [
-	[9, 1, 2, 2, 34, 34, 26, 26],
-	[10, 1, 2, 2, 35, 34, 26, 26, 0, 0, 0, 0, 0, 0, 0, -1],
-	[11, 1, 1, 2, 36, 36, 26, 26, 0, 0, 0, 0, 0, 0, 1],
-	[12, 1, 1, 2, 37, 37, 26, 26, 0, 0, 0, 0, 0, 0, 1],
-	[13, 1, 0, 2, 38, 38, 26, 26, 0, 0, 0, 0, 0, 0, 1],
-	...repeat(2, [14, 1, 0, 2, 38, 38, 26, 26]),
-], lieShadow);
+export const lieDown = createBodyAnimation(
+	'lie-down',
+	24,
+	false,
+	[
+		[9, 1, 2, 2, 34, 34, 26, 26],
+		[10, 1, 2, 2, 35, 34, 26, 26, 0, 0, 0, 0, 0, 0, 0, -1],
+		[11, 1, 1, 2, 36, 36, 26, 26, 0, 0, 0, 0, 0, 0, 1],
+		[12, 1, 1, 2, 37, 37, 26, 26, 0, 0, 0, 0, 0, 0, 1],
+		[13, 1, 0, 2, 38, 38, 26, 26, 0, 0, 0, 0, 0, 0, 1],
+		...repeat(2, [14, 1, 0, 2, 38, 38, 26, 26]),
+	],
+	lieShadow,
+);
 
-export const sitUp = createBodyAnimation('sit-up', 24, false, [
-	...repeat(2, [14, 1, 0, 2, 38, 38, 26, 26]),
-	[13, 1, 0, 2, 38, 38, 26, 26],
-	[12, 1, 1, 2, 37, 37, 26, 26],
-	[11, 1, 1, 2, 36, 36, 26, 26],
-	[10, 1, 2, 2, 35, 34, 26, 26, 0, 0, 0, 0, 0, 0, 0, -1],
-	[9, 1, 2, 2, 34, 34, 26, 26],
-], lieShadow.slice().reverse());
+export const sitUp = createBodyAnimation(
+	'sit-up',
+	24,
+	false,
+	[
+		...repeat(2, [14, 1, 0, 2, 38, 38, 26, 26]),
+		[13, 1, 0, 2, 38, 38, 26, 26],
+		[12, 1, 1, 2, 37, 37, 26, 26],
+		[11, 1, 1, 2, 36, 36, 26, 26],
+		[10, 1, 2, 2, 35, 34, 26, 26, 0, 0, 0, 0, 0, 0, 0, -1],
+		[9, 1, 2, 2, 34, 34, 26, 26],
+	],
+	lieShadow.slice().reverse(),
+);
 
-export const lieToTrot = createBodyAnimation('lie-to-trot', 24, false, [
-	[1, 1, 0, 1, 36, 37, 24, 25, 4, 8, 0, 1, 0, 0, 0, 0, 0, 1],
-	[1, 1, 0, 0, 30, 12, 23, 24, 2, 5, 0, 0, 0, -3],
-	[1, 1, 0, 0, 5, 13, 5, 23, 1, 1],
-	[1, 1, 0, 0, 6, 14, 6, 21, 0, 0, 0, -1],
-	[1, 1, 0, 0, 7, 15, 7, 15, 0, -1, 0, -1],
-	[1, 1, 0, 0, 8, 16, 8, 16, 0, -2],
-], [[2, 1], [1, 0], ...repeat(4, [0, 0])]);
+export const lieToTrot = createBodyAnimation(
+	'lie-to-trot',
+	24,
+	false,
+	[
+		[1, 1, 0, 1, 36, 37, 24, 25, 4, 8, 0, 1, 0, 0, 0, 0, 0, 1],
+		[1, 1, 0, 0, 30, 12, 23, 24, 2, 5, 0, 0, 0, -3],
+		[1, 1, 0, 0, 5, 13, 5, 23, 1, 1],
+		[1, 1, 0, 0, 6, 14, 6, 21, 0, 0, 0, -1],
+		[1, 1, 0, 0, 7, 15, 7, 15, 0, -1, 0, -1],
+		[1, 1, 0, 0, 8, 16, 8, 16, 0, -2],
+	],
+	[[2, 1], [1, 0], ...repeat(4, [0, 0])],
+);
 
 export const fly = createBodyAnimation('fly', 16, true, [
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, -16],
@@ -287,7 +378,7 @@ export const boopFly = createBodyAnimation('boop-fly', 16, false, [
 	[1, 1, 11, 0, 23, 10, 4, 3, -1, -18, -1, 0, -1, -1, 2],
 	[1, 1, 12, 0, 22, 10, 4, 3, 0, -17, -1, 0, 0, 0, 2],
 	[1, 1, 3, 0, 21, 10, 5, 4, 0, -16, 0, 0, 0, 0, 2],
-	[1, 1, 4, 0, 14, 10, 6, 5, 0, -15, 0, 0, 0, 0, 2]
+	[1, 1, 4, 0, 14, 10, 6, 5, 0, -15, 0, 0, 0, 0, 2],
 ]);
 
 export const boopFlyBug = createBodyAnimation('boop-fly-bug', 20, false, [
@@ -302,7 +393,7 @@ export const boopFlyBug = createBodyAnimation('boop-fly-bug', 20, false, [
 	[1, 1, 3, 0, 23, 10, 4, 3, -1, -18, -1, 0, -1, -1, 2],
 	[1, 1, 4, 0, 22, 10, 4, 3, 0, -17, -1, 0, 0, 0, 2],
 	[1, 1, 5, 0, 21, 10, 5, 4, 0, -16, 0, 0, 0, 0, 2],
-	[1, 1, 4, 0, 14, 10, 6, 5, 0, -15, 0, 0, 0, 0, 2]
+	[1, 1, 4, 0, 14, 10, 6, 5, 0, -15, 0, 0, 0, 0, 2],
 ]);
 
 export const flyUp = createBodyAnimation('fly-up', 16, false, [
@@ -332,7 +423,7 @@ export const trotToFly = createBodyAnimation('trot-to-fly', 20, false, [
 	[1, 1, 9, 0, 9, 10, 6, 6, 0, -17],
 	[1, 1, 10, 0, 8, 10, 6, 7, 0, -18],
 	[1, 1, 11, 0, 8, 10, 6, 5, 0, -18],
-	[1, 1, 12, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 12, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 export const trotToFlyBug = createBodyAnimation('trot-to-fly-bug', 20, false, [
@@ -347,7 +438,7 @@ export const trotToFlyBug = createBodyAnimation('trot-to-fly-bug', 20, false, [
 	[1, 1, 5, 0, 8, 10, 6, 6, 0, -17],
 	[1, 1, 3, 0, 8, 10, 6, 7, 0, -18],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -18],
-	[1, 1, 5, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 5, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 export const flyToTrot = createBodyAnimation('fly-to-trot', 20, false, [
@@ -359,7 +450,7 @@ export const flyToTrot = createBodyAnimation('fly-to-trot', 20, false, [
 	[1, 1, 6, 0, 7, 15, 7, 15, 0, -4],
 	[1, 1, 7, 0, 8, 16, 8, 16, 0, -1],
 	[1, 1, 11, 0, 9, 17, 9, 17],
-	[1, 1, 0, 0, 10, 2, 10, 2, 0, 3, 0, -1, 0, 0, 0, -2, 0, -2]
+	[1, 1, 0, 0, 10, 2, 10, 2, 0, 3, 0, -1, 0, 0, 0, -2, 0, -2],
 
 	// [1, 1, 4, 0, 8, 10, 6, 10, 0, -16],
 	// [1, 1, 5, 0, 8, 10, 6, 10, 0, -18],
@@ -382,7 +473,7 @@ export const flyToTrotBug = createBodyAnimation('fly-to-trot-bug', 20, false, [
 	[1, 1, 4, 0, 7, 15, 7, 15, 0, -4],
 	[1, 1, 5, 0, 8, 16, 8, 16, 0, -1],
 	[1, 1, 4, 0, 9, 17, 9, 17],
-	[1, 1, 3, 0, 10, 2, 10, 2, 0, 3, 0, -1, 0, 0, 0, -2, 0, -2]
+	[1, 1, 3, 0, 10, 2, 10, 2, 0, 3, 0, -1, 0, 0, 0, -2, 0, -2],
 
 	// [1, 1, 4, 0, 8, 10, 6, 10, 0, -16],
 	// [1, 1, 5, 0, 8, 10, 6, 10, 0, -18],
@@ -403,7 +494,7 @@ export const flyDown = createBodyAnimation('fly-down', 16, false, [
 	[1, 1, 6, 0, 8, 10, 6, 5, 0, -8],
 	[1, 1, 7, 0, 8, 10, 6, 5, 0, -6],
 	[1, 1, 11, 0, 8, 10, 6, 5, 0, -4],
-	[1, 1, 1, 0, 8, 10, 6, 5, 0, -2]
+	[1, 1, 1, 0, 8, 10, 6, 5, 0, -2],
 ]);
 
 export const flyBug = createBodyAnimation('fly-bug', 24, true, [
@@ -426,7 +517,7 @@ export const flyBug = createBodyAnimation('fly-bug', 24, true, [
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, -18],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17],
 	[1, 1, 5, 0, 8, 10, 6, 5, 0, -17],
-	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 export const flyUpBug = createBodyAnimation('fly-up-bug', 16, false, [
@@ -441,7 +532,7 @@ export const flyUpBug = createBodyAnimation('fly-up-bug', 16, false, [
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, -17],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -18],
 	[1, 1, 5, 0, 8, 10, 6, 5, 0, -18],
-	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17]
+	[1, 1, 4, 0, 8, 10, 6, 5, 0, -17],
 ]);
 
 export const flyDownBug = createBodyAnimation('fly-down-bug', 16, false, [
@@ -451,7 +542,7 @@ export const flyDownBug = createBodyAnimation('fly-down-bug', 16, false, [
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -8],
 	[1, 1, 3, 0, 8, 10, 6, 5, 0, -6],
 	[1, 1, 4, 0, 8, 10, 6, 5, 0, -4],
-	[1, 1, 1, 0, 8, 10, 6, 5, 0, -2]
+	[1, 1, 1, 0, 8, 10, 6, 5, 0, -2],
 ]);
 
 export const swing = createBodyAnimation('swing', 12, false, [
@@ -464,9 +555,35 @@ export const flyUpAnims = [undefined, flyUp, flyUp, flyUp, flyUpBug];
 export const flyDownAnims = [undefined, flyDown, flyDown, flyDown, flyDownBug];
 
 export const animations = [
-	stand, trot, boop, boopSit, boopLie, boopSwim, boopFly, boopFlyBug, sit, sitDown, standUp, lie, lieDown, sitUp,
-	fly, flyBug, flyUp, flyUpBug, flyDown, flyDownBug, sitToTrot, lieToTrot, flyToTrot, flyToTrotBug,
-	swim, trotToSwim, swimToTrot, flyToSwim, swimToFly,
+	stand,
+	trot,
+	boop,
+	boopSit,
+	boopLie,
+	boopSwim,
+	boopFly,
+	boopFlyBug,
+	sit,
+	sitDown,
+	standUp,
+	lie,
+	lieDown,
+	sitUp,
+	fly,
+	flyBug,
+	flyUp,
+	flyUpBug,
+	flyDown,
+	flyDownBug,
+	sitToTrot,
+	lieToTrot,
+	flyToTrot,
+	flyToTrotBug,
+	swim,
+	trotToSwim,
+	swimToTrot,
+	flyToSwim,
+	swimToFly,
 ];
 
 export const sitDownUp = mergeAnimations('sit', 24, false, [...repeat(12, stand), sitDown, ...repeat(12, sit), standUp]);
@@ -492,18 +609,14 @@ export function createHeadAnimation(name: string, fps: number, loop: boolean, fr
 	return { name, fps, loop, frames: frames.map(createHeadFrame) };
 }
 
-export const smile = createHeadAnimation('smile', 24, true, [
-	[0, 0, 1, 1, 0],
-]);
+export const smile = createHeadAnimation('smile', 24, true, [[0, 0, 1, 1, 0]]);
 
 export const nom = createHeadAnimation('nom', 12, true, [
 	[0, 0, 1, 1, 0],
 	[0, 0, 1, 1, 25],
 ]);
 
-export const laugh = createHeadAnimation('laugh', 8, false, [
-	...repeat(4, [0, 0, 14, 14, 5], [0, 1, 14, 14, 5]),
-]);
+export const laugh = createHeadAnimation('laugh', 8, false, [...repeat(4, [0, 0, 14, 14, 5], [0, 1, 14, 14, 5])]);
 
 export const yawn = createHeadAnimation('yawn', 12, false, [
 	[0, 0, 3, 3, 8],
@@ -512,20 +625,11 @@ export const yawn = createHeadAnimation('yawn', 12, false, [
 	[0, 0, 18, 18, 2],
 ]);
 
-export const surprise = createHeadAnimation('surprise', 8, false, [
-	[0, 1, 6, 6, 1],
-	...repeat(10, [0, 0, 1, 1, 12]),
-]);
+export const surprise = createHeadAnimation('surprise', 8, false, [[0, 1, 6, 6, 1], ...repeat(10, [0, 0, 1, 1, 12])]);
 
-export const excite = createHeadAnimation('excite', 8, false, [
-	[0, 1, 6, 6, 0],
-	...repeat(10, [0, 0, 1, 1, 5]),
-]);
+export const excite = createHeadAnimation('excite', 8, false, [[0, 1, 6, 6, 0], ...repeat(10, [0, 0, 1, 1, 5])]);
 
-export const surpriseSad = createHeadAnimation('surpriseSad', 8, false, [
-	[0, 1, 15, 15, 8],
-	...repeat(8, [0, 0, 15, 15, 8]),
-]);
+export const surpriseSad = createHeadAnimation('surpriseSad', 8, false, [[0, 1, 15, 15, 8], ...repeat(8, [0, 0, 15, 15, 8])]);
 
 export const sneeze = createHeadAnimation('sneeze', 12, false, [
 	[0, 0, 18, 18, 8],
@@ -534,9 +638,7 @@ export const sneeze = createHeadAnimation('sneeze', 12, false, [
 	...repeat(4, [0, 0, 18, 18, 7]),
 ]);
 
-export const headAnimations = [
-	smile, nom, laugh, yawn, surprise, surpriseSad, sneeze, excite,
-];
+export const headAnimations = [smile, nom, laugh, yawn, surprise, surpriseSad, sneeze, excite];
 
 // default animations
 

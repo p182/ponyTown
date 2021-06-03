@@ -1,8 +1,17 @@
 import { repeat } from 'lodash';
 import { isForbiddenMessage, createIsSuspiciousMessage } from '../common/security';
 import {
-	ChatType, MessageType, Action, LeaveReason, isPublicChat, isPartyChat, isPublicMessage, isPartyMessage,
-	toMessageType, isWhisper, isWhisperTo
+	ChatType,
+	MessageType,
+	Action,
+	LeaveReason,
+	isPublicChat,
+	isPartyChat,
+	isPublicMessage,
+	isPartyMessage,
+	toMessageType,
+	isWhisper,
+	isWhisperTo,
 } from '../common/interfaces';
 import { trimRepeatedLetters, urlRegexTexts, ipRegexText, urlExceptionRegex } from '../common/filterUtils';
 import { parseExpression } from '../common/expressionUtils';
@@ -56,10 +65,14 @@ function getMessageType(client: IClient, type: ChatType) {
 			return MessageType.Chat;
 		case ChatType.Supporter:
 			switch (client.supporterLevel) {
-				case 1: return MessageType.Supporter1;
-				case 2: return MessageType.Supporter2;
-				case 3: return MessageType.Supporter3;
-				default: return MessageType.Chat;
+				case 1:
+					return MessageType.Supporter1;
+				case 2:
+					return MessageType.Supporter2;
+				case 3:
+					return MessageType.Supporter3;
+				default:
+					return MessageType.Chat;
 			}
 		case ChatType.Supporter1:
 			return client.supporterLevel >= 1 ? MessageType.Supporter1 : MessageType.Chat;
@@ -87,100 +100,105 @@ export type Say = ReturnType<typeof createSay>;
 
 export const createSay =
 	(
-		world: World, runCommand: RunCommand, log: LogChat, checkSpam: OnMessageSettings, reportSwears: OnMessageSettings,
-		reportForbidden: OnMessageSettings, reportSuspicious: OnSuspiciousMessage, spamCommands: string[],
-		random: () => number, isSuspiciousMessage: IsSuspiciousMessage,
+		world: World,
+		runCommand: RunCommand,
+		log: LogChat,
+		checkSpam: OnMessageSettings,
+		reportSwears: OnMessageSettings,
+		reportForbidden: OnMessageSettings,
+		reportSuspicious: OnSuspiciousMessage,
+		spamCommands: string[],
+		random: () => number,
+		isSuspiciousMessage: IsSuspiciousMessage,
 	) =>
-		(client: IClient, text: string, chatType: ChatType, target: IClient | undefined, settings: GameServerSettings) => {
-			text = cleanMessage(text);
+	(client: IClient, text: string, chatType: ChatType, target: IClient | undefined, settings: GameServerSettings) => {
+		text = cleanMessage(text);
 
-			const { command, args, type } = parseCommand(text, chatType);
-			const whisper = type === ChatType.Whisper;
+		const { command, args, type } = parseCommand(text, chatType);
+		const whisper = type === ChatType.Whisper;
 
-			if (!command && !args)
-				return;
+		if (!command && !args) return;
 
-			if (whisper && client === target)
-				return;
+		if (whisper && client === target) return;
 
-			const forbidden = command == null && isPublicChat(type) && isForbiddenMessage(args);
+		const forbidden = command == null && isPublicChat(type) && isForbiddenMessage(args);
 
-			log(client, text, type, forbidden, target);
+		log(client, text, type, forbidden, target);
 
-			const suspicious = isSuspiciousMessage(args, settings);
+		const suspicious = isSuspiciousMessage(args, settings);
 
-			if (suspicious !== Suspicious.No) {
-				reportSuspicious(client, `${getChatPrefix(type)}${text}`, suspicious);
-			}
+		if (suspicious !== Suspicious.No) {
+			reportSuspicious(client, `${getChatPrefix(type)}${text}`, suspicious);
+		}
 
-			if (command != null) {
-				if (runCommand(client, command, args, type, target, settings)) {
-					if (type !== ChatType.Party && spamCommands.indexOf(command) !== -1) {
-						if (!client.map.instance) {
-							checkSpam(client, text, settings);
-						}
-					}
-				} else {
-					const expression = parseExpression(text.substr(1));
-
-					if (expression) {
-						setEntityExpression(client.pony, expression);
-					} else {
-						saySystem(client, 'Invalid command');
+		if (command != null) {
+			if (runCommand(client, command, args, type, target, settings)) {
+				if (type !== ChatType.Party && spamCommands.indexOf(command) !== -1) {
+					if (!client.map.instance) {
+						checkSpam(client, text, settings);
 					}
 				}
 			} else {
-				const message = args;
-				const think = type === ChatType.Think || type === ChatType.PartyThink;
-				const expression = (think || whisper) ? undefined : parseExpression(message);
+				const expression = parseExpression(text.substr(1));
 
 				if (expression) {
 					setEntityExpression(client.pony, expression);
-				} else if (!whisper && isLaugh(message)) {
-					execAction(client, Action.Laugh, settings);
-				}
-
-				if (isPartyChat(type)) {
-					sayToParty(client, message, think ? MessageType.PartyThinking : MessageType.Party);
 				} else {
-					const friendWhisper = whisper && target !== undefined && isFriend(client, target);
-					const messageNoLinks = filterUrls(message);
-					const messageCensored = forbidden ? repeat('*', messageNoLinks.length) : filterBadWords(messageNoLinks);
-					const trimmedMessage = trimRepeatedLetters(messageNoLinks);
-					const trimmedCensored = trimRepeatedLetters(messageCensored);
-					const messageType = getMessageType(client, type);
-					const swearing = messageNoLinks !== messageCensored;
-
-					if (!friendWhisper) {
-						if (!client.map.instance) {
-							checkSpam(client, message, settings);
-						}
-
-						if (settings.filterSwears && swearing) {
-							reportSwears(client, message, settings);
-						}
-
-						if (forbidden) {
-							reportForbidden(client, message, settings);
-						}
-					}
-
-					if (!friendWhisper && swearing && settings.kickSwearing && random() < 0.75) {
-						if (settings.kickSwearingToSpawn) {
-							world.resetToSpawn(client);
-						}
-
-						world.kick(client, 'swearing', LeaveReason.Swearing);
-					} else if (!friendWhisper && forbidden) {
-						sayTo(client, client.pony, trimmedMessage, messageType);
-					} else if (whisper) {
-						sayWhisper(client, trimmedMessage, trimmedCensored, messageType, target, settings);
-					} else {
-						sayToEveryone(client, trimmedMessage, trimmedCensored, messageType, settings);
-					}
+					saySystem(client, 'Invalid command');
 				}
 			}
-		};
+		} else {
+			const message = args;
+			const think = type === ChatType.Think || type === ChatType.PartyThink;
+			const expression = think || whisper ? undefined : parseExpression(message);
+
+			if (expression) {
+				setEntityExpression(client.pony, expression);
+			} else if (!whisper && isLaugh(message)) {
+				execAction(client, Action.Laugh, settings);
+			}
+
+			if (isPartyChat(type)) {
+				sayToParty(client, message, think ? MessageType.PartyThinking : MessageType.Party);
+			} else {
+				const friendWhisper = whisper && target !== undefined && isFriend(client, target);
+				const messageNoLinks = filterUrls(message);
+				const messageCensored = forbidden ? repeat('*', messageNoLinks.length) : filterBadWords(messageNoLinks);
+				const trimmedMessage = trimRepeatedLetters(messageNoLinks);
+				const trimmedCensored = trimRepeatedLetters(messageCensored);
+				const messageType = getMessageType(client, type);
+				const swearing = messageNoLinks !== messageCensored;
+
+				if (!friendWhisper) {
+					if (!client.map.instance) {
+						checkSpam(client, message, settings);
+					}
+
+					if (settings.filterSwears && swearing) {
+						reportSwears(client, message, settings);
+					}
+
+					if (forbidden) {
+						reportForbidden(client, message, settings);
+					}
+				}
+
+				if (!friendWhisper && swearing && settings.kickSwearing && random() < 0.75) {
+					if (settings.kickSwearingToSpawn) {
+						world.resetToSpawn(client);
+					}
+
+					world.kick(client, 'swearing', LeaveReason.Swearing);
+				} else if (!friendWhisper && forbidden) {
+					sayTo(client, client.pony, trimmedMessage, messageType);
+				} else if (whisper) {
+					sayWhisper(client, trimmedMessage, trimmedCensored, messageType, target, settings);
+				} else {
+					sayToEveryone(client, trimmedMessage, trimmedCensored, messageType, settings);
+				}
+			}
+		}
+	};
 
 export function sayTo(client: IClient, { id }: ServerEntity, message: string, type: MessageType) {
 	client.saysQueue.push([id, message, type]);
@@ -191,8 +209,12 @@ export function saySystem(client: IClient, message: string) {
 }
 
 function sayToClient(
-	client: IClient, entity: ServerEntity, message: string, censoredMessage: string, type: MessageType,
-	settings: GameServerSettings
+	client: IClient,
+	entity: ServerEntity,
+	message: string,
+	censoredMessage: string,
+	type: MessageType,
+	settings: GameServerSettings,
 ): boolean {
 	if (client.pony !== entity && !isWhisperTo(type)) {
 		const swear = !!settings.hideSwearing && message !== censoredMessage;
@@ -231,8 +253,12 @@ function sayToClient(
 }
 
 function sayWhisper(
-	client: IClient, message: string, censoredMessage: string, type: MessageType,
-	target: IClient | undefined, settings: GameServerSettings
+	client: IClient,
+	message: string,
+	censoredMessage: string,
+	type: MessageType,
+	target: IClient | undefined,
+	settings: GameServerSettings,
 ) {
 	if (target === undefined || target.shadowed || isHiddenBy(client, target)) {
 		saySystem(client, `Couldn't find this player`);
@@ -266,7 +292,11 @@ function sayToParty(client: IClient, message: string, type: MessageType) {
 }
 
 export function sayToAll(
-	entity: ServerEntity, message: string, censoredMessage: string, type: MessageType, settings: GameServerSettings
+	entity: ServerEntity,
+	message: string,
+	censoredMessage: string,
+	type: MessageType,
+	settings: GameServerSettings,
 ) {
 	if (entity.region) {
 		for (const client of entity.region.clients) {
@@ -276,12 +306,13 @@ export function sayToAll(
 }
 
 export function sayToEveryone(
-	client: IClient, message: string, censoredMessage: string, type: MessageType, settings: GameServerSettings
+	client: IClient,
+	message: string,
+	censoredMessage: string,
+	type: MessageType,
+	settings: GameServerSettings,
 ) {
-	if (
-		isMutedOrShadowed(client) ||
-		client.accountSettings.ignorePublicChat
-	) {
+	if (isMutedOrShadowed(client) || client.accountSettings.ignorePublicChat) {
 		sayTo(client, client.pony, message, type);
 	} else {
 		sayToAll(client.pony, message, censoredMessage, type, settings);
@@ -289,7 +320,11 @@ export function sayToEveryone(
 }
 
 export function sayToOthers(
-	client: IClient, message: string, type: MessageType, target: IClient | undefined, settings: GameServerSettings
+	client: IClient,
+	message: string,
+	type: MessageType,
+	target: IClient | undefined,
+	settings: GameServerSettings,
 ) {
 	if (isWhisper(type)) {
 		sayWhisper(client, message, message, type, target, settings);

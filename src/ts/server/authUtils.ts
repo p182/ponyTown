@@ -43,10 +43,12 @@ export async function findOrCreateAuth(profile: Profile, accountId: string | und
 }
 
 export async function updateAuthInfo(
-	updateAuth: UpdateAuth, auth: IAuth | undefined, profile: Profile, accountId: string | undefined
+	updateAuth: UpdateAuth,
+	auth: IAuth | undefined,
+	profile: Profile,
+	accountId: string | undefined,
 ) {
-	if (!auth)
-		return;
+	if (!auth) return;
 
 	const changes: Partial<IAuth> = {};
 

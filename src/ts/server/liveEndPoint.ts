@@ -33,9 +33,16 @@ interface LiveEndPointConfig<T extends Doc> {
 	afterAssign?: (from: string, to: string) => any;
 }
 
-export function createLiveEndPoint<T extends Doc>(
-	{ model, fields, encode, beforeDelete, afterDelete, beforeAssign, afterAssign, fix = false }: LiveEndPointConfig<T>
-): LiveEndPoint {
+export function createLiveEndPoint<T extends Doc>({
+	model,
+	fields,
+	encode,
+	beforeDelete,
+	afterDelete,
+	beforeAssign,
+	afterAssign,
+	fix = false,
+}: LiveEndPointConfig<T>): LiveEndPoint {
 	const removedItems: DeletedId[] = [];
 	let fixing = false;
 
@@ -68,33 +75,32 @@ export function createLiveEndPoint<T extends Doc>(
 	function encodeItems(items: T[], timestamp: Date, more: boolean): LiveResponse {
 		const base: BaseValues = {};
 		const updates = encode(items, base);
-		const deletes = removedItems
-			.filter(x => x.updatedAt.getTime() > timestamp.getTime())
-			.map(x => x.id);
+		const deletes = removedItems.filter(x => x.updatedAt.getTime() > timestamp.getTime()).map(x => x.id);
 
 		return { updates, deletes, base, more };
 	}
 
 	function findItems(from: Date): Promise<T[]> {
-		return Promise.resolve(model.find({ updatedAt: { $gt: from } }, fields.join(' '))
-			// .sort([['updatedAt', 1], ['id', 1]])
-			.sort({ updatedAt: 1 })
-			.limit(ITEM_LIMIT + 1)
-			.lean()
-			.exec());
+		return Promise.resolve(
+			model
+				.find({ updatedAt: { $gt: from } }, fields.join(' '))
+				// .sort([['updatedAt', 1], ['id', 1]])
+				.sort({ updatedAt: 1 })
+				.limit(ITEM_LIMIT + 1)
+				.lean()
+				.exec(),
+		);
 	}
 
 	function findItemsExact(date: Date): Promise<T[]> {
-		return Promise.resolve(model.find({ updatedAt: date }, fields.join(' '))
-			.lean()
-			.exec());
+		return Promise.resolve(model.find({ updatedAt: date }, fields.join(' ')).lean().exec());
 	}
 
 	function hasItem(items: T[], id: string) {
 		return items.some(i => i._id === id);
 	}
 
-	function addTailItems(items: T[]): Promise<{ items: T[]; more: boolean; }> {
+	function addTailItems(items: T[]): Promise<{ items: T[]; more: boolean }> {
 		if (items.length <= ITEM_LIMIT) {
 			return Promise.resolve({ items, more: false });
 		}
@@ -132,8 +138,7 @@ export function createLiveEndPoint<T extends Doc>(
 	}
 
 	function fixItems(items: T[]) {
-		if (fixing || !fix)
-			return;
+		if (fixing || !fix) return;
 
 		fixing = true;
 		logger.info(`Fixing ${model.modelName}s`);
@@ -141,7 +146,7 @@ export function createLiveEndPoint<T extends Doc>(
 		Promise.map(items, item => model.updateOne({ _id: item._id }, { unused: Date.now() % 1000 }).exec(), { concurrency: 1 })
 			.then(() => logger.info(`Fixed ${model.modelName}s`))
 			.catch(e => logger.error(e))
-			.finally(() => fixing = false)
+			.finally(() => (fixing = false))
 			.done();
 	}
 

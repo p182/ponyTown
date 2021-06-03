@@ -4,7 +4,12 @@ import { TileType, EntityFlags, UpdateFlags, canWalk } from '../common/interface
 import { compressTiles } from '../common/compress';
 import { rect, withBorder, withPadding } from '../common/rect';
 import {
-	REGION_BORDER, tileHeight, tileWidth, REGION_SIZE, TILES_RESTORE_MIN_SEC, TILES_RESTORE_MAX_SEC
+	REGION_BORDER,
+	tileHeight,
+	tileWidth,
+	REGION_SIZE,
+	TILES_RESTORE_MIN_SEC,
+	TILES_RESTORE_MAX_SEC,
 } from '../common/constants';
 import { rectToScreen } from '../common/positionUtils';
 import { removeItem, hasFlag } from '../common/utils';
@@ -31,7 +36,8 @@ export function createServerRegion(x: number, y: number, defaultTile = TileType.
 	}
 
 	return {
-		x, y,
+		x,
+		y,
 		entityUpdates: [],
 		entityRemoves: [],
 		tileUpdates: [],
@@ -51,10 +57,12 @@ export function createServerRegion(x: number, y: number, defaultTile = TileType.
 		reusedUpdates: 0,
 		bounds,
 		boundsWithBorder: withBorder(bounds, REGION_BORDER),
-		subscribeBounds: rectToScreen(withPadding(
-			bounds, REGION_SIZE, REGION_SIZE, REGION_SIZE + subscribeBoundsBottomPad, REGION_SIZE)),
-		unsubscribeBounds: rectToScreen(withPadding(
-			bounds, REGION_SIZE + 1, REGION_SIZE + 1, REGION_SIZE + subscribeBoundsBottomPad + 1, REGION_SIZE + 1)),
+		subscribeBounds: rectToScreen(
+			withPadding(bounds, REGION_SIZE, REGION_SIZE, REGION_SIZE + subscribeBoundsBottomPad, REGION_SIZE),
+		),
+		unsubscribeBounds: rectToScreen(
+			withPadding(bounds, REGION_SIZE + 1, REGION_SIZE + 1, REGION_SIZE + subscribeBoundsBottomPad + 1, REGION_SIZE + 1),
+		),
 	};
 }
 
@@ -163,8 +171,7 @@ export function pushRemoveEntityToRegion(region: ServerRegion, entity: ServerEnt
 export function setRegionTile(map: ServerMap, region: ServerRegion, x: number, y: number, type: TileType, skipRestore = false) {
 	const old = getRegionTile(region, x, y);
 
-	if (type === old)
-		return;
+	if (type === old) return;
 
 	const index = x | (y << 3);
 	region.tiles[index] = type;

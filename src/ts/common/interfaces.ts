@@ -114,17 +114,23 @@ export interface SpriteBatchCommons extends SpriteBatchBase {
 }
 
 export interface SpriteBatch extends SpriteBatchCommons {
-	drawImage(
-		color: number,
-		sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number
-	): void;
+	drawImage(color: number, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
 	drawSprite(sprite: Sprite | undefined, color: number, x: number, y: number): void;
 }
 
 export interface PaletteSpriteBatch extends SpriteBatchCommons {
 	drawImage(
-		type: number, color: number, palette: Palette | undefined,
-		sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number
+		type: number,
+		color: number,
+		palette: Palette | undefined,
+		sx: number,
+		sy: number,
+		sw: number,
+		sh: number,
+		dx: number,
+		dy: number,
+		dw: number,
+		dh: number,
 	): void;
 	drawSprite(sprite: Sprite, color: number, palette: Palette | undefined, x: number, y: number): void;
 }
@@ -243,55 +249,56 @@ export function toMessageType(type: MessageType) {
 
 export function toAnnouncementMessageType(type: ChatType) {
 	switch (type) {
-		case ChatType.Party: return MessageType.PartyAnnouncement;
-		case ChatType.Whisper: return MessageType.WhisperAnnouncement;
-		default: return MessageType.Announcement;
+		case ChatType.Party:
+			return MessageType.PartyAnnouncement;
+		case ChatType.Whisper:
+			return MessageType.WhisperAnnouncement;
+		default:
+			return MessageType.Announcement;
 	}
 }
 
 export function isWhisper(type: MessageType) {
-	return type === MessageType.Whisper ||
-		type === MessageType.WhisperAnnouncement;
+	return type === MessageType.Whisper || type === MessageType.WhisperAnnouncement;
 }
 
 export function isWhisperTo(type: MessageType) {
-	return type === MessageType.WhisperTo ||
-		type === MessageType.WhisperToAnnouncement;
+	return type === MessageType.WhisperTo || type === MessageType.WhisperToAnnouncement;
 }
 
 export function isThinking(type: MessageType) {
-	return type === MessageType.Thinking ||
-		type === MessageType.PartyThinking;
+	return type === MessageType.Thinking || type === MessageType.PartyThinking;
 }
 
 export function isModOrAdminMessage(type: MessageType) {
-	return type === MessageType.Mod ||
-		type === MessageType.Admin;
+	return type === MessageType.Mod || type === MessageType.Admin;
 }
 
 export function isPartyMessage(type: MessageType) {
-	return type === MessageType.Party ||
-		type === MessageType.PartyThinking ||
-		type === MessageType.PartyAnnouncement;
+	return type === MessageType.Party || type === MessageType.PartyThinking || type === MessageType.PartyAnnouncement;
 }
 
 export function isPublicMessage(type: MessageType) {
-	return type === MessageType.Chat ||
+	return (
+		type === MessageType.Chat ||
 		type === MessageType.Thinking ||
 		type === MessageType.Announcement ||
 		type === MessageType.Admin ||
 		type === MessageType.Mod ||
 		type === MessageType.Supporter1 ||
 		type === MessageType.Supporter2 ||
-		type === MessageType.Supporter3;
+		type === MessageType.Supporter3
+	);
 }
 
 export function isNonIgnorableMessage(type: MessageType) {
-	return isModOrAdminMessage(type) ||
+	return (
+		isModOrAdminMessage(type) ||
 		isPartyMessage(type) ||
 		type === MessageType.System ||
 		type === MessageType.Dismiss ||
-		type === MessageType.Announcement;
+		type === MessageType.Announcement
+	);
 }
 
 export const enum ChatType {
@@ -312,10 +319,7 @@ export function isPartyChat(type: ChatType | undefined) {
 }
 
 export function isPublicChat(type: ChatType) {
-	return type !== ChatType.Party &&
-		type !== ChatType.PartyThink &&
-		type !== ChatType.Dismiss &&
-		type !== ChatType.Whisper;
+	return type !== ChatType.Party && type !== ChatType.PartyThink && type !== ChatType.Dismiss && type !== ChatType.Whisper;
 }
 
 export interface Point {
@@ -523,7 +527,7 @@ export interface EntityPart {
 	vy?: number;
 
 	// minimap
-	minimap?: { color: number; rect: Rect; order: number; };
+	minimap?: { color: number; rect: Rect; order: number };
 
 	// interact
 	interactAction?: InteractAction;
@@ -916,8 +920,19 @@ export const enum TileType {
 }
 
 export const tileTypeNames = [
-	'none', 'dirt', 'grass', 'water', 'wood', 'ice', 'snow-on-ice', 'walkable-water', 'boat', 'walkable-ice',
-	'stone', 'stone-2', 'elevated-dirt',
+	'none',
+	'dirt',
+	'grass',
+	'water',
+	'wood',
+	'ice',
+	'snow-on-ice',
+	'walkable-water',
+	'boat',
+	'walkable-ice',
+	'stone',
+	'stone-2',
+	'elevated-dirt',
 ];
 
 export const houseTiles = [
@@ -1114,7 +1129,7 @@ export interface EditorPlaceAction {
 
 export interface EditorMoveAction {
 	type: 'move';
-	entities: { id: number; x: number; y: number; }[];
+	entities: { id: number; x: number; y: number }[];
 }
 
 export interface EditorRemoveAction {
@@ -1139,12 +1154,12 @@ export interface EditorPartyAction {
 }
 
 export type EditorAction =
-	EditorPlaceAction |
-	EditorMoveAction |
-	EditorRemoveAction |
-	EditorOtherAction |
-	EditorTileAction |
-	EditorPartyAction;
+	| EditorPlaceAction
+	| EditorMoveAction
+	| EditorRemoveAction
+	| EditorOtherAction
+	| EditorTileAction
+	| EditorPartyAction;
 
 export const enum SelectFlags {
 	None = 0,
@@ -1293,11 +1308,9 @@ export interface PalettePonyInfo extends PonyInfoBase<Palette, PaletteSpriteSet>
 	magicColorValue: number;
 }
 
-export interface PonyInfo extends PonyInfoBase<string, SpriteSet<string>> {
-}
+export interface PonyInfo extends PonyInfoBase<string, SpriteSet<string>> {}
 
-export interface PonyInfoNumber extends PonyInfoBase<number, SpriteSet<number>> {
-}
+export interface PonyInfoNumber extends PonyInfoBase<number, SpriteSet<number>> {}
 
 export interface ColorExtra {
 	color: Sprite;
@@ -1536,8 +1549,14 @@ export const enum Muzzle {
 }
 
 export const CLOSED_MUZZLES = [
-	Muzzle.Smile, Muzzle.Frown, Muzzle.Neutral, Muzzle.Scrunch, Muzzle.Flat, Muzzle.Concerned,
-	Muzzle.Kiss, Muzzle.Kiss2,
+	Muzzle.Smile,
+	Muzzle.Frown,
+	Muzzle.Neutral,
+	Muzzle.Scrunch,
+	Muzzle.Flat,
+	Muzzle.Concerned,
+	Muzzle.Kiss,
+	Muzzle.Kiss2,
 ];
 
 export const enum Eye {
@@ -1570,9 +1589,7 @@ export const enum Eye {
 }
 
 export function isEyeSleeping(eye: Eye) {
-	return eye === Eye.Closed ||
-		(eye >= Eye.Lines && eye <= Eye.ClosedHappy) ||
-		(eye >= Eye.Peaceful && eye <= Eye.X2);
+	return eye === Eye.Closed || (eye >= Eye.Lines && eye <= Eye.ClosedHappy) || (eye >= Eye.Peaceful && eye <= Eye.X2);
 }
 
 export const enum Iris {
@@ -1655,7 +1672,7 @@ export const defaultDrawOptions: DrawOptions = {
 	tileGrid: false,
 	engine: Engine.Default,
 	season: Season.Summer,
-	error: () => { },
+	error: () => {},
 };
 
 export interface PonyEntityOptions {

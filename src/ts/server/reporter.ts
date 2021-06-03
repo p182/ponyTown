@@ -11,34 +11,39 @@ const maxDescLength = 300;
 /* istanbul ignore next */
 const createLogEvent =
 	(config: ServerConfig) =>
-		(
-			account: ID | undefined, pony: ID | undefined, originInfo: IOriginInfo | undefined, type: string,
-			message: string, desc?: string
-		) => {
-			const server = config.id;
+	(
+		account: ID | undefined,
+		pony: ID | undefined,
+		originInfo: IOriginInfo | undefined,
+		type: string,
+		message: string,
+		desc?: string,
+	) => {
+		const server = config.id;
 
-			if (desc) {
-				desc = truncate(desc, { length: maxDescLength });
-			}
+		if (desc) {
+			desc = truncate(desc, { length: maxDescLength });
+		}
 
-			const origin = originInfo && { ip: originInfo.ip, country: originInfo.country };
+		const origin = originInfo && { ip: originInfo.ip, country: originInfo.country };
 
-			Event.findOne({ server, account, pony, type, message, origin }).exec()
-				.then(event => {
-					if (event) {
-						if (!event.desc || (event.desc.length < maxDescLength && desc && event.desc.indexOf(desc) === -1)) {
-							event.desc = `${event.desc || ''}\n${desc || ''}`.trim();
-						}
-
-						return Event.updateOne({ _id: event._id }, { desc: event.desc, count: event.count + 1 }).exec();
-					} else {
-						return Event.create(<IEvent>{ server, account, pony, type, message, origin, desc });
+		Event.findOne({ server, account, pony, type, message, origin })
+			.exec()
+			.then(event => {
+				if (event) {
+					if (!event.desc || (event.desc.length < maxDescLength && desc && event.desc.indexOf(desc) === -1)) {
+						event.desc = `${event.desc || ''}\n${desc || ''}`.trim();
 					}
-				})
-				.catch(logger.error);
 
-			return null;
-		};
+					return Event.updateOne({ _id: event._id }, { desc: event.desc, count: event.count + 1 }).exec();
+				} else {
+					return Event.create(<IEvent>{ server, account, pony, type, message, origin, desc });
+				}
+			})
+			.catch(logger.error);
+
+		return null;
+	};
 
 const ignoreWarnings = ['Suspicious message', 'Spam'];
 
@@ -96,7 +101,7 @@ export function create(server: ServerConfig, account?: ID, pony?: ID, originInfo
 
 /* istanbul ignore next */
 export function createFromRequest(server: ServerConfig, req: Request, pony?: any) {
-	const user = req && req.user as IAccount | undefined;
+	const user = req && (req.user as IAccount | undefined);
 	const account = user ? user.id : undefined;
 	const origin = req ? getOrigin(req) : undefined;
 	return create(server, account, pony, origin);

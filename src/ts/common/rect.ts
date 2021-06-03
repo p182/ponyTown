@@ -43,7 +43,8 @@ export function addRects(a: Rect, b: Rect): Rect {
 	const y = Math.min(a.y, b.y);
 
 	return {
-		x, y,
+		x,
+		y,
 		w: Math.max(a.x + a.w, b.x + b.w) - x,
 		h: Math.max(a.y + a.h, b.y + b.h) - y,
 	};

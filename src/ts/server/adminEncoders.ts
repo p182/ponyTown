@@ -9,14 +9,16 @@ export interface BaseTimes {
 }
 
 export function getBaseDate<T>(items: T[], get: (item: T) => Date): string {
-	return items.reduce((min, i) => {
-		const date = get(i);
-		return date && min.getTime() > date.getTime() ? date : min;
-	}, new Date(0)).toISOString();
+	return items
+		.reduce((min, i) => {
+			const date = get(i);
+			return date && min.getTime() > date.getTime() ? date : min;
+		}, new Date(0))
+		.toISOString();
 }
 
 export function getBaseTimes(base: BaseValues): BaseTimes {
-	return mapValues(base, (x: string) => (new Date(x)).getTime()) as any;
+	return mapValues(base, (x: string) => new Date(x).getTime()) as any;
 }
 
 function trimValues(values: any[]): any[] {
@@ -24,7 +26,7 @@ function trimValues(values: any[]): any[] {
 }
 
 function encodeDate(date: Date | undefined, baseValue: number): number {
-	return date ? (date.getTime() - baseValue) : 0;
+	return date ? date.getTime() - baseValue : 0;
 }
 
 // NOTE: update eventFields

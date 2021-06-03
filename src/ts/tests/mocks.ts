@@ -31,22 +31,46 @@ export function mock<T>(ctor: new (...args: any[]) => T, fields: any = {}): T {
 
 	Object.getOwnPropertyNames(prototype)
 		.filter(key => !Object.getOwnPropertyDescriptor(prototype, key)!.get && typeof prototype[key] === 'function')
-		.forEach(key => object[key] = function () { });
+		.forEach(key => (object[key] = function () {}));
 
 	return Object.assign(object, fields);
 }
 
 export function entity(id: number, x = 0, y = 0, type = 0, more: Partial<Entity> = {}): Entity {
 	return {
-		id, x, y, z: 0, vx: 0, vy: 0, type, order: 0, state: 0, playerState: 0, flags: 0, timestamp: 0,
-		options: {}, ...more
+		id,
+		x,
+		y,
+		z: 0,
+		vx: 0,
+		vy: 0,
+		type,
+		order: 0,
+		state: 0,
+		playerState: 0,
+		flags: 0,
+		timestamp: 0,
+		options: {},
+		...more,
 	};
 }
 
 export function serverEntity(id: number, x = 0, y = 0, type = 0, more: Partial<ServerEntity> = {}): ServerEntity {
 	return {
-		id, x, y, z: 0, vx: 0, vy: 0, type, order: 0, state: 0, playerState: 0, flags: 0, timestamp: 0,
-		options: {}, ...more
+		id,
+		x,
+		y,
+		z: 0,
+		vx: 0,
+		vy: 0,
+		type,
+		order: 0,
+		state: 0,
+		playerState: 0,
+		flags: 0,
+		timestamp: 0,
+		options: {},
+		...more,
 	};
 }
 
@@ -102,8 +126,8 @@ export function mockClient(fields: any = {}): IClient {
 		screenSize: { width: 20, height: 20 },
 		reporter: mockReporter(),
 		camera: createCamera(),
-		reportInviteLimit() { },
-		disconnect() { },
+		reportInviteLimit() {},
+		disconnect() {},
 		...fields,
 	};
 
@@ -115,18 +139,18 @@ export function mockClient(fields: any = {}): IClient {
 
 export function mockReporter(): Reporter {
 	return {
-		info() { },
-		warn() { },
-		warnLog() { },
-		danger() { },
-		error() { },
-		system() { },
-		systemLog() { },
-		setPony() { },
+		info() {},
+		warn() {},
+		warnLog() {},
+		danger() {},
+		error() {},
+		system() {},
+		systemLog() {},
+		setPony() {},
 	};
 }
 
-export type MockSubject<T = any> = Subject<T> & { values: (T | undefined)[]; };
+export type MockSubject<T = any> = Subject<T> & { values: (T | undefined)[] };
 
 export function mockSubject<T = any>(): MockSubject<T> {
 	const values: (T | undefined)[] = [];

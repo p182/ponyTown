@@ -1,4 +1,5 @@
 build/
+src/scripts/
 build-copy/
 node_modules/
 logs/

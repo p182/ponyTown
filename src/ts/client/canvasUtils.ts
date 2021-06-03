@@ -20,16 +20,15 @@ export let loadImage = (src: string): Promise<HTMLImageElement | ImageBitmap> =>
 
 /* istanbul ignore next */
 function canUseImageBitmap() {
-	return typeof fetch === 'function' &&
-		typeof createImageBitmap === 'function' &&
-		!/yabrowser/i.test(navigator.userAgent); // disabled due to yandex browser bug
+	return typeof fetch === 'function' && typeof createImageBitmap === 'function' && !/yabrowser/i.test(navigator.userAgent); // disabled due to yandex browser bug
 }
 
 /* istanbul ignore next */
 if (canUseImageBitmap()) {
-	loadImage = src => fetch(src)
-		.then(response => response.blob())
-		.then(createImageBitmap);
+	loadImage = src =>
+		fetch(src)
+			.then(response => response.blob())
+			.then(createImageBitmap);
 }
 
 export function setup(methods: {

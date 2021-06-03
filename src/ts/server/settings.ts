@@ -34,7 +34,7 @@ export async function updateSettings(update: Partial<Settings>) {
 
 	try {
 		settings = await loadSettings();
-	} catch { }
+	} catch {}
 
 	Object.assign(settings, update);
 	await saveSettings(settings);
@@ -45,5 +45,5 @@ export async function reloadSettings() {
 	try {
 		const current = await loadSettings();
 		Object.assign(settings, current);
-	} catch { }
+	} catch {}
 }

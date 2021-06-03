@@ -33,10 +33,13 @@ export function start(world: World, server: ServerConfig) {
 	world.maps.push(createCaveMap(world));
 
 	// custom map
-	if (DEVELOPMENT) { // remove `if` when you're ready to publish your map
+	if (DEVELOPMENT) {
+		// remove `if` when you're ready to publish your map
 		// place sign that will teleport the player to your custom map
-		world.addEntity(createSign(
-			75, 69, 'Go to custom map', (_, client) => goToMap(world, client, 'custom'), signQuestion), world.getMainMap());
+		world.addEntity(
+			createSign(75, 69, 'Go to custom map', (_, client) => goToMap(world, client, 'custom'), signQuestion),
+			world.getMainMap(),
+		);
 
 		// add map to the world, go to `/src/ts/server/maps/customMap.ts` to customize your map
 		world.maps.push(createCustomMap(world));

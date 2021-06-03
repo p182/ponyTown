@@ -1,10 +1,7 @@
 import { Eye, Muzzle, Iris, ExpressionExtra } from './interfaces';
 import { THREE_LETTER_WORDS, TWO_LETTER_WORDS } from './expressionUtils';
 
-type Result = undefined
-	| [Eye, Eye, Muzzle]
-	| [Eye, Eye, Muzzle, Iris, Iris]
-	| [Eye, Eye, Muzzle, Iris, Iris, ExpressionExtra];
+type Result = undefined | [Eye, Eye, Muzzle] | [Eye, Eye, Muzzle, Iris, Iris] | [Eye, Eye, Muzzle, Iris, Iris, ExpressionExtra];
 
 export const expressions: [string, Result][] = [
 	// invalid
@@ -252,7 +249,13 @@ export const expressions: [string, Result][] = [
 	['>>', [Eye.Neutral2, Eye.Neutral2, Muzzle.Flat, Iris.Left, Iris.Left]],
 	// vertical (invalid)
 	...[
-		'---', '...', '000', 'QQQ', 'One', 'Up.', 'UP.',
+		'---',
+		'...',
+		'000',
+		'QQQ',
+		'One',
+		'Up.',
+		'UP.',
 		...THREE_LETTER_WORDS,
 		...THREE_LETTER_WORDS.map(x => x.toUpperCase()),
 		...TWO_LETTER_WORDS.map(x => x + '.'),

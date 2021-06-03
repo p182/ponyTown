@@ -15,18 +15,22 @@ export interface AnimatorTransition<T extends Animation> {
 export interface AnimatorState<T extends Animation = Animation> {
 	name: string;
 	animation: T;
-	variants: { [key: string]: T; };
+	variants: { [key: string]: T };
 	from: AnimatorTransition<T>[];
 }
 
 export function animatorState<T extends Animation>(
-	name: string, animation: T, variants: { [key: string]: T; } = {}
+	name: string,
+	animation: T,
+	variants: { [key: string]: T } = {},
 ): AnimatorState<T> {
 	return { name, animation, variants, from: [] };
 }
 
 export function animatorTransition<T extends Animation>(
-	from: AnimatorState<T>, to: AnimatorState<T>, options: Partial<AnimatorTransition<T>> = {}
+	from: AnimatorState<T>,
+	to: AnimatorState<T>,
+	options: Partial<AnimatorTransition<T>> = {},
 ) {
 	to.from.push({ state: from, ...options });
 }
@@ -98,7 +102,7 @@ export function updateAnimator<T extends Animation>(animator: Animator<T>, delta
 
 		do {
 			switched = false;
-			const transition = animator.next = animator.next || findTransition(animator.state, animator.target);
+			const transition = (animator.next = animator.next || findTransition(animator.state, animator.target));
 
 			if (transition !== undefined) {
 				const exitAfter = transition.exitAfter === undefined ? 1 : transition.exitAfter;
@@ -134,15 +138,21 @@ function getAnimationForState<T extends Animation>(state: AnimatorState<T>, vari
 }
 
 function findTransition<T extends Animation>(
-	current: AnimatorState<T>, target: AnimatorState<T>
+	current: AnimatorState<T>,
+	target: AnimatorState<T>,
 ): AnimatorTransition<T> | undefined {
-	return findTransMinMax(current, target, 0, 1)
-		|| findTrans(anyState, target, target, 0, 0, [])
-		|| findTransMinMax(current, target, 2, 10);
+	return (
+		findTransMinMax(current, target, 0, 1) ||
+		findTrans(anyState, target, target, 0, 0, []) ||
+		findTransMinMax(current, target, 2, 10)
+	);
 }
 
 function findTransMinMax<T extends Animation>(
-	current: AnimatorState<T>, target: AnimatorState<T>, min: number, max: number
+	current: AnimatorState<T>,
+	target: AnimatorState<T>,
+	min: number,
+	max: number,
 ): AnimatorTransition<T> | undefined {
 	for (let i = min; i <= max; i++) {
 		const trans = findTrans(current, target, target, 0, i, [current]);
@@ -156,8 +166,12 @@ function findTransMinMax<T extends Animation>(
 }
 
 function findTrans<T extends Animation>(
-	current: AnimatorState<T>, target: AnimatorState<T>, finalTarget: AnimatorState<T>,
-	depth: number, maxDepth: number, done: AnimatorState<T>[]
+	current: AnimatorState<T>,
+	target: AnimatorState<T>,
+	finalTarget: AnimatorState<T>,
+	depth: number,
+	maxDepth: number,
+	done: AnimatorState<T>[],
 ): AnimatorTransition<T> | undefined {
 	if (done.indexOf(target) === -1) {
 		done.push(target);

@@ -2,7 +2,11 @@ import { createBinaryWriter, getWriterBuffer, BinaryWriter } from 'ag-sockets';
 import { removeItem, pointInRect, clamp, includes } from '../common/utils';
 import { ServerEntity, IClient, ServerRegion, ServerMap } from './serverInterfaces';
 import {
-	tickTilesRestoration, resetRegionUpdates, pushRemoveEntityToRegion, removeEntityFromRegion, addEntityToRegion
+	tickTilesRestoration,
+	resetRegionUpdates,
+	pushRemoveEntityToRegion,
+	removeEntityFromRegion,
+	addEntityToRegion,
 } from './serverRegion';
 import { updateEntity, isEntityShadowed, isOverflowError, pushAddEntityToClient } from './entityUtils';
 import { writeRegion, writeUpdate } from '../common/encoders/updateEncoder';
@@ -164,7 +168,7 @@ export function updateRegion(entity: ServerEntity, map: ServerMap) {
 	}
 }
 
-const moves: { entity: ServerEntity, region: ServerRegion; map: ServerMap; }[] = [];
+const moves: { entity: ServerEntity; region: ServerRegion; map: ServerMap }[] = [];
 
 export function updateRegions(maps: ServerMap[]) {
 	timingStart('updateRegions()');
@@ -260,7 +264,7 @@ export function isSubscribedToRegion(client: IClient, region: ServerRegion) {
 	return includes(client.regions, region);
 }
 
-export function sparseRegionUpdate(map: ServerMap, region: ServerRegion, options: { restoreTerrain: boolean; }) {
+export function sparseRegionUpdate(map: ServerMap, region: ServerRegion, options: { restoreTerrain: boolean }) {
 	if (options.restoreTerrain) {
 		tickTilesRestoration(map, region);
 	}
@@ -281,8 +285,7 @@ function doneTiming() {
 	timingEnd();
 }
 
-function noop() {
-}
+function noop() {}
 
 export function setupTiming(client: any) {
 	if (client.__internalHooks) {

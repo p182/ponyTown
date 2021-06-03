@@ -1,8 +1,25 @@
 import { ClientExtensions, BinaryWriter } from 'ag-sockets';
 import { ClientActions } from '../client/clientActions';
 import {
-	Entity, ServerFlags, AccountSettings, NotificationFlags, Expression, Camera, SayData, Region, TileUpdate,
-	Rect, IMap, MapType, TileType, MapState, UpdateFlags, Action, EntityOrPonyOptions, EntityPlayerState, MapFlags
+	Entity,
+	ServerFlags,
+	AccountSettings,
+	NotificationFlags,
+	Expression,
+	Camera,
+	SayData,
+	Region,
+	TileUpdate,
+	Rect,
+	IMap,
+	MapType,
+	TileType,
+	MapState,
+	UpdateFlags,
+	Action,
+	EntityOrPonyOptions,
+	EntityPlayerState,
+	MapFlags,
 } from '../common/interfaces';
 import { IAccount, ICharacter, UpdateAccount } from './db';
 import { AccountUpdate, CharacterState, GameServerSettings, Suspicious } from '../common/adminInterfaces';
@@ -24,7 +41,7 @@ export interface EntityUpdate {
 	options: EntityOrPonyOptions | undefined;
 }
 
-export type EntityUpdateBase = Partial<EntityUpdate> & { entity: ServerEntity; flags: UpdateFlags; };
+export type EntityUpdateBase = Partial<EntityUpdate> & { entity: ServerEntity; flags: UpdateFlags };
 
 export interface Reporter {
 	info(message: string, desc?: string): void;
@@ -54,7 +71,7 @@ export interface ServerParty {
 	leader: IClient;
 	leaderTimeout?: any;
 	clients: IClient[];
-	pending: { client: IClient; notificationId: number; }[];
+	pending: { client: IClient; notificationId: number }[];
 	cleanup?: number;
 }
 
@@ -224,7 +241,7 @@ export interface IClient extends ClientActions, ClientExtensions {
 	rateLimitCount?: number;
 
 	// debug
-	positions: { frame: number; x: number; y: number; moved: boolean; }[];
+	positions: { frame: number; x: number; y: number; moved: boolean }[];
 }
 
 export type Interact = (target: ServerEntity, client: IClient) => void;
@@ -289,7 +306,7 @@ export interface AccountService {
 }
 
 export interface SocketStats {
-	stats(): { sent: number; sentPackets: number; received: number; receivedPackets: number; };
+	stats(): { sent: number; sentPackets: number; received: number; receivedPackets: number };
 }
 
 export type OnMessage = (client: IClient, message: string) => void;

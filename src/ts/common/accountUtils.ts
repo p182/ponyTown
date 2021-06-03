@@ -1,6 +1,9 @@
 import {
-	BASE_CHARACTER_LIMIT, ADDITIONAL_CHARACTERS_SUPPORTER1, ADDITIONAL_CHARACTERS_SUPPORTER2,
-	ADDITIONAL_CHARACTERS_SUPPORTER3, ADDITIONAL_CHARACTERS_PAST_SUPPORTER
+	BASE_CHARACTER_LIMIT,
+	ADDITIONAL_CHARACTERS_SUPPORTER1,
+	ADDITIONAL_CHARACTERS_SUPPORTER2,
+	ADDITIONAL_CHARACTERS_SUPPORTER3,
+	ADDITIONAL_CHARACTERS_PAST_SUPPORTER,
 } from './constants';
 import { AccountDataFlags } from './interfaces';
 import { hasFlag } from './utils';
@@ -54,9 +57,12 @@ function meetsSupporterRequirement(account: AccountSupporter, require: string): 
 
 export function getCharacterLimit(account: AccountSupporter) {
 	switch (account.supporter || 0) {
-		case 1: return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER1;
-		case 2: return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER2;
-		case 3: return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER3;
+		case 1:
+			return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER1;
+		case 2:
+			return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER2;
+		case 3:
+			return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_SUPPORTER3;
 		default:
 			if (hasFlag(account.flags, AccountDataFlags.PastSupporter)) {
 				return BASE_CHARACTER_LIMIT + ADDITIONAL_CHARACTERS_PAST_SUPPORTER;
@@ -71,10 +77,14 @@ export function getSupporterInviteLimit(account: AccountSupporter) {
 		return 100;
 	} else {
 		switch (account.supporter) {
-			case 1: return 1;
-			case 2: return 5;
-			case 3: return 10;
-			default: return 0;
+			case 1:
+				return 1;
+			case 2:
+				return 5;
+			case 3:
+				return 10;
+			default:
+				return 0;
 		}
 	}
 }

@@ -5,29 +5,86 @@ import { HOUR } from '../common/constants';
 import { fromNow, removeItem, formatDuration } from '../common/utils';
 import { hasRole } from '../common/accountUtils';
 import {
-	Settings, UpdateOrigin, AccountUpdate, OriginInfo, AccountOrigins, IAdminServerActions, FindPonyQuery,
-	AuthUpdate, PonyCreator, ServerConfig, GameServerSettings, AccountState, AuthDetails, MergeAccountData,
-	FindAccountQuery, AdminCache, ClearOrignsOptions, ModelTypes, Stats
+	Settings,
+	UpdateOrigin,
+	AccountUpdate,
+	OriginInfo,
+	AccountOrigins,
+	IAdminServerActions,
+	FindPonyQuery,
+	AuthUpdate,
+	PonyCreator,
+	ServerConfig,
+	GameServerSettings,
+	AccountState,
+	AuthDetails,
+	MergeAccountData,
+	FindAccountQuery,
+	AdminCache,
+	ClearOrignsOptions,
+	ModelTypes,
+	Stats,
 } from '../common/adminInterfaces';
 import { ClientAdminActions, ClientUpdate } from '../client/clientAdminActions';
 import { TokenData } from './serverInterfaces';
 import { toAccountData, toPonyObjectAdmin } from './serverUtils';
 import {
-	IAccount, Account, ICharacter, Character, Auth, checkIfAdmin, ID, findCharacterById, updateAuth, queryAuths,
-	nullToUndefined, findAccount, findFriendIds
+	IAccount,
+	Account,
+	ICharacter,
+	Character,
+	Auth,
+	checkIfAdmin,
+	ID,
+	findCharacterById,
+	updateAuth,
+	queryAuths,
+	nullToUndefined,
+	findAccount,
+	findFriendIds,
 } from './db';
 import {
-	updateAccountSafe, setRole, addEmail, removeEmail, removeIgnore, updateAccountCounter, timeoutAccount,
-	addIgnores, setAccountState, findAccounts, getAccountsByEmails, getAccountsByOrigin,
-	removeAccount, setAccountAlert
+	updateAccountSafe,
+	setRole,
+	addEmail,
+	removeEmail,
+	removeIgnore,
+	updateAccountCounter,
+	timeoutAccount,
+	addIgnores,
+	setAccountState,
+	findAccounts,
+	getAccountsByEmails,
+	getAccountsByOrigin,
+	removeAccount,
+	setAccountAlert,
 } from './api/admin-accounts';
 import {
-	getAdminState, getChat, kickFromAllServers, notifyUpdate, clearSessions, actionForAllServers, updateOrigin,
-	getChatForAccounts, shutdownServers, resetUpdating, getUserCounts, getAccountDetails,
-	EndPoints, getOtherStats, updateGameServerSettings, updateServerSettings, forAllGameServers,
+	getAdminState,
+	getChat,
+	kickFromAllServers,
+	notifyUpdate,
+	clearSessions,
+	actionForAllServers,
+	updateOrigin,
+	getChatForAccounts,
+	shutdownServers,
+	resetUpdating,
+	getUserCounts,
+	getAccountDetails,
+	EndPoints,
+	getOtherStats,
+	updateGameServerSettings,
+	updateServerSettings,
+	forAllGameServers,
 } from './api/admin';
 import {
-	findPonies, removeCharactersAboveLimit, createCharacter, removeCharacter, assignCharacter, removeAllCharacters
+	findPonies,
+	removeCharactersAboveLimit,
+	createCharacter,
+	removeCharacter,
+	assignCharacter,
+	removeAllCharacters,
 } from './api/ponies';
 import { accountStatus, accountAround, getServer, getLoginServer, RemovedDocument, accountHidden } from './internal';
 import { create } from './reporter';
@@ -61,11 +118,14 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 		private removedDocument: RemovedDocument,
 	) {
 		this.account = (client.tokenData as TokenData).account;
-		this.subscriptions.set('account:deleted', this.adminService.accountDeleted.subscribe(account => {
-			if (this.cache.findAccounts) {
-				removeItem(this.cache.findAccounts.result, account);
-			}
-		}));
+		this.subscriptions.set(
+			'account:deleted',
+			this.adminService.accountDeleted.subscribe(account => {
+				if (this.cache.findAccounts) {
+					removeItem(this.cache.findAccounts.result, account);
+				}
+			}),
+		);
 	}
 	disconnected() {
 		this.subscriptions.forEach(subscription => subscription.unsubscribe());
@@ -115,8 +175,7 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	subscribe(type: ModelTypes, id: string) {
 		const key = `${type}:${id}`;
 
-		if (this.subscriptions.has(key))
-			return;
+		if (this.subscriptions.has(key)) return;
 
 		if (type === 'ponies') {
 			if (!this.adminService.ponies.get(id)) {
@@ -234,19 +293,19 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	async get(endPoint: keyof EndPoints, id: string) {
 		// console.log('get', endPoint);
 		// return this.adminService[endPoint].get(id);
-		return await this.endPoints[endPoint].get(id) as any;
+		return (await this.endPoints[endPoint].get(id)) as any;
 	}
 	@Method({ promise: true })
 	async getAll(endPoint: keyof EndPoints, timestamp?: string) {
-		return await this.endPoints[endPoint].getAll(timestamp) as any;
+		return (await this.endPoints[endPoint].getAll(timestamp)) as any;
 	}
 	@Method({ promise: true })
 	async assignAccount(endPoint: keyof EndPoints, id: string, account: string) {
-		return await this.endPoints[endPoint].assignAccount(id, account) as any;
+		return (await this.endPoints[endPoint].assignAccount(id, account)) as any;
 	}
 	@Method({ promise: true })
 	async removeItem(endPoint: keyof EndPoints, id: string) {
-		return await this.endPoints[endPoint].removeItem(id) as any;
+		return (await this.endPoints[endPoint].removeItem(id)) as any;
 	}
 	// events
 	@Method({ promise: true })
@@ -282,7 +341,7 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	// ponies
 	@Method({ promise: true })
 	async getPony(id: string) {
-		return await Character.findById(id).exec().then(nullToUndefined) as any;
+		return (await Character.findById(id).exec().then(nullToUndefined)) as any;
 	}
 	@Method({ promise: true })
 	async getPonyInfo(id: string) {
@@ -331,12 +390,12 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	}
 	// auths
 	@Method({ promise: true })
-	async	getAuth(id: string) {
-		return await Auth.findById(id).exec().then(nullToUndefined) as any;
+	async getAuth(id: string) {
+		return (await Auth.findById(id).exec().then(nullToUndefined)) as any;
 	}
 	@Method({ promise: true })
 	async getAuthsForAccount(accountId: string) {
-		return await Auth.find({ account: accountId }).exec() as any;
+		return (await Auth.find({ account: accountId }).exec()) as any;
 	}
 	@Method({ promise: true })
 	async fetchAuthDetails(auths: string[]): Promise<AuthDetails[]> {
@@ -364,7 +423,7 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	// accounts
 	@Method({ promise: true })
 	async getAccount(id: string) {
-		return await findAccount(id) as any;
+		return (await findAccount(id)) as any;
 	}
 	@Method({ promise: true })
 	async findAccounts(query: FindAccountQuery) {
@@ -394,7 +453,7 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 		if (age === -1) {
 			await Account.updateOne({ _id: accountId }, { $unset: { birthyear: 1 } }).exec();
 		} else {
-			const birthyear = (new Date()).getFullYear() - age;
+			const birthyear = new Date().getFullYear() - age;
 			await Account.updateOne({ _id: accountId }, { birthyear }).exec();
 		}
 
@@ -504,18 +563,16 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 		await setAccountState(accountId, state);
 	}
 	@Method({ promise: true })
-	async getIgnoresAndIgnoredBy(accountId: string): Promise<{ ignores: string[]; ignoredBy: string[]; }> {
+	async getIgnoresAndIgnoredBy(accountId: string): Promise<{ ignores: string[]; ignoredBy: string[] }> {
 		const [ignores, ignoredBy] = await Promise.all([
-			Account
-				.find({ ignores: { $in: [accountId] } }, '_id')
+			Account.find({ ignores: { $in: [accountId] } }, '_id')
 				.lean()
 				.exec()
 				.then((accounts: IAccount[]) => accounts.map(a => a._id.toString())),
-			Account
-				.findOne({ _id: accountId }, 'ignores')
+			Account.findOne({ _id: accountId }, 'ignores')
 				.lean()
 				.exec()
-				.then((account: IAccount | null) => account && account.ignores || []),
+				.then((account: IAccount | null) => (account && account.ignores) || []),
 		]);
 
 		return { ignores, ignoredBy };
@@ -549,9 +606,7 @@ export class AdminServerActions implements IAdminServerActions, SocketServer {
 	}
 	@Method({ promise: true })
 	async resetSupporter(accountId: string) {
-		await Account.updateOne(
-			{ _id: accountId },
-			{ $unset: { supporter: 1, patreon: 1, supporterDeclinedSince: 1 } }).exec();
+		await Account.updateOne({ _id: accountId }, { $unset: { supporter: 1, patreon: 1, supporterDeclinedSince: 1 } }).exec();
 	}
 	@Method({ promise: true })
 	async getLastPatreonData() {

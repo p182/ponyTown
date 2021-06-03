@@ -20,7 +20,7 @@ export function tokenService(socket: Server): TokenService {
 		},
 		createToken(token: TokenData) {
 			return socket.token(token);
-		}
+		},
 	};
 }
 
@@ -33,13 +33,15 @@ export function toAccountData(account: IAccount): AccountData {
 
 	return {
 		id: _id.toString(),
-		name, characterCount,
-		birthdate: birthdate && formatISODate(birthdate) || '',
+		name,
+		characterCount,
+		birthdate: (birthdate && formatISODate(birthdate)) || '',
 		birthyear,
 		settings: cloneDeep(settings || {}),
 		supporter: supporterLevel(account) || undefined,
-		roles: (roles && roles.length) ? [...roles] : undefined,
-		flags: (hasFlag(flags, AccountFlags.DuplicatesNotification) ? AccountDataFlags.Duplicates : 0) |
+		roles: roles && roles.length ? [...roles] : undefined,
+		flags:
+			(hasFlag(flags, AccountFlags.DuplicatesNotification) ? AccountDataFlags.Duplicates : 0) |
 			(isPastSupporter(account) ? AccountDataFlags.PastSupporter : 0),
 	};
 }
@@ -49,17 +51,19 @@ export const toPonyObjectFields = '_id name info desc site tag lastUsed flags';
 export function toPonyObject(character: ICharacter): PonyObject;
 export function toPonyObject(character: ICharacter | undefined): PonyObject | null;
 export function toPonyObject(character: ICharacter | undefined): PonyObject | null {
-	return character ? {
-		id: character._id.toString(),
-		name: character.name,
-		desc: character.desc || '',
-		info: character.info || '',
-		site: character.site ? character.site.toString() : undefined,
-		tag: character.tag || undefined,
-		lastUsed: character.lastUsed && character.lastUsed.toISOString(),
-		hideSupport: hasFlag(character.flags, CharacterFlags.HideSupport) ? true : undefined,
-		respawnAtSpawn: hasFlag(character.flags, CharacterFlags.RespawnAtSpawn) ? true : undefined,
-	} : null;
+	return character
+		? {
+				id: character._id.toString(),
+				name: character.name,
+				desc: character.desc || '',
+				info: character.info || '',
+				site: character.site ? character.site.toString() : undefined,
+				tag: character.tag || undefined,
+				lastUsed: character.lastUsed && character.lastUsed.toISOString(),
+				hideSupport: hasFlag(character.flags, CharacterFlags.HideSupport) ? true : undefined,
+				respawnAtSpawn: hasFlag(character.flags, CharacterFlags.RespawnAtSpawn) ? true : undefined,
+		  }
+		: null;
 }
 
 export function toPonyObjectAdmin(character: ICharacter): PonyObject;
@@ -76,7 +80,7 @@ export function toSocialSite({ _id, name, provider, url }: IAuth): SocialSite {
 
 /* istanbul ignore next */
 export function execAsync(command: string, options?: ExecOptions) {
-	return new Promise<{ stdout: string; stderr: string; }>((resolve, reject) => {
+	return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
 		exec(command, options || {}, (error, stdout, stderr) => {
 			if (error) {
 				reject(error);
@@ -118,8 +122,8 @@ export function handlePromiseDefault(promise: Promise<any>, errorHandler: any = 
 	Promise.resolve(promise).catch(errorHandler);
 }
 
-export function cached<TResult, T extends Function>(func: T, cacheTimeout = 1000): T & { clear(...args: any[]): void; } {
-	const cacheMap = new Map<string, { timeout: any; result: TResult; }>();
+export function cached<TResult, T extends Function>(func: T, cacheTimeout = 1000): T & { clear(...args: any[]): void } {
+	const cacheMap = new Map<string, { timeout: any; result: TResult }>();
 
 	const cachedFunc: any = (...args: any[]) => {
 		const cacheKey = JSON.stringify(args);

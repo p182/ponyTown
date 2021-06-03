@@ -60,8 +60,19 @@ function pushQuad(
 
 function pushQuad(
 	vertices: Float32Array, //_verticesUint32: Uint32Array,
-	transform: Matrix2D, index: number, type: number, color: number, palette: Palette,
-	sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number,
+	transform: Matrix2D,
+	index: number,
+	type: number,
+	color: number,
+	palette: Palette,
+	sx: number,
+	sy: number,
+	sw: number,
+	sh: number,
+	dx: number,
+	dy: number,
+	dw: number,
+	dh: number,
 ) {
 	const c1 = types[type];
 
@@ -136,7 +147,11 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 	palette = true;
 	defaultPalette: Palette = createPalette(new Uint32Array(0));
 	constructor(
-		gl: WebGLRenderingContext, capacity: number, buffer: ArrayBuffer, vertexBuffer: WebGLBuffer, indexBuffer: WebGLBuffer
+		gl: WebGLRenderingContext,
+		capacity: number,
+		buffer: ArrayBuffer,
+		vertexBuffer: WebGLBuffer,
+		indexBuffer: WebGLBuffer,
 	) {
 		super(gl, capacity, buffer, vertexBuffer, indexBuffer, [
 			{ name: 'position', size: 2 },
@@ -146,8 +161,17 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 		]);
 	}
 	drawImage(
-		type: number, color: number, palette: Palette | undefined,
-		sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number
+		type: number,
+		color: number,
+		palette: Palette | undefined,
+		sx: number,
+		sy: number,
+		sw: number,
+		sh: number,
+		dx: number,
+		dy: number,
+		dw: number,
+		dh: number,
 	) {
 		if (this.capacity <= this.spritesCount) {
 			this.flush();
@@ -155,8 +179,19 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 
 		this.index = pushQuad(
 			this.vertices, //this.verticesUint32,
-			this.transform, this.index, type, getColorFloat(color, this.globalAlpha),
-			palette || this.defaultPalette, sx, sy, sw, sh, dx, dy, dw, dh,
+			this.transform,
+			this.index,
+			type,
+			getColorFloat(color, this.globalAlpha),
+			palette || this.defaultPalette,
+			sx,
+			sy,
+			sw,
+			sh,
+			dx,
+			dy,
+			dw,
+			dh,
 		);
 		this.spritesCount++;
 		this.tris += 2;
@@ -170,8 +205,19 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 			const s = this.rectSprite || defaultRectSprite;
 			this.index = pushQuad(
 				this.vertices, //this.verticesUint32,
-				this.transform, this.index, s.type, getColorFloat(color, this.globalAlpha),
-				this.defaultPalette, s.x, s.y, s.w, s.h, x, y, w, h,
+				this.transform,
+				this.index,
+				s.type,
+				getColorFloat(color, this.globalAlpha),
+				this.defaultPalette,
+				s.x,
+				s.y,
+				s.w,
+				s.h,
+				x,
+				y,
+				w,
+				h,
 			);
 			this.spritesCount++;
 			this.tris += 2;
@@ -197,8 +243,8 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 				const cropY = crop.y; // - this.transform[5];
 				const shiftLeft = cropX - dx;
 				const shiftTop = cropY - dy;
-				const shiftRight = (dx + w) - (cropX + crop.w);
-				const shiftBottom = (dy + h) - (cropY + crop.h);
+				const shiftRight = dx + w - (cropX + crop.w);
+				const shiftBottom = dy + h - (cropY + crop.h);
 
 				if (shiftLeft > 0) {
 					sx += shiftLeft;
@@ -223,8 +269,19 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 				if (w > 0 && h > 0) {
 					this.index = pushQuad(
 						this.vertices, //this.verticesUint32,
-						this.transform, this.index, s.type, getColorFloat(color, this.globalAlpha),
-						palette || this.defaultPalette, sx, sy, w, h, dx, dy, w, h,
+						this.transform,
+						this.index,
+						s.type,
+						getColorFloat(color, this.globalAlpha),
+						palette || this.defaultPalette,
+						sx,
+						sy,
+						w,
+						h,
+						dx,
+						dy,
+						w,
+						h,
 					);
 					this.spritesCount++;
 					this.tris += 2;
@@ -232,8 +289,19 @@ export class PaletteSpriteBatch extends BaseSpriteBatch implements IPaletteSprit
 			} else {
 				this.index = pushQuad(
 					this.vertices, //this.verticesUint32,
-					this.transform, this.index, s.type, getColorFloat(color, this.globalAlpha),
-					palette || this.defaultPalette, s.x, s.y, s.w, s.h, x + s.ox, y + s.oy, s.w, s.h,
+					this.transform,
+					this.index,
+					s.type,
+					getColorFloat(color, this.globalAlpha),
+					palette || this.defaultPalette,
+					s.x,
+					s.y,
+					s.w,
+					s.h,
+					x + s.ox,
+					y + s.oy,
+					s.w,
+					s.h,
 				);
 				this.spritesCount++;
 				this.tris += 2;

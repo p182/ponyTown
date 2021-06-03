@@ -10,12 +10,14 @@ export function createSprite(x: number, y: number, w: number, h: number, ox: num
 }
 
 export function addTitles(sprites: ColorExtraSets, titles: string[]): ColorExtraSets {
-	return sprites && sprites.map((ns, i) =>
-		ns && ns.map(s => s && { color: s.color, colors: s.colors, title: titles[i], label: titles[i] }));
+	return (
+		sprites &&
+		sprites.map((ns, i) => ns && ns.map(s => s && { color: s.color, colors: s.colors, title: titles[i], label: titles[i] }))
+	);
 }
 
 export function addLabels(sprites: ColorExtraSets, labels: string[]) {
-	sprites && sprites.forEach((s, i) => s && s[0] ? s[0]!.label = labels[i] : undefined);
+	sprites && sprites.forEach((s, i) => (s && s[0] ? (s[0]!.label = labels[i]) : undefined));
 	return sprites;
 }
 
@@ -41,11 +43,8 @@ function getImageData(img: HTMLImageElement | ImageBitmap) {
 }
 
 function loadSpriteSheet(sheet: SpriteSheet, loadImage: LoadImage) {
-	return Promise.all([
-		loadImage(sheet.src!),
-		sheet.srcA ? loadImage(sheet.srcA) : Promise.resolve(undefined)
-	])
-		.then(([img, imgA]) => {
+	return Promise.all([loadImage(sheet.src!), sheet.srcA ? loadImage(sheet.srcA) : Promise.resolve(undefined)]).then(
+		([img, imgA]) => {
 			sheet.data = getImageData(img);
 
 			if (imgA) {
@@ -57,7 +56,8 @@ function loadSpriteSheet(sheet: SpriteSheet, loadImage: LoadImage) {
 					sheedData[i + 3] = alphaData[i];
 				}
 			}
-		});
+		},
+	);
 }
 
 export function loadSpriteSheets(sheets: SpriteSheet[], loadImage: LoadImage) {
@@ -71,7 +71,7 @@ export function loadAndInitSheets(sheets: SpriteSheet[], loadImage: LoadImage) {
 		.then(createSpriteUtils)
 		.then(() => true)
 		.catch(e => (console.error(e), false))
-		.then(loaded => spriteSheetsLoaded = loaded);
+		.then(loaded => (spriteSheetsLoaded = loaded));
 }
 
 export function loadImageFromUrl(url: string) {

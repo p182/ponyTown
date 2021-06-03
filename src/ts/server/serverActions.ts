@@ -1,8 +1,27 @@
 import { Socket, Method, SocketServer, Bin, getMethods } from 'ag-sockets';
 import {
-	PlayerAction, ModAction, ChatType, PonyData, IServerActions, TileType, Action, EditorAction, Entity,
-	EntityOrPonyOptions, LeaveReason, SupporterInvite, InfoFlags, AccountSettings, FriendStatusFlags,
-	SelectFlags, UpdateFlags, isValidModTile, isValidTile, MapFlags, EntityState, houseTiles
+	PlayerAction,
+	ModAction,
+	ChatType,
+	PonyData,
+	IServerActions,
+	TileType,
+	Action,
+	EditorAction,
+	Entity,
+	EntityOrPonyOptions,
+	LeaveReason,
+	SupporterInvite,
+	InfoFlags,
+	AccountSettings,
+	FriendStatusFlags,
+	SelectFlags,
+	UpdateFlags,
+	isValidModTile,
+	isValidTile,
+	MapFlags,
+	EntityState,
+	houseTiles,
 } from '../common/interfaces';
 import { CharacterState, ServerConfig } from '../common/adminInterfaces';
 import { PARTY_LIMIT, OFFLINE_PONY, TILE_CHANGE_RANGE, MIN_HIDE_TIME, MAX_HIDE_TIME, PONY_TYPE } from '../common/constants';
@@ -16,8 +35,13 @@ import { PartyService } from './services/party';
 import { World, findClientByAccountId, findAllOnlineFriends } from './world';
 import { HidingService } from './services/hiding';
 import {
-	createCharacterState, interactWith, useHeldItem, setEntityExpression, getPlayerState, execAction,
-	updateEntityPlayerState
+	createCharacterState,
+	interactWith,
+	useHeldItem,
+	setEntityExpression,
+	getPlayerState,
+	execAction,
+	updateEntityPlayerState,
 } from './playerUtils';
 import { allEntities } from './api/account';
 import { CounterService } from './services/counter';
@@ -88,8 +112,7 @@ export class ServerActions implements IServerActions, SocketServer {
 		private readonly ignorePlayer: IgnorePlayer,
 		private readonly findClientByEntityId: FindClientByEntityId,
 		private readonly friends: FriendsService,
-	) {
-	}
+	) {}
 	private get account() {
 		return this.client.account;
 	}
@@ -140,8 +163,7 @@ export class ServerActions implements IServerActions, SocketServer {
 		validateNumber(chatType, 'chatType');
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
 		const target = entityId ? this.world.getEntityById(entityId) : undefined;
 		this.chatSay(this.client, text, chatType, target && target.client, this.getSettings());
@@ -151,10 +173,9 @@ export class ServerActions implements IServerActions, SocketServer {
 		validateNumber(entityId, 'entityId');
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
-		const entity = entityId === 0 ? undefined : (this.world.getEntityById(entityId) || this.getEntityFromClients(entityId));
+		const entity = entityId === 0 ? undefined : this.world.getEntityById(entityId) || this.getEntityFromClients(entityId);
 		const mod = this.client.isMod;
 		this.client.selected = entity;
 
@@ -180,8 +201,7 @@ export class ServerActions implements IServerActions, SocketServer {
 		validateNumber(entityId, 'entityId');
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
 		interactWith(this.client, this.world.getEntityById(entityId));
 	}
@@ -189,8 +209,7 @@ export class ServerActions implements IServerActions, SocketServer {
 	use() {
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
 		useHeldItem(this.client);
 	}
@@ -206,8 +225,7 @@ export class ServerActions implements IServerActions, SocketServer {
 				this.hiding.requestUnhideAll(this.client);
 				break;
 			default:
-				if (this.client.isSwitchingMap)
-					return;
+				if (this.client.isSwitchingMap) return;
 
 				execAction(this.client, action, this.getSettings());
 				break;
@@ -227,8 +245,9 @@ export class ServerActions implements IServerActions, SocketServer {
 				this.updateLastAction();
 
 				if (param !== this.client.characterId) {
-					swapCharacter(this.client, this.world, { account: this.client.account._id, _id: param })
-						.catch(e => this.client.reporter.error(e));
+					swapCharacter(this.client, this.world, { account: this.client.account._id, _id: param }).catch(e =>
+						this.client.reporter.error(e),
+					);
 				}
 
 				break;
@@ -257,19 +276,22 @@ export class ServerActions implements IServerActions, SocketServer {
 				if (this.client.friendsCRC !== crc) {
 					findFriends(this.client.accountId, true)
 						.then(friends => {
-							this.client.updateFriends(friends.map(f => {
-								const client = findClientByAccountId(this.world, f.accountId);
+							this.client.updateFriends(
+								friends.map(f => {
+									const client = findClientByAccountId(this.world, f.accountId);
 
-								return {
-									accountId: f.accountId,
-									accountName: f.accountName,
-									entityId: client && client.pony.id,
-									status: client ? FriendStatusFlags.Online : FriendStatusFlags.None,
-									name: f.name,
-									nameBad: f.nameBad,
-									info: f.pony,
-								};
-							}), true);
+									return {
+										accountId: f.accountId,
+										accountName: f.accountName,
+										entityId: client && client.pony.id,
+										status: client ? FriendStatusFlags.Online : FriendStatusFlags.None,
+										name: f.name,
+										nameBad: f.nameBad,
+										info: f.pony,
+									};
+								}),
+								true,
+							);
 						})
 						.catch(e => logger.error(e));
 				}
@@ -282,7 +304,9 @@ export class ServerActions implements IServerActions, SocketServer {
 				const entity = this.world.getEntityById(param | 0);
 
 				if (
-					entity && hasFlag(entity.state, EntityState.Editable) && this.pony.options!.hold === entities.broom.type &&
+					entity &&
+					hasFlag(entity.state, EntityState.Editable) &&
+					this.pony.options!.hold === entities.broom.type &&
 					this.map.regions.some(r => includes(r.entities, entity))
 				) {
 					if (this.isHouseLocked()) {
@@ -296,7 +320,10 @@ export class ServerActions implements IServerActions, SocketServer {
 			}
 			case Action.PlaceEntity: {
 				if (
-					!param || typeof param !== 'object' || typeof param.x !== 'number' || typeof param.y !== 'number' ||
+					!param ||
+					typeof param !== 'object' ||
+					typeof param.x !== 'number' ||
+					typeof param.y !== 'number' ||
 					typeof param.type !== 'number'
 				) {
 					return;
@@ -304,7 +331,7 @@ export class ServerActions implements IServerActions, SocketServer {
 
 				this.updateLastAction();
 
-				const { x, y, type } = param as { x: number; y: number; type: number; };
+				const { x, y, type } = param as { x: number; y: number; type: number };
 
 				if (
 					isOutsideMap(x, y, this.map) ||
@@ -442,8 +469,7 @@ export class ServerActions implements IServerActions, SocketServer {
 	leaveParty() {
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
 		if (this.client.party) {
 			this.partyService.remove(this.client.party.leader, this.client);
@@ -531,20 +557,11 @@ export class ServerActions implements IServerActions, SocketServer {
 		const party = this.client.party;
 
 		const createPonyData = ({ pony }: IClient): PonyData => {
-			return [
-				pony.id,
-				pony.options,
-				pony.encodedName,
-				pony.encryptedInfoSafe,
-				getPlayerState(this.client, pony),
-				!!pony.nameBad,
-			];
+			return [pony.id, pony.options, pony.encodedName, pony.encryptedInfoSafe, getPlayerState(this.client, pony), !!pony.nameBad];
 		};
 
 		if (party && ids && ids.length && ids.length <= PARTY_LIMIT) {
-			const ponies = party.clients
-				.filter(c => includes(ids, c.pony.id))
-				.map(createPonyData);
+			const ponies = party.clients.filter(c => includes(ids, c.pony.id)).map(createPonyData);
 			this.client.updatePonies(ponies);
 		}
 	}
@@ -587,8 +604,7 @@ export class ServerActions implements IServerActions, SocketServer {
 		validateNumber(type, 'type');
 		this.updateLastAction();
 
-		if (this.client.isSwitchingMap)
-			return;
+		if (this.client.isSwitchingMap) return;
 
 		const wallTile = type === TileType.WallH || type === TileType.WallV;
 
@@ -601,17 +617,15 @@ export class ServerActions implements IServerActions, SocketServer {
 		} else if (BETA && this.client.isMod && wallTile) {
 			this.world.toggleWall(this.map, x, y, type);
 		} else if (hasFlag(this.map.flags, MapFlags.EditableTiles) && this.pony.options!.hold === entities.shovel.type) {
-			if (!houseTiles.some(t => t.type === type))
-				return;
+			if (!houseTiles.some(t => t.type === type)) return;
 
-			if (this.isHouseLocked())
-				return saySystem(this.client, `House is locked`);
+			if (this.isHouseLocked()) return saySystem(this.client, `House is locked`);
 
 			this.world.setTile(this.map, x, y, type);
 		} else if (BETA && this.client.isMod && isValidModTile(type)) {
 			this.world.setTile(this.map, x, y, type);
 		} else if (isValidTile(type)) {
-			if ((BETA || distanceXY(x, y, this.pony.x, this.pony.y) < TILE_CHANGE_RANGE)) {
+			if (BETA || distanceXY(x, y, this.pony.x, this.pony.y) < TILE_CHANGE_RANGE) {
 				const tile = getTile(this.map, x, y);
 
 				if (tile === TileType.Dirt || tile === TileType.Grass) {
@@ -757,6 +771,7 @@ function validateString(value: string, fieldName: string, allowNull = false) {
 
 if (DEVELOPMENT) {
 	/* istanbul ignore next */
-	getMethods(ServerActions)
-		.forEach(m => m.options.binary || console.error(`Missing binary encoding for ServerActions.${m.name}()`));
+	getMethods(ServerActions).forEach(
+		m => m.options.binary || console.error(`Missing binary encoding for ServerActions.${m.name}()`),
+	);
 }

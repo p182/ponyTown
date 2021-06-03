@@ -47,8 +47,7 @@ export class PaletteManager implements IPaletteManager {
 	private lastY = 0;
 	private initialized = true;
 	deduplicate = true;
-	constructor(private size = INITIAL_SIZE) {
-	}
+	constructor(private size = INITIAL_SIZE) {}
 	get texture() {
 		return this.paletteTexture;
 	}
@@ -184,7 +183,7 @@ export class PaletteManager implements IPaletteManager {
 			const p = palettes[i];
 			const colorCount = p.colors.length | 0;
 
-			if ((size - x) < colorCount) {
+			if (size - x < colorCount) {
 				x = 0;
 				y++;
 
@@ -210,11 +209,10 @@ export class PaletteManager implements IPaletteManager {
 		return true;
 	}
 	private updateTexture(gl: WebGLRenderingContext) {
-		if (!this.paletteTexture || this.dirtyMinY > this.dirtyMaxY)
-			return;
+		if (!this.paletteTexture || this.dirtyMinY > this.dirtyMaxY) return;
 
 		const width = this.size;
-		const height = (this.dirtyMaxY - this.dirtyMinY) + 1;
+		const height = this.dirtyMaxY - this.dirtyMinY + 1;
 		const data = new Uint8Array(width * height * 4);
 
 		for (let k = 0; k < this.palettes.length; k++) {
@@ -223,8 +221,7 @@ export class PaletteManager implements IPaletteManager {
 			for (let i = 0; i < palettes.length; i++) {
 				const { x, y, colors } = palettes[i];
 
-				if (y < this.dirtyMinY || y > this.dirtyMaxY)
-					continue;
+				if (y < this.dirtyMinY || y > this.dirtyMaxY) continue;
 
 				let offset = (x + (y - this.dirtyMinY) * width) << 2;
 

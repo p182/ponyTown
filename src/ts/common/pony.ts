@@ -1,37 +1,90 @@
 import { PONY_WIDTH, PONY_HEIGHT, BLINK_FRAMES, canFly } from '../client/ponyUtils';
 import { stand, sneeze, defaultHeadAnimation, defaultBodyFrame, defaultHeadFrame } from '../client/ponyAnimations';
 import {
-	PaletteSpriteBatch, Pony, BodyAnimation, EntityState, SpriteBatch, ExpressionExtra, HeadAnimation, Palette,
-	PaletteManager, DrawOptions, Rect, EntityFlags, IMap, Entity, DoAction, Muzzle, Expression, isEyeSleeping,
-	Iris, EntityPlayerState,
+	PaletteSpriteBatch,
+	Pony,
+	BodyAnimation,
+	EntityState,
+	SpriteBatch,
+	ExpressionExtra,
+	HeadAnimation,
+	Palette,
+	PaletteManager,
+	DrawOptions,
+	Rect,
+	EntityFlags,
+	IMap,
+	Entity,
+	DoAction,
+	Muzzle,
+	Expression,
+	isEyeSleeping,
+	Iris,
+	EntityPlayerState,
 } from './interfaces';
 import { hasFlag, setFlag } from './utils';
 import { blinkFps, PONY_TYPE } from './constants';
 import { releasePalettes } from './ponyInfo';
 import { createAnEntity, boopSplashRight, boopSplashLeft } from './entities';
 import {
-	createAnimationPlayer, isAnimationPlaying, drawAnimation, playAnimation, updateAnimation, playOneOfAnimations
+	createAnimationPlayer,
+	isAnimationPlaying,
+	drawAnimation,
+	playAnimation,
+	updateAnimation,
+	playOneOfAnimations,
 } from './animationPlayer';
 import { blushColor, WHITE, MAGIC_ALPHA, HEARTS_COLOR } from './colors';
 import { encodeExpression, decodeExpression } from './encoders/expressionEncoder';
 import { toScreenX, toWorldX, toWorldY, toScreenYWithZ } from './positionUtils';
 import { getPonyAnimationFrame, getHeadY, drawPony, getPonyHeadPosition, createHeadTransform } from '../client/ponyDraw';
 import {
-	isPonySitting, isPonyFlying, isPonyLying, isPonyStanding, isPonyLandedOrCanLand, isIdle, isIdleAnimation,
-	isFacingRight, releaseEntity
+	isPonySitting,
+	isPonyFlying,
+	isPonyLying,
+	isPonyStanding,
+	isPonyLandedOrCanLand,
+	isIdle,
+	isIdleAnimation,
+	isFacingRight,
+	releaseEntity,
 } from './entityUtils';
 import {
-	getAnimation, getAnimationFrame, setAnimatorState, updateAnimator, createAnimator, AnimatorState,
-	resetAnimatorState
+	getAnimation,
+	getAnimationFrame,
+	setAnimatorState,
+	updateAnimator,
+	createAnimator,
+	AnimatorState,
+	resetAnimatorState,
 } from './animator';
 import {
-	trotting, flying, hovering, toBoopState, isFlyingUpOrDown, isFlyingDown, isSittingDown, isSittingUp, swinging,
-	standing, sitting, lying, swimming, isSwimmingState, swimmingToFlying,
+	trotting,
+	flying,
+	hovering,
+	toBoopState,
+	isFlyingUpOrDown,
+	isFlyingDown,
+	isSittingDown,
+	isSittingUp,
+	swinging,
+	standing,
+	sitting,
+	lying,
+	swimming,
+	isSwimmingState,
+	swimmingToFlying,
 } from '../client/ponyStates';
 import { decodePonyInfo } from './compressPony';
 import { defaultPonyState, defaultDrawPonyOptions, isStateEqual } from '../client/ponyHelpers';
 import {
-	sneezeAnimation, holdPoofAnimation, heartsAnimation, tearsAnimation, cryAnimation, zzzAnimations, magicAnimation
+	sneezeAnimation,
+	holdPoofAnimation,
+	heartsAnimation,
+	tearsAnimation,
+	cryAnimation,
+	zzzAnimations,
+	magicAnimation,
 } from '../client/spriteAnimations';
 import { rect } from './rect';
 import { addOrRemoveFromEntityList } from './worldMap';
@@ -55,8 +108,11 @@ const interactBoundsFly = rect(interactBounds.x, interactBounds.y - flyY, intera
 const defaultExpr = encodeExpression(undefined);
 
 export function createPony(
-	id: number, state: EntityState, info: string | Uint8Array | undefined, defaultPalette: Palette,
-	paletteManager: PaletteManager
+	id: number,
+	state: EntityState,
+	info: string | Uint8Array | undefined,
+	defaultPalette: Palette,
+	paletteManager: PaletteManager,
 ): Pony {
 	const pony: Pony = {
 		id,
@@ -149,16 +205,21 @@ export function canPonyFly(pony: Pony) {
 }
 
 export function canPonyLie<T>(pony: Pony, map: IMap<T>) {
-	return !isPonyLying(pony) && (isIdle(pony) || isSittingDown(pony.animator.state) || isFlyingDown(pony.animator.state)) &&
-		isPonyLandedOrCanLand(pony, map);
+	return (
+		!isPonyLying(pony) &&
+		(isIdle(pony) || isSittingDown(pony.animator.state) || isFlyingDown(pony.animator.state)) &&
+		isPonyLandedOrCanLand(pony, map)
+	);
 }
 export function canPonySit<T>(pony: Pony, map: IMap<T>) {
-	return !isPonySitting(pony) && (isIdle(pony) || isFlyingDown(pony.animator.state)) &&
-		isPonyLandedOrCanLand(pony, map);
+	return !isPonySitting(pony) && (isIdle(pony) || isFlyingDown(pony.animator.state)) && isPonyLandedOrCanLand(pony, map);
 }
 export function canPonyStand<T>(pony: Pony, map: IMap<T>) {
-	return !isPonyStanding(pony) && (isIdleAnimation(pony.ponyState.animation) || isSittingUp(pony.animator.state)) &&
-		isPonyLandedOrCanLand(pony, map);
+	return (
+		!isPonyStanding(pony) &&
+		(isIdleAnimation(pony.ponyState.animation) || isSittingUp(pony.animator.state)) &&
+		isPonyLandedOrCanLand(pony, map)
+	);
 }
 export function canPonyFlyUp(pony: Pony) {
 	return !isPonyFlying(pony) && canPonyFly(pony) && !isFlyingUpOrDown(pony.animator.state);
@@ -201,7 +262,7 @@ export function updatePonyInfo(pony: Pony, info: string | Uint8Array, apply: () 
 export function ensurePonyInfoDecoded(pony: Pony) {
 	if (pony.info !== undefined && pony.palettePonyInfo === undefined) {
 		pony.palettePonyInfo = decodePonyInfo(pony.info, pony.paletteManager);
-		const wingType = pony.palettePonyInfo.wings && pony.palettePonyInfo.wings.type || 0;
+		const wingType = (pony.palettePonyInfo.wings && pony.palettePonyInfo.wings.type) || 0;
 		pony.animator.variant = wingType === 4 ? 'bug' : '';
 		pony.ponyState.blushColor = blushColor(pony.palettePonyInfo.coatPalette.colors[1]);
 		pony.magicColor = withAlpha(pony.palettePonyInfo.magicColorValue, MAGIC_ALPHA);
@@ -296,8 +357,10 @@ export function drawPonyEntity(batch: PaletteSpriteBatch, pony: Pony, drawOption
 		drawPony(batch, pony.palettePonyInfo, ponyState, 0, 0, options);
 
 		if (
-			isAnimationPlaying(pony.zzzEffect) || isAnimationPlaying(pony.sneezeEffect) ||
-			isAnimationPlaying(pony.holdPoofEffect) || isAnimationPlaying(pony.heartsEffect) ||
+			isAnimationPlaying(pony.zzzEffect) ||
+			isAnimationPlaying(pony.sneezeEffect) ||
+			isAnimationPlaying(pony.holdPoofEffect) ||
+			isAnimationPlaying(pony.heartsEffect) ||
 			isAnimationPlaying(pony.magicEffect)
 		) {
 			const { x, y } = getPonyHeadPosition(pony.ponyState, 0, 0);
@@ -335,9 +398,17 @@ export function drawPonyEntity(batch: PaletteSpriteBatch, pony: Pony, drawOption
 }
 
 const magickLightSizes = [
-	0, 1.02, // fade-in
-	0.97, 0.94, 0.91, 0.94, 0.97, 1.00, // loop
-	0.97, 0.94, 0.91, // fade-out
+	0,
+	1.02, // fade-in
+	0.97,
+	0.94,
+	0.91,
+	0.94,
+	0.97,
+	1.0, // loop
+	0.97,
+	0.94,
+	0.91, // fade-out
 ];
 
 export function drawPonyEntityLight(batch: SpriteBatch, pony: Pony, options: DrawOptions) {
@@ -410,12 +481,18 @@ export function flagsToState(state: EntityState, moving: boolean, isSwimming: bo
 		}
 	} else {
 		switch (ponyState) {
-			case EntityState.PonyStanding: return standing;
-			case EntityState.PonyWalking: return trotting;
-			case EntityState.PonyTrotting: return trotting;
-			case EntityState.PonySitting: return sitting;
-			case EntityState.PonyLying: return lying;
-			case EntityState.PonyFlying: return hovering;
+			case EntityState.PonyStanding:
+				return standing;
+			case EntityState.PonyWalking:
+				return trotting;
+			case EntityState.PonyTrotting:
+				return trotting;
+			case EntityState.PonySitting:
+				return sitting;
+			case EntityState.PonyLying:
+				return lying;
+			case EntityState.PonyFlying:
+				return hovering;
 			default:
 				throw new Error(`Invalid pony state (${ponyState})`);
 		}
@@ -496,14 +573,12 @@ export function updatePonyEntity(pony: Pony, delta: number, gameTime: number, sa
 
 	// holding
 	const holdingUpdated =
-		state.holding !== undefined &&
-		state.holding.update !== undefined &&
-		state.holding.update(delta, gameTime);
+		state.holding !== undefined && state.holding.update !== undefined && state.holding.update(delta, gameTime);
 
 	// blink
 	pony.blinkTime += delta;
 
-	if ((pony.blinkTime - pony.nextBlink) > 1) {
+	if (pony.blinkTime - pony.nextBlink > 1) {
 		pony.nextBlink = pony.blinkTime + Math.random() * 2 + 3;
 	}
 
@@ -530,11 +605,18 @@ export function updatePonyEntity(pony: Pony, delta: number, gameTime: number, sa
 
 		if (
 			holdingUpdated ||
-			toScreenX(pony.x) !== pony.lastX || toScreenYWithZ(pony.y, pony.z) !== pony.lastY ||
+			toScreenX(pony.x) !== pony.lastX ||
+			toScreenYWithZ(pony.y, pony.z) !== pony.lastY ||
 			pony.lastRight !== right ||
-			pony.zzzEffect.dirty || pony.cryEffect.dirty || pony.sneezeEffect.dirty || pony.holdPoofEffect.dirty ||
-			pony.heartsEffect.dirty || pony.magicEffect.dirty ||
-			options.flipped !== right || options.selected !== pony.selected || options.extra !== pony.extra ||
+			pony.zzzEffect.dirty ||
+			pony.cryEffect.dirty ||
+			pony.sneezeEffect.dirty ||
+			pony.holdPoofEffect.dirty ||
+			pony.heartsEffect.dirty ||
+			pony.magicEffect.dirty ||
+			options.flipped !== right ||
+			options.selected !== pony.selected ||
+			options.extra !== pony.extra ||
 			options.toy !== pony.toy ||
 			!isStateEqual(pony.lastState, state)
 		) {
@@ -593,11 +675,7 @@ function filterExpression(expression: Expression) {
 		}
 	}
 
-	if (
-		blush ||
-		expression.muzzle === Muzzle.SmilePant ||
-		expression.muzzle === Muzzle.NeutralPant
-	) {
+	if (blush || expression.muzzle === Muzzle.SmilePant || expression.muzzle === Muzzle.NeutralPant) {
 		if (expression.leftIris === Iris.Up || expression.rightIris === Iris.Up) {
 			expression.leftIris = Iris.Forward;
 			expression.rightIris = Iris.Forward;
@@ -672,7 +750,7 @@ function makeLightBounds({ x, y, w, h }: Rect) {
 function drawFaceExtra(batch: PaletteSpriteBatch, pony: Pony) {
 	if (isAnimationPlaying(pony.cryEffect)) {
 		const flip = isFacingRight(pony) ? !pony.ponyState.headTurned : pony.ponyState.headTurned;
-		const maxY = isPonyLying(pony) ? 62 : (isPonySitting(pony) ? 65 : 0);
+		const maxY = isPonyLying(pony) ? 62 : isPonySitting(pony) ? 65 : 0;
 		drawAnimation(batch, pony.cryEffect, 0, 0, WHITE, flip, maxY);
 	}
 }
