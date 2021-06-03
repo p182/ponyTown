@@ -22,7 +22,9 @@ const argv = require('yargs').argv;
 const config = require('./config.json');
 const stamp = Math.floor(Math.random() * 0xffffffff);
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
-const HASH = _.range(0, 10).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
+const HASH = _.range(0, 10)
+	.map(() => chars[Math.floor(Math.random() * chars.length)])
+	.join('');
 
 let development = true;
 
@@ -31,22 +33,18 @@ function swallowError(e) {
 	this.emit('end');
 }
 
-const runAsync = (command, args) => new Promise((resolve, reject) => {
-	const proc = spawn(command, args)
-		.on('error', reject)
-		.on('exit', resolve);
+const runAsync = (command, args) =>
+	new Promise((resolve, reject) => {
+		const proc = spawn(command, args).on('error', reject).on('exit', resolve);
 
-	proc.stdout.pipe(process.stdout);
-	proc.stderr.pipe(process.stderr);
-});
+		proc.stdout.pipe(process.stdout);
+		proc.stderr.pipe(process.stderr);
+	});
 
 const readFile = src => fs.readFileSync(src, { encoding: 'utf-8' });
 
-const lintCode = code => (code.trim() + '\n')
-	.replace(/\r\n/g, '\n')
-	.replace(/\n/g, '\r\n')
-	.replace(/  /g, '\t')
-	.replace(/"/g, "'");
+const lintCode = code =>
+	(code.trim() + '\n').replace(/\r\n/g, '\n').replace(/\n/g, '\r\n').replace(/  /g, '\t').replace(/"/g, "'");
 
 const npmScript = (name, args = []) => {
 	const func = () => runAsync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['run', name, ...args]);
@@ -54,15 +52,9 @@ const npmScript = (name, args = []) => {
 	return func;
 };
 
-const clean = () => del([
-	'build/*',
-	'temp/*',
-	'!temp/.gitignore',
-]);
+const clean = () => del(['build/*', 'temp/*', '!temp/.gitignore']);
 
-const clearnAdmin = () => del([
-	'build/assets-admin',
-]);
+const clearnAdmin = () => del(['build/assets-admin']);
 
 const manifest = cb => {
 	const json = {
@@ -77,35 +69,36 @@ const manifest = cb => {
 			{
 				src: '/android-chrome-192x192.png',
 				sizes: '192x192',
-				type: 'image/png'
+				type: 'image/png',
 			},
 			{
 				src: '/android-chrome-512x512.png',
 				sizes: '512x512',
-				type: 'image/png'
-			}
-		]
+				type: 'image/png',
+			},
+		],
 	};
 
 	fs.writeFile('src/ts/generated/changelog.ts', JSON.stringify(json, null, 2), 'utf8', cb);
 };
 
-const sprites = () => Promise.resolve() // del(['tools/output/images/*'])
-	.then(() => runAsync('node', ['src/scripts/tools/create-sprites.js']))
-	.then(() => gulp.src('tools/output/images/*')
-		.pipe(gulpif(!argv.fast, imagemin()))
-		.pipe(gulp.dest('assets/images')));
+const sprites = () =>
+	Promise.resolve() // del(['tools/output/images/*'])
+		.then(() => runAsync('node', ['src/scripts/tools/create-sprites.js']))
+		.then(() => gulp.src('tools/output/images/*').pipe(gulpif(!argv.fast, imagemin())).pipe(gulp.dest('assets/images')));
 
 const changelog = cb => {
 	const changelog = readFile('CHANGELOG.md');
 	const tree = markdownTree(changelog);
-	const object = config.nochangelog ? [] : tree.children.map(c => ({
-		version: c.text,
-		changes: c.tokens
-			.map(t => t.text)
-			.filter(x => x)
-			.map(x => x.replace(/^\[test\]/, '<span class="badge badge-secondary">test</span>')),
-	}));
+	const object = config.nochangelog
+		? []
+		: tree.children.map(c => ({
+				version: c.text,
+				changes: c.tokens
+					.map(t => t.text)
+					.filter(x => x)
+					.map(x => x.replace(/^\[test\]/, '<span class="badge badge-secondary">test</span>')),
+		  }));
 	const type = `{ version: string; changes: string[]; }[]`;
 	const code = `/* tslint:disable */\n\nexport const CHANGELOG: ${type} = ${JSON.stringify(object, null, 2)};\n`;
 	fs.writeFile('src/ts/generated/changelog.ts', code, 'utf8', cb);
@@ -118,25 +111,34 @@ const icons = cb => {
 	const getIconCode = src => JSON.stringify(require(`./${src}`).definition);
 	const iconsTs = readFile('src/ts/client/icons.ts');
 	const matched = _.uniq(iconsTs.match(/\bfa[A-Z]\S*\b/g));
-	const icons = matched.map(m => ({
-		name: m,
-		code: fs.existsSync(path.join(root1, `${m}.js`)) ? getIconCode(path.join(root1, `${m}.js`)) : getIconCode(path.join(root2, `${m}.js`)),
-	})).sort((a, b) => a.name.localeCompare(b.name));
+	const icons = matched
+		.map(m => ({
+			name: m,
+			code: fs.existsSync(path.join(root1, `${m}.js`))
+				? getIconCode(path.join(root1, `${m}.js`))
+				: getIconCode(path.join(root2, `${m}.js`)),
+		}))
+		.sort((a, b) => a.name.localeCompare(b.name));
 	const code = `/* tslint:disable */\n\n${icons.map(({ name, code }) => `export const ${name} = ${code};`).join('\n')}`;
 	fs.writeFile('src/ts/generated/fa-icons.ts', lintCode(code), 'utf8', cb);
 };
 
 const shaders = cb => {
 	function getShaderCode(filePath) {
-		return fs.readFileSync(filePath, 'utf8')
-			.replace(/^\s*\n/gm, '').trim();
+		return fs
+			.readFileSync(filePath, 'utf8')
+			.replace(/^\s*\n/gm, '')
+			.trim();
 	}
 
 	const dir = path.join('src', 'ts', 'graphics', 'shaders');
-	const code = '/* tslint:disable */\n\n' + fs.readdirSync(dir)
-		.map(file => [_.camelCase(file.replace(/\.glsl$/, '')), path.join(dir, file)])
-		.map(([name, filePath]) => `export const ${name}Shader = \`${getShaderCode(filePath)}\`;`)
-		.join('\n\n');
+	const code =
+		'/* tslint:disable */\n\n' +
+		fs
+			.readdirSync(dir)
+			.map(file => [_.camelCase(file.replace(/\.glsl$/, '')), path.join(dir, file)])
+			.map(([name, filePath]) => `export const ${name}Shader = \`${getShaderCode(filePath)}\`;`)
+			.join('\n\n');
 	fs.writeFile('src/ts/generated/shaders.ts', lintCode(code), 'utf8', cb);
 };
 
@@ -159,22 +161,28 @@ const assetsRev = cb => {
 	fs.writeFile('src/ts/generated/rev.ts', lintCode(code), 'utf8', cb);
 };
 
-const assetsCopy = () => gulp.src('assets/**/*')
-	.pipe(gulpif(!argv.fast, imagemin()))
-	.pipe(rev())
-	.pipe(gulp.dest('build/assets'))
-	.pipe(rev.manifest())
-	.pipe(gulp.dest('build'));
+const assetsCopy = () =>
+	gulp
+		.src('assets/**/*')
+		.pipe(gulpif(!argv.fast, imagemin()))
+		.pipe(rev())
+		.pipe(gulp.dest('build/assets'))
+		.pipe(rev.manifest())
+		.pipe(gulp.dest('build'));
 
 function buildSass(name, src, dest) {
-	const result = () => gulp.src([src], { base: 'src' })
-		.pipe(sass({
-			includePaths: ['src/styles/'],
-		}).on('error', sass.logError))
-		.pipe(autoprefixer('last 2 versions'))
-		.pipe(gulpif(!development, cssnano({ discardComments: { removeAll: true } })))
-		.pipe(gulpif(!development, rev()))
-		.pipe(gulp.dest(dest));
+	const result = () =>
+		gulp
+			.src([src], { base: 'src' })
+			.pipe(
+				sass({
+					includePaths: ['src/styles/'],
+				}).on('error', sass.logError),
+			)
+			.pipe(autoprefixer('last 2 versions'))
+			.pipe(gulpif(!development, cssnano({ discardComments: { removeAll: true } })))
+			.pipe(gulpif(!development, rev()))
+			.pipe(gulp.dest(dest));
 	result.displayName = `sass (${name})`;
 	return result;
 }
@@ -188,53 +196,66 @@ const sassTasks = gulp.series(sassMain, sassInline, sassTools, sassAdmin);
 const testScripts = ['src/scripts/tests/**/*.js'];
 const ts = npmScript('ts');
 
-const tests = () => gulp.src(testScripts, { read: false })
-	.pipe(mocha({
-		exit: true,
-		reporter: 'progress',
-		timeout: 10000,
-	}))
-	.on('error', swallowError);
+const tests = () =>
+	gulp
+		.src(testScripts, { read: false })
+		.pipe(
+			mocha({
+				exit: true,
+				reporter: 'progress',
+				timeout: 10000,
+			}),
+		)
+		.on('error', swallowError);
 
-const coverage = () => gulp.src(testScripts, { read: false })
-	.pipe(mocha({
-		exit: true,
-		reporter: 'progress',
-		timeout: 10000,
-		istanbul: {
-			print: 'none',
-		},
-	}));
+const coverage = () =>
+	gulp.src(testScripts, { read: false }).pipe(
+		mocha({
+			exit: true,
+			reporter: 'progress',
+			timeout: 10000,
+			istanbul: {
+				print: 'none',
+			},
+		}),
+	);
 
-const remap = () => gulp.src('coverage/coverage.json')
-	.pipe(remapIstanbul({ reports: { html: 'coverage-remapped' } }));
+const remap = () => gulp.src('coverage/coverage.json').pipe(remapIstanbul({ reports: { html: 'coverage-remapped' } }));
 
-const size = () => gulp.src([
-	'build/assets/*.js',
-	'build/assets/scripts/*.js',
-	'build/assets-admin/scripts/*.js',
-	'build/assets/styles/*.css',
-	'build/assets-admin/styles/*.css',
-]).pipe(sizereport({ gzip: true, total: true }));
+const size = () =>
+	gulp
+		.src([
+			'build/assets/*.js',
+			'build/assets/scripts/*.js',
+			'build/assets-admin/scripts/*.js',
+			'build/assets/styles/*.css',
+			'build/assets-admin/styles/*.css',
+		])
+		.pipe(sizereport({ gzip: true, total: true }));
 
-const music = () => gulp.src(path.join(config.assetsPath, 'assets/music/*.wav'), { read: false })
-	.pipe(shell([
-		'ffmpeg -y -i "<%= file.path %>" -acodec libmp3lame "<%= out(file.path, ".mp3") %>"',
-		'ffmpeg -y -i "<%= file.path %>" -acodec libvorbis "<%= out(file.path, ".webm") %>"',
-	], {
-			templateData: {
-				out: (file, ext) => path.join('assets', 'music', path.basename(file, '.wav') + ext),
-			}
-		}));
+const music = () =>
+	gulp.src(path.join(config.assetsPath, 'assets/music/*.wav'), { read: false }).pipe(
+		shell(
+			[
+				'ffmpeg -y -i "<%= file.path %>" -acodec libmp3lame "<%= out(file.path, ".mp3") %>"',
+				'ffmpeg -y -i "<%= file.path %>" -acodec libvorbis "<%= out(file.path, ".webm") %>"',
+			],
+			{
+				templateData: {
+					out: (file, ext) => path.join('assets', 'music', path.basename(file, '.wav') + ext),
+				},
+			},
+		),
+	);
 
 const serverDev = cb => {
 	if (!argv.noserver) {
 		const serverPath = path.join('src', 'scripts', 'server', 'server.js');
 		const options = { env: { NODE_OPTIONS: '--inspect' } };
 		const commonArgs = [serverPath, '--inspect', '--color', '--beta', '--admin'];
-		const server = argv.adm ?
-			liveServer([...commonArgs, '--adm'], options) :
-			liveServer([...commonArgs, '--login', '--game', '--tools'], options);
+		const server = argv.adm
+			? liveServer([...commonArgs, '--adm'], options)
+			: liveServer([...commonArgs, '--login', '--game', '--tools'], options);
 		server.start();
 
 		const restart = cb => {
@@ -244,13 +265,17 @@ const serverDev = cb => {
 
 		gulp.watch(['build/**/*.css']).on('change', path => server.notify({ path }));
 		gulp.watch(['build/**/*.js']).on('change', path => server.notify({ path }));
-		gulp.watch([
-			'src/scripts/common/**/*.js',
-			'src/scripts/generated/**/*.js',
-			'src/scripts/graphics/**/*.js',
-			'src/scripts/server/**/*.js',
-			'views/index.pug',
-		], { debounceDelay: 1000 }, restart);
+		gulp.watch(
+			[
+				'src/scripts/common/**/*.js',
+				'src/scripts/generated/**/*.js',
+				'src/scripts/graphics/**/*.js',
+				'src/scripts/server/**/*.js',
+				'views/index.pug',
+			],
+			{ debounceDelay: 1000 },
+			restart,
+		);
 	}
 
 	cb();

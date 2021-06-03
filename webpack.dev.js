@@ -11,7 +11,7 @@ const compilerOptions = {
 module.exports = merge(common, {
 	mode: 'development',
 	entry: {
-		'bootstrap': './ts/bootstrap',
+		bootstrap: './ts/bootstrap',
 		'bootstrap-admin': './ts/bootstrap-admin',
 		'bootstrap-tools': './ts/bootstrap-tools',
 	},
@@ -25,7 +25,7 @@ module.exports = merge(common, {
 	},
 	stats: 'minimal',
 	output: {
-		pathinfo: false
+		pathinfo: false,
 	},
 	watchOptions: {
 		ignored: /node_modules/,

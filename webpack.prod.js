@@ -8,14 +8,16 @@ const { AngularCompilerPlugin } = require('@ngtools/webpack');
 const common = require('./webpack.common.js');
 const config = require('./config.json');
 
-const analytics = config.analytics ? `
+const analytics = config.analytics
+	? `
 	(function(i, s, o, g, r, a, m) {i['GoogleAnalyticsObject']=r; i[r]=i[r]||function() {
 	(i[r].q=i[r].q||[]).push(arguments) }, i[r].l=1*new Date(); a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0]; a.async=1; a.src=g; m.parentNode.insertBefore(a, m)
 	}) (window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 	ga('create', '${config.analytics.trackingID}', 'auto');
 	ga('send', 'pageview');
-` : ``;
+`
+	: ``;
 
 const compilerOptions = require('./tsconfig-aot.json').compilerOptions;
 const compilerOptionsES = require('./tsconfig-aot-es.json').compilerOptions;
@@ -40,8 +42,8 @@ function getScripts(args) {
 }
 
 module.exports = (args = {}) =>
-	getScripts(args)
-		.map(([script, entry, outDir, compilerOptions, tsConfigPath, ecma, TOOLS]) => merge(common, {
+	getScripts(args).map(([script, entry, outDir, compilerOptions, tsConfigPath, ecma, TOOLS]) =>
+		merge(common, {
 			mode: 'production',
 			performance: {
 				maxEntrypointSize: 10000000,
@@ -60,9 +62,7 @@ module.exports = (args = {}) =>
 				rules: [
 					{
 						test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-						use: [
-							{ loader: '@ngtools/webpack', options: { sourcemap: true, compilerOptions } },
-						],
+						use: [{ loader: '@ngtools/webpack', options: { sourcemap: true, compilerOptions } }],
 					},
 				],
 			},
@@ -81,9 +81,17 @@ module.exports = (args = {}) =>
 			},
 			plugins: [
 				new AngularCompilerPlugin({ tsConfigPath, entryModule: `src/ts/components/${entry}` }),
-				(script === 'bootstrap' && !args.analyze) ? new WrapperPlugin({ test: /\.js$/, header: analytics }) : undefined,
+				script === 'bootstrap' && !args.analyze ? new WrapperPlugin({ test: /\.js$/, header: analytics }) : undefined,
 				args.analyze ? new BundleAnalyzerPlugin({ analyzerMode: 'static' }) : undefined,
-				new webpack.DefinePlugin({ DEVELOPMENT: false, TOOLS, SERVER: false, BETA: !!args.beta, TIMING: !!args.timing, TESTS: false }),
+				new webpack.DefinePlugin({
+					DEVELOPMENT: false,
+					TOOLS,
+					SERVER: false,
+					BETA: !!args.beta,
+					TIMING: !!args.timing,
+					TESTS: false,
+				}),
 				new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 			].filter(x => x),
-		}));
+		}),
+	);

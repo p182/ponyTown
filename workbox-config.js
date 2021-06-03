@@ -3,9 +3,7 @@ const ignore = /^\/((a(pi(\d?|-tools)|uth|dm(in)?)|(bl|m)ep)|tools|reload)\/|\.h
 
 module.exports = {
 	globDirectory: 'build/',
-	globPatterns: [
-		'**/*.{js,css,png,jpg,wasm}',
-	],
+	globPatterns: ['**/*.{js,css,png,jpg,wasm}'],
 	globIgnores: [
 		'**/assets-admin/**',
 		'**/bootstrap-es*',

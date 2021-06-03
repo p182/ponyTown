@@ -64,11 +64,5 @@ module.exports = {
 			},
 		],
 	},
-	plugins: [
-		new webpack.ContextReplacementPlugin(
-			/\@angular(\\|\/)core(\\|\/)fesm5/,
-			path.resolve(__dirname, 'src', 'ts'),
-			{}
-		),
-	],
+	plugins: [new webpack.ContextReplacementPlugin(/\@angular(\\|\/)core(\\|\/)fesm5/, path.resolve(__dirname, 'src', 'ts'), {})],
 };
