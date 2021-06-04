@@ -1,9 +1,9 @@
 build/
 src/scripts/
+src/generated/
 build-copy/
 node_modules/
 logs/
 settings/
 
-package-lock.json
 config.json

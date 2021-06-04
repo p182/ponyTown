@@ -1,10 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "es2017",
-		"lib": [
-			"dom",
-			"es6"
-		],
+		"lib": ["dom", "es6"],
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"importHelpers": true,
@@ -20,10 +17,5 @@
 		"sourceMap": true,
 		"preserveConstEnums": true
 	},
-	"exclude": [
-		"build",
-		"tools",
-		"src/scripts",
-		"node_modules"
-	]
+	"exclude": ["build", "tools", "src/scripts", "node_modules"]
 }

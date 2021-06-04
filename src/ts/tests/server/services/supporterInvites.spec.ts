@@ -17,7 +17,7 @@ function exec(value: any): any {
 }
 
 describe('SupporterInvitesService', () => {
-	let model: SinonStubbedInstance<Model<ISupporterInvite>> & { countDocuments: SinonStub; };
+	let model: SinonStubbedInstance<Model<ISupporterInvite>> & { countDocuments: SinonStub };
 	let notifications = stubClass(NotificationService);
 	let log: SinonStub;
 	let service: SupporterInvitesService;
@@ -44,16 +44,12 @@ describe('SupporterInvitesService', () => {
 		it('returns all invites from given client', async () => {
 			const client = mockClient();
 			model.find.withArgs({ source: client.account._id }).returns({
-				exec: stub().resolves([
-					{ _id: 'foo', name: 'Foo', info: 'info', active: true, anotherField: 'xyz' },
-				])
+				exec: stub().resolves([{ _id: 'foo', name: 'Foo', info: 'info', active: true, anotherField: 'xyz' }]),
 			} as any);
 
 			const result = await service.getInvites(client);
 
-			expect(result).eql([
-				{ id: 'foo', name: 'Foo', info: 'info', active: true },
-			]);
+			expect(result).eql([{ id: 'foo', name: 'Foo', info: 'info', active: true }]);
 		});
 	});
 
@@ -104,9 +100,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, requester);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if requester is shadowed', async () => {
@@ -115,9 +109,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if requester is muted', async () => {
@@ -126,9 +118,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if target is offline', async () => {
@@ -137,9 +127,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if target ignores requester', async () => {
@@ -148,9 +136,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if requester ignores target', async () => {
@@ -159,9 +145,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('fails if already reached invite limit', async () => {
@@ -170,9 +154,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Invite limit reached', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Invite limit reached', MessageType.System]]);
 		});
 
 		it('fails if exceeded reject limit', async () => {
@@ -186,9 +168,7 @@ describe('SupporterInvitesService', () => {
 			await service.requestInvite(requester, target);
 
 			assert.notCalled(notifications.addNotification);
-			expect(requester.saysQueue).eql([
-				[requester.pony.id, 'Cannot invite', MessageType.System],
-			]);
+			expect(requester.saysQueue).eql([[requester.pony.id, 'Cannot invite', MessageType.System]]);
 		});
 
 		it('logs invite', async () => {
@@ -312,11 +292,11 @@ describe('SupporterInvitesService', () => {
 				{ _id: 'aaa', active: false, source: { supporter: SupporterFlags.Supporter1 } },
 				{ _id: 'bbb', active: true, source: { supporter: SupporterFlags.Supporter1 } },
 			];
-			model.find.withArgs({}, '_id active')
-				.returns({
-					populate: stub().withArgs('source', '_id supporter patreon roles')
-						.returns({ lean: stub().returns(exec(data)) })
-				} as any);
+			model.find.withArgs({}, '_id active').returns({
+				populate: stub()
+					.withArgs('source', '_id supporter patreon roles')
+					.returns({ lean: stub().returns(exec(data)) }),
+			} as any);
 			model.deleteMany.returns({ exec: stub() } as any);
 			model.updateMany.returns({ exec: stub() } as any);
 
