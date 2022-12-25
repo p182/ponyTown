@@ -4,7 +4,7 @@
   "description": "A game of ponies building a town",
   "main": "pony-town.js",
   "scripts": {
-    "start": "node pony-town.js --login --admin --game",
+    "start": "node pony-town.js --login --admin --game --tools --beta",
     "start-inspect": "node --inspect pony-town.js --login --admin --game",
     "lint": "tslint -c tslint.json src/ts/**/*.ts",
     "dev": "gulp dev",
