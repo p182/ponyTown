@@ -1,0 +1,42 @@
+{
+	"title": "Pony Town Ukraine",
+	"twitterLink": "<LINK_TO_TWITTER>",
+	"contactEmail": "ffoxy2870@gmail.com",
+	"port": 33769,
+	"adminPort": 8091,
+	"host": "http://uapt.ddns.net:33769/",
+	"local": "localhost:8090",
+	"adminLocal": "localhost:8091",
+	"secret": "gfhfdshtrdhgedryhe4t3y5uwjthr",
+	"token": "sdlfgihsdor8ghor8dgdrgdegrdg",
+	"db": "mongodb://halt:4365gt132@localhost:27017/ptdb",
+	"oauth": {
+		"google": {
+			"clientID": "736074748538-12p29vlv9a9gkcafjf6fqjm0gvg01ks5.apps.googleusercontent.com",
+			"clientSecret": "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"
+		},
+		"github": {
+ 			"clientID": "6414e10d0472a90c1e87",
+ 			"clientSecret": "e2dd731e93de3a1edb17e045cf14cc3023cc1e59"
+                },
+                "twitter": {
+                         "consumerKey": "pcD9Y7XLlsEw4baN7SXmUCDwK",
+                         "consumerSecret": "a0g5K8Dpwf9d49t8dL745BD9NE8CJS9g0gjre3NK27M4m6bYyk"
+                }
+	},
+	"assetsPath": "assets-source",
+	"servers": [
+		{
+			"id": "test",
+			"port": 8090,
+			"path": "/s00/ws",
+			"local": "localhost:8090",
+			"name": "Main server",
+			"desc": "Testing server",
+			"flags": {
+				"test": true
+			}
+		}
+	]
+}
+
