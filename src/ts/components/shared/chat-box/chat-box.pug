@@ -2,13 +2,13 @@
 	div(#chatBoxInput)
 		input.chat-input#chat-input(
 			#inputElement [(ngModel)]="message" (keydown)="keydown($event)" [maxlength]="maxSayLength"
-			aria-label="Chat message")
+			aria-label="Повідомлення чату")
 		.chat-box-type(#typeBox (click)="toggleChatType()")
 			| #[span(#typePrefix)][#[span.chat-box-type-name(#typeName)]]:
-		button.game-button.chat-send-button((click)="send($event)" title="Send message" aria-label="Send message")
+		button.game-button.chat-send-button((click)="send($event)" title="Відправити повідомлення" aria-label="Відправити повідомлення")
 			fa-icon([icon]="sendIcon")
 
 button.game-button.chat-open-button(
-	(click)="toggle()" (mousedown)="$event.preventDefault()" [disabled]="disabled" title="Toggle chat"
+	(click)="toggle()" (mousedown)="$event.preventDefault()" [disabled]="disabled" title="Чат"
 	aria-label="Toggle message")
 	fa-icon([icon]="commentIcon" [fixedWidth]="true")
