@@ -39,17 +39,17 @@
 							.text-muted.friends-item-account {{f.accountName}}
 				.friends-item-delete.d-flex.px-2.py-1(*ngIf="removing === f")
 					button.btn.btn-sm.btn-outline-success.flex-grow-1((click)="cancelRemove(); $event.stopPropagation()")
-						| Cancel
+						| Відмінити
 					button.btn.btn-sm.btn-outline-danger.flex-grow-1.ml-2((click)="confirmRemove(); $event.stopPropagation()")
-						| Confirm remove
+						| Підтвердити видалення
 				//- span.badge.badge-none.friends-item-server PG
 				.options-dropdown-menu.dropdown-menu(*dropdownMenu)
-					button.dropdown-item((click)="sendMessageTo(f)" [disabled]="!f.online") Send whisper
-					button.dropdown-item((click)="inviteToParty(f)" [disabled]="!f.online") Invite to party
+					button.dropdown-item((click)="sendMessageTo(f)" [disabled]="!f.online") Відправити особисте повідомлення
+					button.dropdown-item((click)="inviteToParty(f)" [disabled]="!f.online") Запросити на вечірку
 					.dropdown-divider
-					button.dropdown-item((click)="remove(f)") Remove
+					button.dropdown-item((click)="remove(f)") Видалити
 		ng-template(#noFriends)
 			.text-center.text-muted.p-2(*ngIf="friends")
-				| select a player and use #[fa-icon([icon]="userOptionsIcon")] menu to add them to your friends
+				| виберіть гравця та використовуйте #[fa-icon([icon]="userOptionsIcon")] меню щоб додати його в друзі
 			.text-center.text-muted.p-2(*ngIf="!friends")
-				| Loading...
+				| Завантаження...
