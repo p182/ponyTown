@@ -6,31 +6,31 @@
 		type="text"
 		[(ngModel)]="pony.name"
 		[maxlength]="maxNameLength"
-		placeholder="Name of your character"
-		aria-label="Name of your character")
+		placeholder="Ім'я персонажу"
+		aria-label="Ім'я персонажу)
 	.input-group-append
-		button.btn.btn-default(*ngIf="newButton" (click)="createNew()" [disabled]="!canNew" aria-label="Create New character")
+		button.btn.btn-default(*ngIf="newButton" (click)="createNew()" [disabled]="!canNew" aria-label="Створити нового персонажа")
 			| new
-		button.btn.btn-default(*ngIf="editButton" (click)="edit()" [disabled]="!canEdit" aria-label="Edit character")
+		button.btn.btn-default(*ngIf="editButton" (click)="edit()" [disabled]="!canEdit" aria-label="Редактувати персонажа")
 			| edit
 
 		.dropdown(dropdown #dropdown="ag-dropdown" (isOpenChange)="onToggle($event)" [focusOnOpen]="false")
 			button.btn.btn-default.dropdown-toggle.br-0(
 				[ngClass]="removeButton ? 'btn-no-round' : 'btn-no-round-left'"
-				[disabled]="!hasPonies || joining" dropdownToggle aria-label="Select character")
+				[disabled]="!hasPonies || joining" dropdownToggle aria-label="Вибрати персонажа")
 			character-list.dropdown-menu(
 				*dropdownMenu (close)="dropdown.close()" (selectCharacter)="select($event)" (newCharacter)="createNew()"
 				(previewCharacter)="preview.emit($event)" [canNew]="!newButton && canNew")
 
 		button.btn.btn-danger.remove-button(
 			*ngIf="removeButton && !removing" (click)="remove()" [disabled]="!canRemove"
-			tooltip="Delete pony" aria-label="Delete pony")
+			tooltip="Видалити персонажа" aria-label="Видалити персонажа")
 			fa-icon([icon]="deleteIcon" [fixedWidth]="true")
 		button.btn.btn-danger.cancel-remove-button(
 			*ngIf="removing" (click)="cancelRemove()"
-			tooltip="Cancel delete" aria-label="Cancel delete")
+			tooltip="Відмінити видалення" aria-label="Відмінити видалення")
 			fa-icon([icon]="removeIcon" [fixedWidth]="true")
 		button.btn.btn-success(
 			*ngIf="removing" (click)="confirmRemove()" [disabled]="!canRemove"
-			tooltip="Confirm delete" aria-label="Confirm delete")
+			tooltip="Підтвердити видалення" aria-label="Підтвердити видалення")
 			fa-icon([icon]="confirmIcon" [fixedWidth]="true")
