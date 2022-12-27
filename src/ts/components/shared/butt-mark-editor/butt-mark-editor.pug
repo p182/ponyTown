@@ -1,5 +1,5 @@
 .form-group.text-center
-	label#butt-mark-label.text-muted Butt mark
+	label#butt-mark-label.text-muted Відзнака
 .row.form-group(role="group" aria-labelledby="butt-mark-label")
 	.col-sm-7.mb-1
 		button.btn.btn-primary((click)="clearCM()" title="Clear all")
@@ -17,4 +17,4 @@
 	bitmap-box([bitmap]="info.cm" [tool]="state.brushType" [(color)]="state.brush" [width]="cmSize" [height]="cmSize")
 .form-group.d-flex.justify-content-center.align-items-center.text-muted
 	custom-checkbox([(checked)]="info.cmFlip")
-		| don't flip mark on the right side
+		| Не перевертати відзнаку з іншої сторони
