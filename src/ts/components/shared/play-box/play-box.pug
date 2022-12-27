@@ -1,12 +1,12 @@
 .form-group(*ngIf="hasTooManyPonies")
 	.alert.alert-warning(role="alert")
-		| You have more than the allowed number of {{characterLimit}} ponies, the additional ones may get deleted.
-		| Remove some of your unused ponies to prevent losing the ones you want to keep.
+		| Ви маєте більше ніж дозволено, {{characterLimit}} персонажів, нові можуть бути видаленя.
+		| Видаліть невикористовуваних персонажів щоб унинкути видалення потрібних.
 
 .form-group(*ngIf="isMarkedForMultiples")
 	.alert.alert-warning(role="alert")
-		| Your account has been flagged for creating multiple accounts.
-		| Creating more accounts may result in a permanent ban.
+		| Ваш аккаунт був помічений через створення двійника.
+		| Створення інших аккаунтів можуть призвести до бану.
 
 .form-group(*ngIf="accountAlert")
 	.alert.alert-warning(role="alert")
@@ -18,18 +18,18 @@
 
 .form-group(*ngIf="isAndroidBrowser")
 	.alert.alert-warning(role="alert")
-		| Your browser is outdated and is not able to correctly run Pony Town.
-		| Please install different browser to be able to play the game.
+		| Ваш браузер застарілий і має проблеми з запуском гри.
+		| Будь ласка, встановіть інший або оновіть наявний браузер щоб уникнути проблем з грою.
 
 .form-group(*ngIf="model.missingBirthdate && !birthdateSet && requestBirthdate")
 	.alert.alert-warning.text-left(role="alert")
 		label(for="birthdate")
-			| Set your date of birth
+			| Встановіть дату народження
 		date-picker([(date)]="birthdate")
 		.mt-2.text-right
 			button.btn.btn-default.px-4((click)="saveBirthdate()") Save
 		p.mb-0.mt-2
-			| Please fill-in your #[b date of birth] in order to not lose access to the game in future updates.
+			| Будь ласка, заповніть #[b date of birth] щоб не втратити доступ до гри в майбутніх оновленнях.
 
 .form-group.dropdown(dropdown)
 	.btn-group.d-flex
@@ -37,11 +37,11 @@
 			#playButton (click)="joining ? cancel() : play()" [disabled]="!canPlay && !joining")
 			div(*ngIf="joining")
 				fa-icon.mr-1([icon]="spinnerIcon" [spin]="true")
-				| Cancel
+				| Відмінити
 			div(*ngIf="!joining && server")
 				| #[strong {{label || 'Play'}}] on #[span {{server.name}}]
 			.text-faded(*ngIf="!joining && !server")
-				| select server to play
+				| Виберіть сервер для гри
 		button.btn.btn-lg.btn-success.flex-grow-0.dropdown-toggle(
 			dropdownToggle aria-label="select server" [disabled]="joining" style="position: relative")
 
@@ -58,8 +58,8 @@
 
 .form-group.text-left.text-muted.server-alert(*ngIf="server?.alert === '18+'")
 	fa-icon.float-left.p-2([icon]="warningIcon" size="2x")
-	| By playing on this server you confirm that you are over 18 years old and you take no issue
-	| with seeing adult topics.
+	| Граючи на цьому сервері, ви підтверджуєте що вам є більше 18 років і ви не будете мати проблем 
+	| спостерігаючи дорослі розмови.
 
 .form-group.text-left.text-info.server-alert(*ngIf="server?.alert === 'test'")
 	fa-icon.float-left.p-2([icon]="infoIcon" size="2x")
@@ -68,11 +68,11 @@
 
 .form-group(*ngIf="server?.offline")
 	.alert.alert-info(role="alert")
-		| Selected server is offline, try again later
+		| Вибраний сервер недоступний, спробуйте пізніше
 
 .form-group(*ngIf="offline")
 	.alert.alert-info(role="alert")
-		| Server is offline, try again later
+		| Сервер недоступний, спробуйте пізніше
 
 .form-group(*ngIf="protectionError && !offline")
 	.alert.alert-info(role="alert")
@@ -80,8 +80,8 @@
 
 .form-group(*ngIf="updateWarning")
 	.alert.alert-warning(role="alert")
-		| Server will restart shortly for updates and maintenance.
-		| Save your character to avoid losing any progress.
+		| Сервер скоро перезапуститься для оновлення та технічної перерви.
+		| Збережіть свого персонажа щоб уникнути втрати прогрессу.
 
 .form-group(*ngIf="isBrowserOutdated")
 	.alert.alert-warning(role="alert")
@@ -109,7 +109,7 @@
 
 .form-group(*ngIf="isBrowserError")
 	.alert.alert-danger(role="alert")
-		| Your browser is outdated, make sure you have the latest version installed.
+		| Ваш браузер застарілий, переконайтесь що встановленна остання версія.
 
 .form-group(*ngIf="isOtherError")
 	.alert.alert-danger(role="alert")
