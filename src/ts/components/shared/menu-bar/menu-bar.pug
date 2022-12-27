@@ -29,16 +29,16 @@
 							.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 								button.dropdown-item((click)="setStatus('online')")
 									fa-icon.mr-2.text-success([icon]="statusIcon" size="xs" [fixedWidth]="true")
-									| Online
+									| Онлайн
 								button.dropdown-item((click)="setStatus('invisible')")
 									fa-icon.mr-2.text-muted([icon]="statusIcon" size="xs" [fixedWidth]="true")
-									| Show as Offline
+									| Показувати як оффлайн
 					a.dropdown-item(routerLink="/account" (click)="dropdown.close()" tabindex)
-						| Account settings
+						| Налаштування аккаунту
 						fa-icon.text-danger.ml-1(*ngIf="showAccountAlert" [icon]="alertIcon" aria-hidden="true")
 					.dropdown-divider
 					button.dropdown-item((click)="signOut.emit(); dropdown.close()")
-						| Sign out
+						| Вийти з аккаунту
 
 		.text-muted(*ngIf="loading" style="font-size: 20px; padding: 10px 20px;")
 			fa-icon([icon]="spinnerIcon" [fixedWidth]="true" [spin]="true")
@@ -46,17 +46,17 @@
 		form.navbar-form.ml-2(*ngIf="!loading && !account")
 			.button-group.dropdown(dropdown)
 				button.btn.btn-default.dropdown-toggle(dropdownToggle [disabled]="!!loadingError")
-					| Sign in
+					| Увійти 
 				.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 					.dropdown-header(*ngIf="signUpProviders.length")
-						| Sign in or sign up
+						| Увійти або зареєструватись
 					button.dropdown-item(
-						*ngFor="let p of signUpProviders" (click)="signInTo(p)" title="Sign in using {{p.name}}")
+						*ngFor="let p of signUpProviders" (click)="signInTo(p)" title="Увійти використовуючи {{p.name}}")
 						fa-icon.mr-1([icon]="icon(p.id)" [fixedWidth]="true")
 						| {{p.name}}
 					.dropdown-header(*ngIf="signInProviders.length")
-						| Sign in only
+						| Лише увійти
 					button.dropdown-item.sign-in-only(
-						*ngFor="let p of signInProviders" (click)="signInTo(p)" title="Sign in using {{p.name}}")
+						*ngFor="let p of signInProviders" (click)="signInTo(p)" title="Увійти використовуючи {{p.name}}")
 						fa-icon.mr-1([icon]="icon(p.id)" [fixedWidth]="true")
 						| {{p.name}}
