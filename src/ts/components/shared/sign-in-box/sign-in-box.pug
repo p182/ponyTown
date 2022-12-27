@@ -1,10 +1,10 @@
 .sign-in-box.mx-auto.text-center
 	p.lead
-		| Sign in with your social site account
+		| Зареєструйтеся за допомогою соціальних мереж
 
 	div(*ngIf="signUpProviders.length")
 		.sign-in-heading
-			span(aria-hidden="true") Sign in #[i or] sign up
+			span(aria-hidden="true") Зареєструватися #[i або] ввійти
 
 		.sign-in-box-providers
 			button.btn.btn-lg.btn-dark(
@@ -18,9 +18,9 @@
 
 	div(*ngIf="signInProviders.length")
 		.sign-in-heading
-			span(aria-hidden="true") Sign in #[i only]
+			span(aria-hidden="true") Зареєструватися #[i only]
 
-		.text-muted.mb-3 (You #[b cannot] use these social sites to create new account)
+		.text-muted.mb-3 (Ви #[b не можете] використовувати ці соціальні мережі щоб створити аккаунт)
 
 		.sign-in-box-providers.sign-in-only
 			button.btn.btn-lg.btn-dark(
