@@ -3,7 +3,7 @@
 		label.text-muted.color-label {{label}}
 		check-box.lock-box(
 			*ngIf="hasLock && !nonLockable" [(checked)]="locked" (checkedChange)="onLockedChange($event)"
-			[icon]="lockIcon" label="Automatic color")
+			[icon]="lockIcon" label="Автоматичний колір"
 	.col-8
 		color-picker(
 			[(color)]="fill" (colorChange)="onFillChange($event)" [isDisabled]="locked" [label]="label || 'Color'"
@@ -14,7 +14,7 @@
 		label.text-muted.color-label {{label}}
 		check-box.lock-box(
 			*ngIf="hasLock && !nonLockable" [(checked)]="locked" (checkedChange)="onLockedChange($event)"
-			[icon]="lockIcon" label="Automatic color")
+			[icon]="lockIcon" label="Автоматичний колір")
 	.col-8.col-sm-4
 		color-picker(
 			[(color)]="fill" (colorChange)="onFillChange($event)" [isDisabled]="locked" [label]="label + ' fill'"
@@ -22,7 +22,7 @@
 	.col-4.col-sm-1.col-outline
 		check-box.lock-box(
 			[(checked)]="outlineLocked" (checkedChange)="onOutlineLockedChange($event)" [icon]="lockIcon"
-			label="Automatic outline")
+			label="Автоматичний контур")
 	.col-8.col-sm-4.col-outline
 		color-picker(
 			[(color)]="outline" (colorChange)="onOutlineChange($event)" [isDisabled]="outlineLocked"
