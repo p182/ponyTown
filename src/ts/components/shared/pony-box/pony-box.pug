@@ -3,7 +3,7 @@
 		.pony-box-tag(*ngIf="special" [ngClass]="specialClass")
 			| {{special}}
 		.pony-box-tag.tag-friend(*ngIf="isFriend(pony)")
-			| friend
+			| Друг
 	.pony-box-rect
 		.pony-box-name
 			| {{pony.name}}
@@ -18,45 +18,45 @@
 				.dropdown-menu(*dropdownMenu)
 					button.dropdown-item((click)="toggleIgnore()")
 						fa-icon.mr-2([icon]="ignoreIcon" [fixedWidth]="true")
-						| {{isIgnored(pony) ? 'Unignore player' : 'Ignore player'}}
+						| {{isIgnored(pony) ? 'Не ігнорувати гравця' : 'Ігнорувати гравця'}}
 						fa-icon.ml-1(*ngIf="isIgnored(pony)" [icon]="checkIcon")
 					button.dropdown-item((click)="hidePlayer(1)")
 						fa-icon.mr-2([icon]="hideIcon" [fixedWidth]="true")
-						| Hide player #[span.text-muted (24 hours)]
+						| Приховати гравця #[span.text-muted (24 hours)]
 					button.dropdown-item((click)="hidePlayer(0)")
 						fa-icon.mr-2([icon]="hideIcon" [fixedWidth]="true")
-						| Hide player #[span.text-muted (permanent)]
+						| Приховати гравця #[span.text-muted (permanent)]
 
 					.dropdown-divider
 					button.dropdown-item((click)="sendMessageTo()")
 						fa-icon.mr-2([icon]="messageIcon" [fixedWidth]="true")
-						| Send whisper
+						| Відправити особисте повідомлення
 					button.dropdown-item(*ngIf="!isFriend(pony)" (click)="addFriend()")
 						fa-icon.mr-2.text-success([icon]="addFriendIcon" [fixedWidth]="true")
-						| Send friend request
+						| Відправити запит друга
 					div(*ngIf="isFriend(pony)" style="position: relative;")
 						button.dropdown-item((click)="removingFriend = true; $event.stopPropagation()")
 							fa-icon.mr-2.text-danger([icon]="removeFriendIcon" [fixedWidth]="true")
-							| Remove from friends
+							| Видалити з друзів
 						.remove-confirmation.px-2.d-flex.justify-content-center(*ngIf="removingFriend")
 							button.btn.btn-sm.btn-outline-success.flex-grow-1((click)="removingFriend = false; $event.stopPropagation()")
-								| Cancel
+								| Відмінити
 							button.btn.btn-sm.btn-outline-danger.flex-grow-1.ml-1((click)="removeFriend()")
-								| Confirm remove
+								| Підтвердити видалення
 
 					div(*ngIf="canInviteToSupporterServers")
 						h6.dropdown-header Supporter options
 						button.dropdown-item((click)="inviteToSupporterServers()")
 							fa-icon.mr-2.text-success([icon]="starIcon" [fixedWidth]="true")
-							| Invite to supporter servers
+							| Запросити на сервери підтримувачів
 							fa-icon.ml-1(*ngIf="isInvitedToSupporterServers" [icon]="checkIcon")
 
 			.btn-group.btn-group-shadow(*ngIf="canInviteToParty || canRemoveFromParty || canPromoteToLeader")
-				button.btn.btn-xs.btn-default(*ngIf="canInviteToParty" (click)="inviteToParty()" tooltip="Invite to party")
+				button.btn.btn-xs.btn-default(*ngIf="canInviteToParty" (click)="inviteToParty()" tooltip="Запросити на вечірку")
 					fa-icon([icon]="inviteIcon")
-				button.btn.btn-xs.btn-default(*ngIf="canRemoveFromParty" (click)="removeFromParty()" tooltip="Remove from party")
+				button.btn.btn-xs.btn-default(*ngIf="canRemoveFromParty" (click)="removeFromParty()" tooltip="Видалити з вечірки")
 					fa-icon([icon]="removeIcon")
-				button.btn.btn-xs.btn-default(*ngIf="canPromoteToLeader" (click)="promoteToLeader()" tooltip="Promote to leader")
+				button.btn.btn-xs.btn-default(*ngIf="canPromoteToLeader" (click)="promoteToLeader()" tooltip="Зробити лідером")
 					fa-icon([icon]="leaderIcon")
 			mod-box(*ngIf="isMod" [pony]="pony")
 
