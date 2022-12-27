@@ -23,8 +23,8 @@ ng-template(#tooltip)
 		.dropdown-menu(*dropdownMenu)
 			a.dropdown-item((click)="report()")
 				fa-icon.mr-1([icon]="flagIcon" [fixedWidth]="true")
-				| Report
-			h6.dropdown-header Other options
+				| Репорт
+			h6.dropdown-header Інші опції
 			a.dropdown-item(*ngFor="let a of check.actions" (click)="modAction(a.action)")
 				fa-icon.mr-1.text-danger([icon]="dangerIcon" [fixedWidth]="true")
 				| {{a.name}}
