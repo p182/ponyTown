@@ -1,15 +1,15 @@
 .party-list.unselectable(*ngIf="hasParty")
 	.dropdown(dropdown [hookToCanvas]="true")
 		a.game-button.party-list-options(dropdownToggle)
-			fa-icon(*ngIf="!isLeader" [icon]="cogIcon" [fixedWidth]="true" title="Party options")
-			fa-icon(*ngIf="isLeader" [icon]="leaderIcon" [fixedWidth]="true" title="You are party leader")
+			fa-icon(*ngIf="!isLeader" [icon]="cogIcon" [fixedWidth]="true" title="Налаштування вечірки")
+			fa-icon(*ngIf="isLeader" [icon]="leaderIcon" [fixedWidth]="true" title="Ви лідер вечірки")
 		.dropdown-menu(*dropdownMenu)
 			.dropdown-header(*ngIf="isLeader")
-				| You are party leader
+				| Ви лідер вечірки
 			a.dropdown-item((click)="leave()")
-				| Leave party
+				| Покинути вечірку
 			a.dropdown-item((click)="hidden = !hidden")
-				| {{hidden ? 'Show party' : 'Hide party'}}
+				| {{hidden ? 'Показати вечірку' : 'Приховати вечірку'}}
 
 	.party-list-items.pt-1(*ngIf="!hidden")
 		.game-button.party-list-ellipsis.mb-1(*ngIf="start" (click)="prev()")
