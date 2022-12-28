@@ -2631,7 +2631,7 @@ export function createMainMap(world: World): ServerMap {
 				const rand = Math.random();
 
 				if (rand < 0.1) {
-					sayToAll(entity, 'meow', 'meow', MessageType.System, {});
+					sayToAll(entity, 'няв', 'няв', MessageType.System, {});
 					delay = random(2, 4, true);
 				} else if (rand < 0.5) {
 					setEntityAnimation(entity, CatAnimation.Wag);
