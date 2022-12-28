@@ -1,8 +1,9 @@
 {
 	"title": "Pony Town Ukraine",
-	"twitterLink": "<LINK_TO_TWITTER>",
+	"twitterLink": "https://twitter.com/PonyTownUkraine",
+	"supporterLink": "https://war.ukraine.ua/donate/",
 	"contactEmail": "ffoxy2870@gmail.com",
-	"port": 33769,
+	"port": 8090,
 	"adminPort": 8091,
 	"host": "http://uapt.ddns.net:33769/",
 	"local": "localhost:8090",
@@ -31,8 +32,8 @@
 			"port": 8090,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
-			"name": "Main server",
-			"desc": "Testing server",
+			"name": "Основний сервер",
+			"desc": "Тестовий сервер",
 			"flags": {
 				"test": true
 			}
