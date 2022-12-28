@@ -1,4 +1,4 @@
-h1(focusTitle) Account settings
+h1(focusTitle) Налаштування облікового запису
 
 .row.text-large
 	.col-md-6
@@ -6,35 +6,35 @@ h1(focusTitle) Account settings
 			.form-group
 				h3 Account details
 			.form-group
-				label(for="account-id") Account ID
+				label(for="account-id") Ідентифікатор (ID) облікового запису
 				input#account-id.form-control([value]="account?.id" readonly)
 			.form-group
-				label(for="account-name") Account Name
+				label(for="account-name") Ім'я облікового запису
 				input#account-name.form-control(
 					type="text" name="name" [(ngModel)]="data.name" required [maxlength]="nameMaxLength")
-				small.form-text.text-warning This name will be visible to other players
+				small.form-text.text-warning Це ім'я буде видно иншим гравцям
 			.form-group
 				label(for="birthdate")
-					| Date of birth
-					fa-icon.ml-1.text-danger(*ngIf="showAccountAlert" [icon]="alertIcon" title="Missing field value")
+					| Дата народження
+					fa-icon.ml-1.text-danger(*ngIf="showAccountAlert" [icon]="alertIcon" title="не вказано")
 				date-picker([(date)]="data.birthdate")
 			.form-group(*ngIf="accountError")
 				.alert.alert-danger
 					| {{accountError}}
 			.form-group(*ngIf="accountSaved")
 				.alert.alert-success
-					| Changes saved
+					| Зміни збережено
 			.form-group.text-right
 				button.btn.btn-default(type="submit" [disabled]="!canSubmit" style="min-width: 100px;")
-					| Save
+					| Зберегти
 
 		div(style="margin-bottom: 100px;")
 			.form-group
-				h3 Connected social accounts
+				h3 Підключені облікові записи соціальних мереж
 
 			.form-group
 				p.text-muted.
-					If you remove social account, you won't be able to use it to sign-in to the game anymore.
+					Якщо ти видалиш обліковий запис соціальної мережі, ти більше не зможеш використовувати його для входу до гри.
 
 			.form-group
 				ul.list-unstyled
@@ -43,18 +43,18 @@ h1(focusTitle) Account settings
 							fa-icon.mr-1([icon]="icon(s.icon)" [fixedWidth]="true")
 							b #[span.sr-only {{s.icon}}] {{s.name}}
 						button.btn.btn-sm.btn-danger(*ngIf="sites.length > 1" (click)="removeSite(s)" [disabled]="removingSite")
-							| remove
+							| видалити
 
 			.form-group
 				p.text-danger.
-					Please do NOT connect any social sites that #[b do not belong to you!]
-					Connecting social sites belonging to other people may result in unexpected account merge
-					and loss of one or both accounts.
+					Будь ласка, НЕ підключайте жодні облікові записи, які #[b не належать Вам!]
+					Підключення облікових записів инших людей може призвести до їх об'єдання
+					і втрати одного чи декількох облікових записів.
 				p.text-danger.
-					Please contact our support email if you accidentally merge your account with someone else.
+					Будь ласка, зв'яжіться з адміністрацією, якщо Ви випадково об'єднали облікові записи.
 				.dropdown(dropdown)
 					button.btn.btn-default.dropdown-toggle(dropdownToggle)
-						| connect another social site to this account
+						| підключити инший сайт до цього облікового запису
 					.dropdown-menu(*dropdownMenu)
 						button.dropdown-item(*ngFor="let p of providers" (click)="connectSite(p)")
 							fa-icon.mr-1([icon]="icon(p.id)" [fixedWidth]="true")
@@ -70,11 +70,11 @@ h1(focusTitle) Account settings
 
 			.form-group(*ngIf="mergedAccount")
 				.alert.alert-success
-					| Account connected successfully
+					| Обліковий запис підключено успішно
 
 			.form-group(*ngIf="removedAccount")
 				.alert.alert-success
-					| Account removed successfully
+					| Обліковий запис відключено успішно
 
 	.col-md-6
 		div(style="margin-bottom: 100px;")
@@ -82,22 +82,22 @@ h1(focusTitle) Account settings
 				.form-group
 					h3
 						fa-icon.mr-2([icon]="starIcon" [ngClass]="supporterClass")
-						| Thank you for your support
+						| Дякуємо за підтримку!
 
 				supporter-pony.float-right(#pony (mouseenter)="pony.excite()" (mouseleave)="pony.reset()")
 
 				.form-group
-					p Your reward tier: #[b {{supporterTitle}}]
-					p Your rewards include:
+					p Ваш рівень: #[b {{supporterTitle}}]
+					p У якості нагороди, Ви можете:
 					ul
 						li(*ngFor="let r of supporterRewards")
 							| {{r}}
 
 				p(*ngIf="supporter > 0")
-					| Use <code>/ss hello</code> command to use supporter chat color.
+					| Використовувати команду <code>/ss hello</code> для зміни кольору Ваших повідомлень.
 
 				p(*ngIf="supporter > 1")
-					| Use <code>/s1 hello</code> and <code>/s2 hello</code> commands to use lower tier supporter chat colors.
+					| Використовувати команди <code>/s1 hello</code> та <code>/s2 hello</code> для використання кольорів инших рівнів у Ваших повідомленнях.
 
 			.clearfix(*ngIf="showSupporterInfo")
 				.form-group
@@ -117,18 +117,18 @@ h1(focusTitle) Account settings
 				.float-right
 					span.text-muted Page: {{page + 1}}
 					button.btn.btn-sm.btn-outline-secondary.ml-2((click)="page = page - 1; pageChanged()" [disabled]="!hides || page === 0")
-						| Previous page
+						| Попередня сторінка
 					button.btn.btn-sm.btn-outline-secondary.ml-1((click)="page = page + 1; pageChanged()" [disabled]="!hides || hides.length < hidesPerPage")
-						| Next page
-				h3 Hidden players
+						| Наступна сторінка
+				h3 Приховані гравці
 
 			div(*ngIf="!hides")
 				.text-muted.text-center.p-4 loading...
 
 			ul.list-unstyled(*ngIf="hides")
-				.text-muted.text-center.p-4(*ngIf="!hides.length") no hidden players
+				.text-muted.text-center.p-4(*ngIf="!hides.length") нема прихованих гравців
 				li.item-connected-account.d-flex.align-items-center(*ngFor="let h of hides")
 					b.flex-grow-1 {{h.name}}
 					span.text-muted.mr-2 hidden {{h.date}}
 					button.btn.btn-sm.btn-danger((click)="unhidePlayer(h)")
-						| unhide player
+						| видалити гравця зі списку прихованих
