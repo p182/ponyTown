@@ -20,25 +20,25 @@
 
 				.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 					.dropdown-item.d-flex.align-items-center
-						.flex-grow-1.mr-3 Status:
+						.flex-grow-1.mr-3 Стан:
 						.dropdown(dropdown style="width: 65px;")
 							button.online-offline.no-highlight.p-0.dropdown-toggle.no-arrow(dropdownToggle)
-								span.text-success(*ngIf="!hidden") online
-								span.text-muted(*ngIf="hidden") offline
+								span.text-success(*ngIf="!hidden") у мережі
+								span.text-muted(*ngIf="hidden") невидимий
 								fa-icon.ml-2([icon]="cogIcon")
 							.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 								button.dropdown-item((click)="setStatus('online')")
 									fa-icon.mr-2.text-success([icon]="statusIcon" size="xs" [fixedWidth]="true")
-									| Онлайн
+									| у мережі
 								button.dropdown-item((click)="setStatus('invisible')")
 									fa-icon.mr-2.text-muted([icon]="statusIcon" size="xs" [fixedWidth]="true")
-									| Показувати як оффлайн
+									| невидимий
 					a.dropdown-item(routerLink="/account" (click)="dropdown.close()" tabindex)
-						| Налаштування аккаунту
+						| Налаштування облікового запису
 						fa-icon.text-danger.ml-1(*ngIf="showAccountAlert" [icon]="alertIcon" aria-hidden="true")
 					.dropdown-divider
 					button.dropdown-item((click)="signOut.emit(); dropdown.close()")
-						| Вийти з аккаунту
+						| Вийти з облікового запису
 
 		.text-muted(*ngIf="loading" style="font-size: 20px; padding: 10px 20px;")
 			fa-icon([icon]="spinnerIcon" [fixedWidth]="true" [spin]="true")
