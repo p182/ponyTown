@@ -3,7 +3,7 @@
 		label.text-muted.color-label {{label}}
 		check-box.lock-box(
 			*ngIf="hasLock && !nonLockable" [(checked)]="locked" (checkedChange)="onLockedChange($event)"
-			[icon]="lockIcon" label="Автоматичний колір"
+			[icon]="lockIcon" label="Автоматичний колір")
 	.col-8
 		color-picker(
 			[(color)]="fill" (colorChange)="onFillChange($event)" [isDisabled]="locked" [label]="label || 'Color'"
