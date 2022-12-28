@@ -1,7 +1,7 @@
 import { Season, Holiday } from './interfaces';
 
-export const SEASON: Season = Season.Summer;
-export const HOLIDAY: Holiday = Holiday.None;
+export const SEASON: Season = Season.Winter;
+export const HOLIDAY: Holiday = Holiday.Christmas;
 
 export const SECOND = 1000;
 export const MINUTE = SECOND * 60;
@@ -52,7 +52,7 @@ export const CM_SIZE = 5;
 export const MIN_SCALE = 1;
 export const MAX_SCALE = 4;
 
-export const SAY_MAX_LENGTH = 64;
+export const SAY_MAX_LENGTH = 256;
 export const PLAYER_NAME_MAX_LENGTH = 20;
 export const PLAYER_DESC_MAX_LENGTH = 40;
 export const ACCOUNT_NAME_MIN_LENGTH = 1;
