@@ -17,7 +17,7 @@ ng-template(#actionsModal)
 				span.clock-display {{time}}
 			.dropdown-item.d-flex
 				fa-icon.mr-2([icon]="searchIcon" [fixedWidth]="true")
-				.flex-grow-1 Scale (x{{scale}})
+				.flex-grow-1 Масштаб (x{{scale}})
 				button.btn.btn-xs.btn-outline-secondary((click)="zoomOut()" aria-label="Віддалити")
 					fa-icon([icon]="minusIcon" [fixedWidth]="true")
 				button.btn.btn-xs.btn-outline-secondary.ml-2((click)="zoomIn()" aria-label="Приблизити")
@@ -29,7 +29,7 @@ ng-template(#actionsModal)
 				.text-muted.text-right(*ngIf="track" style="margin-top: -5px;")
 					small
 						| грає: #[b {{track}}]
-						a.text-muted.ml-1((click)="nextTrack()" title="Наступний трек")
+						a.text-muted.ml-1((click)="nextTrack()" title="Наступна мелодія")
 							fa-icon([icon]="forwardIcon" [fixedWidth]="true")
 			a.dropdown-item((click)="unhideAllHiddenPlayers()")
 				fa-icon.mr-2([icon]="emptyIcon" [fixedWidth]="true")
