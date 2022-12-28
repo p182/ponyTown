@@ -1,5 +1,5 @@
 .dropdown(#dropdown="ag-dropdown" dropdown (isOpenChange)="toggleSwapDropdown()" [hookToCanvas]="true" style="padding-bottom: 5px")
-	button.game-button.dropdown-toggle.no-arrow(dropdownToggle title="Swap")
+	button.game-button.dropdown-toggle.no-arrow(dropdownToggle title="Змінити персонажа")
 		fa-icon([icon]="swapIcon" [fixedWidth]="true")
 		fa-icon.timer-icon([icon]="timerIcon" [style.display]="timeout ? 'block' : 'none'")
 	.dropdown-menu.dropdown-menu-right(*dropdownMenu)
