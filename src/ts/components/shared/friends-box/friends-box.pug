@@ -6,7 +6,7 @@
 	.friends-dropdown-menu.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 		.friends-list-header.list-unstyled
 			.dropdown-header.d-flex
-				.flex-grow-1 Friends
+				.flex-grow-1 Друзі
 				.dropdown(dropdown)
 					button.dropdown-toggle.no-arrow(dropdownToggle)
 						span.text-success(*ngIf="!hidden") online
@@ -15,10 +15,10 @@
 					.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 						button.dropdown-item((click)="setStatus('online')")
 							fa-icon.mr-2.text-success([icon]="statusIcon" size="xs" [fixedWidth]="true")
-							| Online
+							| У мережі
 						button.dropdown-item((click)="setStatus('invisible')")
 							fa-icon.mr-2.text-muted([icon]="statusIcon" size="xs" [fixedWidth]="true")
-							| Show as Offline
+							| Невидимий
 		.friends-list(*ngIf="friends && friends.length; else noFriends")
 			//- [itemSize]="42")
 			.friends-item(
@@ -34,18 +34,18 @@
 					.flex-grow-1.friends-item-details
 						.friends-item-name {{f.actualName}}&#160;
 						.friends-item-more
-							.text-success.float-right.ml-2(*ngIf="f.online") online
+							.text-success.float-right.ml-2(*ngIf="f.online") в мережі
 							.text-muted.float-right.ml-2(*ngIf="!f.online") offline
 							.text-muted.friends-item-account {{f.accountName}}
 				.friends-item-delete.d-flex.px-2.py-1(*ngIf="removing === f")
 					button.btn.btn-sm.btn-outline-success.flex-grow-1((click)="cancelRemove(); $event.stopPropagation()")
-						| Відмінити
+						| Скасувати
 					button.btn.btn-sm.btn-outline-danger.flex-grow-1.ml-2((click)="confirmRemove(); $event.stopPropagation()")
 						| Підтвердити видалення
 				//- span.badge.badge-none.friends-item-server PG
 				.options-dropdown-menu.dropdown-menu(*dropdownMenu)
 					button.dropdown-item((click)="sendMessageTo(f)" [disabled]="!f.online") Відправити особисте повідомлення
-					button.dropdown-item((click)="inviteToParty(f)" [disabled]="!f.online") Запросити на вечірку
+					button.dropdown-item((click)="inviteToParty(f)" [disabled]="!f.online") Запросити до паті
 					.dropdown-divider
 					button.dropdown-item((click)="remove(f)") Видалити
 		ng-template(#noFriends)
