@@ -3,7 +3,7 @@
 	"twitterLink": "https://twitter.com/PonyTownUkraine",
 	"supporterLink": "https://war.ukraine.ua/donate/",
 	"contactEmail": "ffoxy2870@gmail.com",
-	"port": 8090,
+	"port": 8094,
 	"adminPort": 8091,
 	"host": "http://uapt.ddns.net:33769/",
 	"local": "localhost:8090",
@@ -29,7 +29,7 @@
 	"servers": [
 		{
 			"id": "test",
-			"port": 8090,
+			"port": 8094,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
 			"name": "Основний сервер",
