@@ -1,46 +1,46 @@
-h1(focusTitle) Help
+h1(focusTitle) Допомога
 
 .row.text-large
 	.col-md-7
 	
 		section
-			h2 Contact
-			p For all inquiries please send an email to #[b {{contactEmail}}]
+			h2 Контакти
+			p По будь-яким питанням, будь ласка, звертайтеся на пошту #[b {{contactEmail}}]
 
 		section
-			h2 Controls
+			h2 Керування
 
 			ul.spaced-list
 				li
-					b movement
+					b пересування
 					.pl-2.mb-1.
 						Use
-						#[kbd-key(title="up arrow key"): fa-icon([icon]="upIcon")]
-						#[kbd-key(title="left arrow key"): fa-icon([icon]="leftIcon")]
-						#[kbd-key(title="down arrow key"): fa-icon([icon]="downIcon")]
-						#[kbd-key(title="right arrow key"): fa-icon([icon]="rightIcon")]
+						#[kbd-key(title="стрілка вгору"): fa-icon([icon]="upIcon")]
+						#[kbd-key(title="стрілка вліво"): fa-icon([icon]="leftIcon")]
+						#[kbd-key(title="стрілка вниз"): fa-icon([icon]="downIcon")]
+						#[kbd-key(title="стрілка вправо"): fa-icon([icon]="rightIcon")]
 						,
-						#[kbd-key(title="W key") W]
-						#[kbd-key(title="A key") A]
-						#[kbd-key(title="S key") S]
-						#[kbd-key(title="D key") D]
+						#[kbd-key(title="W клавіша") W]
+						#[kbd-key(title="A клавіша") A]
+						#[kbd-key(title="S клавіша") S]
+						#[kbd-key(title="D клавіша") D]
 						,
 						#[kbd-key.gamepad.gamepad-stick(title="Gamepad left stick") L#[.t]#[.l]#[.r]#[.b]]
-						or #[b touch and drag] to move.
+						або #[b touch and drag] щоб рухатись
 						#[br]
-						Hold #[kbd-key(title="shift key") shift] to walk slowly.
+						Утримуйте #[kbd-key(title="shift key") shift] щоб йти повільно.
 				li
-					b chat
+					b чат
 					.pl-2.mb-1.
-						Use #[kbd-key(title="enter key") enter]
-						or #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
-						to open chat box and send a message.
+						Використовуйте #[kbd-key(title="enter key") enter]
+						або #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
+						щоб відкрити вікно чату та надіслати повідомлення.
 						#[br]
-						Use #[kbd-key(title="escape key") esc]
-						or #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
-						to cancel the message.
+						Використовуйте #[kbd-key(title="escape key") esc]
+						або #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
+						щоб відмінити надсилання повідомлення
 				li.
-					hold #[kbd-key(title="shift key") shift] to be able to click on ground and items behind other players
+					утримуйте #[kbd-key(title="shift key") shift] щоб мати можливість натискати на землю та предмети позаду інших гравців
 				li.
 					#[b boop] - 
 					#[kbd-key(title="B key") B] ,
@@ -86,53 +86,53 @@ h1(focusTitle) Help
 						| #[kbd-key(title="Control key") ctrl] + #[kbd-key(title="command key") ⌘] + #[kbd-key(title="F key") F]
 
 		section
-			h2 Expressions
-			p To change your pony face expression in game:
+			h2 Вирази мордашок
+			p Щоб змінити вираз мордашки поні в грі:
 
 			ul.spaced-list
-				li type any emote in the chat <code>:)</code>
-				li end your message with an emote <code>Hey there :D</code>
-				li change expression <b>without saying</b> anything, by writing the emote as a chat command <code>/:D</code>
-				li make the expression permanent using <code>/e :(</code> command and use <code>/e</code> to get your default expression back
-				li use both horizontal and vertical emotes: <code>&gt;:(</code> <code>D:</code> <code>O_o</code> <code>^c^</code> <code>6.9</code>
-				li use emotes with blushies like <code>O//O</code> or <code>O//v//O</code>
+				li введіть будь-яку емоцію в чаті <code>:)</code>
+				li закінчіть своє повідомлення емоцією <code>Hey there :D</code>
+				li змінити вираз <b>не кажучи</b> нічого, написавши емоцію як команду чату <code>/:D</code>
+				li зробити вираз постійним <code>/e :(</code> і використовуйте <code>/e</code> щоб повернути вираз за умовчанням
+				li використовуйте як горизонтальні, так і вертикальні емоції: <code>&gt;:(</code> <code>D:</code> <code>O_o</code> <code>^c^</code> <code>6.9</code>
+				li використовуйте емоції з рум’янцями, наприклад <code>O//O</code> або <code>O//v//O</code>
 
 		section
-			h2 Chat commands
-			p Following chat commands are available in the game chat:
+			h2 Команди для чату
+			p У чаті гри доступні такі команди:
 
 			ul.spaced-list
-				li <code>/help</code>, <code>/h</code> or <code>/?</code> - list all available commands
+				li <code>/help</code>, <code>/h</code> or <code>/?</code> - список усіх доступних команд
 				li
-					| <code>/roll</code>, <code>/rand</code> or <code>/random</code> - roll a random number between 1 and 100
+					| <code>/roll</code>, <code>/rand</code> or <code>/random</code> - кинути випадкове число від 1 до 100
 					ul.spaced-list
-						li use <code>/roll 10</code> to roll a number between 1 and 10
-						li use <code>/roll 5-10</code> to roll a number between 5 and 10
-				li <code>/say</code> or <code>/s</code> - say in public chat (can be used to switch from party chat)
-				li <code>/party</code> or <code>/p</code> - say in party chat
-				li <code>/think</code> or <code>/t</code> - say in thinking bubble
-				li <code>/whisper &lt;name&gt;</code> or <code>/w &lt;name&gt;</code> - whisper to player (you can also click on player name in chatlog)
-				li <code>/reply</code> or <code>/r</code> - reply to last incoming whisper
-				li <code>/e</code> - set a permanent expression like this <code>/e :)</code>
-				li <code>/unstuck</code> - resets position to spawn point and leaves the game
-				li <code>/leave</code> - leaves the game
-				li <code>/turn</code> - turn head around
-				li <code>/magic</code> - toggle magic light
-				li <code>/drop</code> - drop held item
-				li <code>/droptoy</code> - drop held toy
-				li <code>/open</code> - open gift
-				li <code>/toys</code> - show number of collected toys
-				li <code>/boop</code> or <code>/)</code> - do a boop. Can also be used with expression: <code>/) XD</code>
-				li <code>/lie</code> - lie down or sit up
-				li <code>/sit</code> - sit down or stand up
-				li <code>/stand</code> - stand up or land
-				li <code>/fly</code> - fly up or land
-				li <code>/sleep</code> or <code>/zzz</code> - fall asleep. Can also be used with some expressions: <code>/zzz :)</code>
-				li <code>/love</code> or <code>/&lt;3</code> - show floating hearts. Can also be used with expressions: <code>/love :)</code>
-				li <code>/cry</code> - start crying. Can also be used with expressions: <code>/cry :D</code>
-				li <code>/blush</code> - start blushing. Can also be used with expressions: <code>/blush :D</code>
+						li використовуйте <code>/roll 10</code> щоб кинути число від 1 до 10
+						li використовуйте <code>/roll 5-10</code> щоб кинути число від 5 до 10
+				li <code>/say</code> or <code>/s</code> - говорити в публічний чат (можна використовувати для переходу з паті-чату)
+				li <code>/party</code> or <code>/p</code> - говорити в паті-чат
+				li <code>/think</code> or <code>/t</code> - думати
+				li <code>/whisper &lt;name&gt;</code> or <code>/w &lt;name&gt;</code> - прошепотіти до гравця (ви також можете натиснути на ім'я гравця в журналі чату)
+				li <code>/reply</code> or <code>/r</code> - відповісти на останній вхідний шепіт
+				li <code>/e</code> - установити постійний вираз мордашки <code>/e :)</code>
+				li <code>/unstuck</code> - скинути позицію до точки появи та покинути гру
+				li <code>/leave</code> - покинути гру
+				li <code>/turn</code> - повернути голову
+				li <code>/magic</code> - перемкнути магічне сяйво
+				li <code>/drop</code> - викинути предмет
+				li <code>/droptoy</code> - скинути іграшку
+				li <code>/open</code> - розпакувати подарунок
+				li <code>/toys</code> - показати кількість зібраних іграшок
+				li <code>/boop</code> or <code>/)</code> - зробити тиць. Можна також використовувати: <code>/) XD</code>
+				li <code>/lie</code> - лягти або сісти
+				li <code>/sit</code> - сісти або встати
+				li <code>/stand</code> - встати або приземлитися
+				li <code>/fly</code> - взлетіти або приземлитися
+				li <code>/sleep</code> or <code>/zzz</code> - заснути. Можна також використовувати: <code>/zzz :)</code>
+				li <code>/love</code> or <code>/&lt;3</code> - пускає серця над головою. Можна також використовувати: <code>/love :)</code>
+				li <code>/cry</code> - заплакати. Можна також використовувати: <code>/cry :D</code>
+				li <code>/blush</code> - червоніти. Можна також використовувати: <code>/blush :D</code>
 				li.
-					Following expression commands are available:
+					Доступні такі команди виразів:
 					<code>/smile</code> <code>/happy</code>
 					<code>/frown</code>
 					<code>/angry</code>
@@ -142,30 +142,30 @@ h1(focusTitle) Help
 					<code>/laugh</code> <code>/haha</code> <code>/хаха</code> <code>/jaja</code> <code>/lol</code>
 					<code>/sneeze</code> <code>/achoo</code>
 				li
-					strong House saving
+					strong Збереження дому
 					ul
-						li <code>/savehouse</code> - saves current house setup (single save state for entire account)
-						li <code>/loadhouse</code> - loads saved house setup (need to be alone in the house or a party leader)
-						li <code>/resethouse</code> - resets house setup to original state (need to be alone in the house or a party leader)
-						li <code>/lockhouse</code> - prevents other people from changing the house (need to be alone in the house or a party leader)
-						li <code>/unlockhouse</code> - enables editing by other people (need to be alone in the house or a party leader)
-						li <code>/removetoolbox</code> - removes toolbox from the house (need to be alone in the house or a party leader)
-						li <code>/restoretoolbox</code> - restores toolbox to the house (need to be alone in the house or a party leader)
+						li <code>/savehouse</code> - зберігає поточні налаштування дому (єдиний стан збереження для всього акаунту)
+						li <code>/loadhouse</code> - завантажує збережені налаштування дому (треба бути наодинці в домі або лідером парті)
+						li <code>/resethouse</code> - скидає налаштування дому до початкового стану (треба бути наодинці в домі або лідером парті)
+						li <code>/lockhouse</code> - забороняє іншим людям змінити дім (треба бути наодинці в домі або лідером парті)
+						li <code>/unlockhouse</code> - дозволяє редагувати дім іншим людям (треба бути наодинці в домі або лідером парті)
+						li <code>/removetoolbox</code> - прибирає ящик з інструментами з дому (треба бути наодинці в домі або лідером парті)
+						li <code>/restoretoolbox</code> - повертає ящик для інструментів у дім (треба бути наодинці в домі або лідером парті)
 
 		section
-			h4 Supporter-only commands
+			h4 Команди, що можуть використовувати лише меценати
 
 			ul.spaced-list
-				li <code>/ss</code> - supporter colored text
-				li <code>/s1</code> - tier 1 supporter colored text (for use by higher tier supporters)
-				li <code>/s2</code> - tier 2 supporter colored text (for use by higher tier supporters)
-				li <code>/s3</code> - tier 3 supporter colored text (for use by higher tier supporters)
+				li <code>/ss</code> - кольоровий текст мецената
+				li <code>/s1</code> - кольоровий текст мецената 1 рівня (для використання меценатами вищого рівня)
+				li <code>/s2</code> - кольоровий текст мецената 2 рівня (для використання меценатами вищого рівня)
+				li <code>/s3</code> - кольоровий текст мецената 3 рівня (для використання меценатами вищого рівня)
 
 		section
-			h2 Chat emojis
+			h2 Емодзі чату
 			p.
-				You can use emojis in chat by typing their name surrounded by colons #[samp :apple:]
-				or by using unicode characters assigned to them. Available emotes:
+				Ви можете використовувати емодзі в чаті, ввівши їх назву, оточене двокрапкою #[samp :apple:]
+				або за допомогою Unicode. Доступні емоції:
 
 			.emotes
 				ul
@@ -176,113 +176,113 @@ h1(focusTitle) Help
 
 	.col-md-5
 		section
-			h2 Common issues
+			h2 Загальні проблеми
 
 			section
-				h4 Keys stuck when using iPad keyboard
+				h4 Клавіші зависли під час використання клавіатури iPad
 				p.text-fading.
-					Due to a bug on iOS system some keys will get stuck occasionally,
-					when the key gets stuck just press it again to unstuck it.
+					Через помилку в системі iOS деякі клавіші час від часу зависають,
+					коли клавіша зависне, то просто натисніть на неї ще раз.
 				p.text-fading.
-					We recommend you use arrow keys for movement as those keys do not get stuck.
+					Ми рекомендуємо вам використовувати клавіші зі стрілками для пересування, оскільки вони не зависають.
 
 			section
-				h4 Other players can't see my messages
+				h4 Інші гравці не бачать мої повідомлення
 				p.text-fading.
-					This happens when you get temporarily muted for breaking the rules.
-					This typically takes from a few hours to a few days depending on severity and frequency of the violation.
+					Це трапляється, якщо вас тимчасово заглушили за порушення правил
+					Зазвичай це займає від кількох годин до кількох днів залежно від серйозності та частоти порушення.
 				p.text-fading.
-					Avoid breaking the rules to prevent this from happening in the future.
+					Уникайте порушення правил, щоб цього не сталося в майбутньому.
 
 			section
-				h4 Page not loading or stuck updating
+				h4 Сторінка не завантажується або не оновлюється
 				p.text-fading.
-					Try reloading and clearing your browser data.
-					If that doesn't help you should check if any of the extensions are causing the issue,
-					you can check that by using incognito mode of your browser.
+					Спробуйте перезавантажити та очистити дані браузера.
+					Якщо це не допомогло, перевірте, чи не спричиняє якесь із розширень проблему,
+					Ви можете перевірити це, скориставшись режимом анонімного перегляду свого браузера.
 
 			section
-				h4 Mobile keyboard is covering the chat box when the game is installed on mobile device
+				h4 Мобільна клавіатура закриває вікно чату, коли гру встановлено на мобільному пристрої
 				p.text-fading.
-					Try re-installing the game.
+					Спробуйте перевстановити гру.
 
 			section
-				h4 Screen black or blinking after joining the game
+				h4 Екран чорний або блимає після приєднання до гри
 				p.text-fading.
-					This is usually caused by outdated graphics drivers or browser.
-					Check if your browser is #[a(href="https://updatemybrowser.org/") up to date] and check
-					if there are new updates for your graphics card or device.
+					TЗазвичай це спричинено застарілими графічними драйверами або браузером.
+					Перевірте, чи є ваш браузер в #[a(href="https://updatemybrowser.org/") up to date] і перевірте
+					ч є нові оновлення для вашої відеокарти або пристрою.
 				p.text-fading.
-					If your browser is already up to date, try installing different browser.
-					We recommend using #[a(href="https://www.google.com/chrome/") Chrome]
-					or #[a(href="https://www.mozilla.org/en-US/firefox/new/") Firefox].
+					Якщо ваш браузер уже оновлений, спробуйте встановити інший браузер.
+					Ми рекомендуємо користуватися #[a(href="https://www.google.com/chrome/") Chrome]
+					або #[a(href="https://www.mozilla.org/en-US/firefox/new/") Firefox].
 				p.text-fading.
-					Some older devices don't support necessary functions and will never work with the game.
+					Деякі старі пристрої не підтримують необхідні функції та ніколи не будуть сумісні з грою.
 
 			section
-				h4 Graphical glitches, disappearing objects
+				h4 Графічні збої, зникаючі об'єкти
 				p.text-fading.
-					This can be caused by outdated drivers or not enough graphics memory,
-					see previous points for possible solutions.
+					Це може бути спричинено застарілими драйверами або недостатньою кількістю графічної пам’яті,
+					подивіться попередні пункти для можливих рішень.
 
 			section
-				h4 Cannot connect to the game
+				h4 Не вдається підключитися до гри
 				p.text-fading.
-					This can be caused by outdated browser or network issues.
-					Try updating your browser or installing a different one, see previous points for more info.
+					Це може бути викликано застарілим браузером або проблемами мережі.
+					Спробуйте оновити ваш браузер або встановити інший, подивіться попередні пункти для отримання додаткової інформації.
 				p.text-fading.
-					Connection issue might also be a result of our DDOS protection service,
-					reloading the page and trying again should solve the issue in that case.
+					Проблема з підключенням також може бути спричинена дією нашої служби захисту від DDOS-атак,
+					перезавантаження сторінки та повторна спроба повинні вирішити проблему в цьому випадку.
 
 			section
-				h4 Game slow or stuttering
+				h4 Гра повільна або "заїкається"
 				p.text-fading.
-					This can be caused by outdated browser or some browser extensions.
+					Це може бути спричинено застарілим браузером або деякими розширеннями браузера.
 				p.text-fading.
-					Adblock extension on #[b Chrome] browser is known to cause stuttering in the game,
-					make sure to disable it to avoid any issues. Other similar extensions may also cause
-					slowdowns and stuttering in the game.
+					Відомо, що розширення Adblock у браузері #[b Chrome] виклакає "заїкання" в грі,
+					обов’язково вимкніть його, щоб уникнути проблем. Інші подібні розширення також можуть викликати
+					уповільнення і "заїкання" в грі.
 				p.text-fading.
-					Firefox is known to have issues with stuttering, we recommend
-					using #[b Chrome] or #[b Edge] browsers for best performance.
+					Відомо, що Firefox має проблеми із затримкою, ми рекомендуємо
+					користуватися #[b Chrome] або #[b Edge] браузерами для найкращої продуктивності.
 
 			section
-				h4 Why can't I create multiple accounts
+				h4 Чому я не можу створити кілька облікових записів?
 				p.text-fading.
-					This restriction is in-place to protect you and the game itself from other players in the game.
+					Це обмеження діє, щоб захистити вас і саму гру від інших гравців у грі.
 				p.text-fading.
-					Allowing multiple accounts for single person invalidates ignore and hide systems that 
-					allow you to ignore and hide other players that are harassing or bothering you in any way.
-					It also invalidates mute and ban system that is in-place to protect you from players breaking
-					the game rules to bother or harass others.
+					Дозвіл мати кілька облікових записів для однієї особи робить недійсними системи ігнорування та приховування,
+					які дозволяють ігнорувати та приховувати інших гравців, які будь-яким чином переслідують або турбують вас.
+					Це також робить недійсною систему заглушень та блокувань, яка захищає вас від гравців,
+					які порушують правила гри, щоб турбувати або переслідувати інших.
 				p.text-fading.
-					Allowing use of multiple accounts at the same time would dramatically increase load on the
-					server and potentially make the game unplayable and laggy for everyone else. Increased amount
-					of player characters in the game would also reduce rendering performance on slower computers,
-					especially on mobile devices to the point when a lot of players wouldn't be able to play the
-					game anymore.
+					Дозвіл використання кількох облікових записів одночасно значно збільшить навантаження на
+					сервер і потенційно зробить гру непридатною для гри та з затримкою для всіх інших. Збільшення кількості
+					персонажів гравців у грі також зменшить продуктивність візуалізації на слабих комп'ютерах,
+					особливо на мобільних пристроях, до такого рівня, коли багато гравців більше не зможуть
+					грати в гру.
 				p.text-fading.
-					Use of multiple accounts also invalidates any limits (like character limit) that we put on the accounts.
-					The limits are in-place to prevent large amount of players that we have at the moment from
-					exhausting our limited server resources.
+					Використання кількох облікових записів також робить недійсними будь-які обмеження (наприклад, обмеження кількості символів), 
+					які ми накладаємо на облікові записи.
+					Обмеження діють, щоб запобігти вичерпанню обмежених ресурсів сервера великою кількістю гравців,
+					які є у нас на даний момент.
 
 			section
-				h4 Why can't I modify the game with hacks or scripts
+				h4 Чому я не можу модифікувати гру за допомогою гаків або скриптів
 				p.text-fading.
-					This restriction is in-place to protect you and the game itself from other players in the game.
+					Це обмеження діє, щоб захистити вас і саму гру від інших гравців у грі.
 				p.text-fading.
-					Almost all third-party scripts used in-game were used to harass other players. Even when the
-					creator of the script did not intend it to be used in that way, the limited knowledge of the
-					game and security issues can lead to unintentionally creating a script that's harmful to other
-					players in the game.
+					Майже всі скрипти сторонніх розробників, які використовувалися в грі, використовувалися для переслідування інших гравців.
+					Навіть коли творець скрипту не мав наміру використовувати його таким чином, обмежені знання про гру та проблеми безпеки
+					можуть призвести до ненавмисного створення скрипту, який буде шкідливим для інших гравців у грі.
 				p.text-fading.
-					Even in the case where the script doesn't seem to impact other players, it often causes performance
-					issues for the server or other players. That forces us to work on putting more limits on player
-					interactions and takes development time away from adding new features to the game.
+					Навіть у випадку, коли скрипт, здається, не впливає на інших гравців, він часто спричиняє проблеми з
+					продуктивністю для сервера або для іншого гравця. Це змушує нас працювати над встановленням додаткових
+					обмежень на взаємодію гравців і забирає час на розробку від додавання нових функцій у гру.
 				p.text-fading.
-					Adding more limits on player interactions also makes the game less responsive and more limiting
-					for everyone, not only the players using scripts. This is especially bad for players on bad
-					internet connections where network issues can be misinterpreted as use of scripts or spam.
+					Додавання додаткових обмежень на взаємодію гравців також робить гру менш чутливою та більш обмеженою
+					для всіх, а не лише для гравців, які використовують скрипти. Це особливо погано для гравців з поганим
+					інтернет-з'єднанням, оскільки проблеми з мережою можуть бути неправильно інтерпретовані, як використання скриптів або спаму.
 
 .text-center.text-muted.mt-3
 	.tinyface
