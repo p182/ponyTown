@@ -1,12 +1,12 @@
-h1(focusTitle) About
+h1(focusTitle) Інформація
 
 .row.text-large
 	.col-lg-7
 		p.lead.
-			A game of ponies building a town
+			Українські гравці об'єдналися й створили спільноту
 
-		h2 Contact
-		p For all inquiries please send an email to #[b {{contactEmail}}]
+		h2 Контакти
+		p З будь-яких питань, будь ласка, звертайтеся на пошту #[b {{contactEmail}}]
 
 		//- div
 			hr
@@ -35,26 +35,26 @@ h1(focusTitle) About
 			hr
 
 		div(*ngIf="patreonLink")
-			h2 Support {{title}}
+			h2 Підтримати {{title}}
 
 			p.
-				If you'd like to help keep {{title}} running, and support future development of the project,
-				please consider #[a([href]="patreonLink" target="_blank" rel="noopener noreferrer") supporting us on Patreon].
+				Якщо ви бажаєте допомогти {{title}} функціювати та підтримати майбутній розвиток проєкту,
+				то, будь ласка, краще зробіть це тут #[a([href]="patreonLink" target="_blank" rel="noopener noreferrer") supporting us on Patreon].
 
 			support-button.d-block.mx-auto.my-4(style="max-width: 400px;")
 
 			p.
-				Patreon supporter rewards include the following:
+				Нагороди для меценатів включають:
 			ul
 				li(*ngFor="let r of rewards")
 					| {{r}}
 			p.
 				Note that in order to receive any patreon rewards you need to connect your Patreon to your {{title}} account.
 
-		h2 Technology
+		h2 Технічна сторона
 
 		p.
-			The entire game is written in #[a(href="http://www.typescriptlang.org/") TypeScript],
+			Уся гра написана мовою #[a(href="http://www.typescriptlang.org/") TypeScript],
 			a typed superset of JavaScript that compiles to plain JavaScript.
 			Server side code is running on #[a(href="https://nodejs.org/en/") Node.js]
 			server with WebSockets for communication.
@@ -62,7 +62,7 @@ h1(focusTitle) About
 			framework and the game itself is using WebGL for rendering graphics.
 
 		div(*ngIf="credits.length")
-			h2 The Team
+			h2 Команда
 
 			.mb-4
 				.row.team-members
@@ -79,7 +79,7 @@ h1(focusTitle) About
 				//- small.text-muted
 					em avatars by #[a.text-muted(href="link") Name]
 
-		h2 Contributors
+		h2 Допомогали
 
 		div(*ngFor="let g of contributors")
 			h3 {{g.group}}
@@ -91,7 +91,7 @@ h1(focusTitle) About
 
 	.col-lg-5
 
-		h2 Changelog
+		h2 Журнал змін
 
 		div(*ngFor="let v of changelog")
 			h4 {{v.version}}
