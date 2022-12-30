@@ -1,12 +1,12 @@
 .form-group(*ngIf="hasTooManyPonies")
 	.alert.alert-warning(role="alert")
-		| Ви маєте більше ніж дозволено, {{characterLimit}} персонажів, нові можуть бути видаленя.
-		| Видаліть невикористовуваних персонажів щоб унинкути видалення потрібних.
+		| Ви маєте більш, ніж дозволено, {{characterLimit}} персонажів, нові можуть бути видалені.
+		| Видаліть невикористовуваних персонажів, щоб унинкути видалення потрібних.
 
 .form-group(*ngIf="isMarkedForMultiples")
 	.alert.alert-warning(role="alert")
-		| Ваш аккаунт був помічений через створення двійника.
-		| Створення інших аккаунтів можуть призвести до бану.
+		| Ваш аккаунт було виявлено через створення кількох облікових записів.
+		| Створення інших аккаунтів можуть призвести до блокування.
 
 .form-group(*ngIf="accountAlert")
 	.alert.alert-warning(role="alert")
@@ -19,7 +19,7 @@
 .form-group(*ngIf="isAndroidBrowser")
 	.alert.alert-warning(role="alert")
 		| Ваш браузер застарілий і має проблеми з запуском гри.
-		| Будь ласка, встановіть інший або оновіть наявний браузер щоб уникнути проблем з грою.
+		| Будь ласка, встановіть інший або оновіть наявний браузер, щоб уникнути проблем з грою.
 
 .form-group(*ngIf="model.missingBirthdate && !birthdateSet && requestBirthdate")
 	.alert.alert-warning.text-left(role="alert")
@@ -27,7 +27,7 @@
 			| Встановіть дату народження
 		date-picker([(date)]="birthdate")
 		.mt-2.text-right
-			button.btn.btn-default.px-4((click)="saveBirthdate()") Save
+			button.btn.btn-default.px-4((click)="saveBirthdate()") Зберегти
 		p.mb-0.mt-2
 			| Будь ласка, заповніть #[b date of birth] щоб не втратити доступ до гри в майбутніх оновленнях.
 
@@ -58,7 +58,7 @@
 
 .form-group.text-left.text-muted.server-alert(*ngIf="server?.alert === '18+'")
 	fa-icon.float-left.p-2([icon]="warningIcon" size="2x")
-	| Граючи на цьому сервері, ви підтверджуєте що вам є більше 18 років і ви не будете мати проблем 
+	| Граючи на цьому сервері, ви підтверджуєте, що вам є більше 18 років і ви не будете мати проблем, 
 	| спостерігаючи дорослі розмови.
 
 .form-group.text-left.text-info.server-alert(*ngIf="server?.alert === 'test'")
@@ -76,12 +76,12 @@
 
 .form-group(*ngIf="protectionError && !offline")
 	.alert.alert-info(role="alert")
-		| Cloudflare error, #[button.btn.btn-sm.btn-outline-default((click)="reload()") reload] to continue.
+		| Cloudflare error, #[button.btn.btn-sm.btn-outline-default((click)="reload()") reload] щоб продовжити.
 
 .form-group(*ngIf="updateWarning")
 	.alert.alert-warning(role="alert")
 		| Сервер скоро перезапуститься для оновлення та технічної перерви.
-		| Збережіть свого персонажа щоб уникнути втрати прогрессу.
+		| Збережіть свого персонажа, щоб уникнути втрати прогресу.
 
 .form-group(*ngIf="isBrowserOutdated")
 	.alert.alert-warning(role="alert")
@@ -109,7 +109,7 @@
 
 .form-group(*ngIf="isBrowserError")
 	.alert.alert-danger(role="alert")
-		| Ваш браузер застарілий, переконайтесь що встановленна остання версія.
+		| Ваш браузер застарілий, переконайтесь, що встановленна остання версія.
 
 .form-group(*ngIf="isOtherError")
 	.alert.alert-danger(role="alert")
