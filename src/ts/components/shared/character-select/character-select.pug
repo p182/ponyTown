@@ -11,7 +11,7 @@
 	.input-group-append
 		button.btn.btn-default(*ngIf="newButton" (click)="createNew()" [disabled]="!canNew" aria-label="Створити нового персонажа")
 			| new
-		button.btn.btn-default(*ngIf="editButton" (click)="edit()" [disabled]="!canEdit" aria-label="Редактувати персонажа")
+		button.btn.btn-default(*ngIf="editButton" (click)="edit()" [disabled]="!canEdit" aria-label="Редагувати персонажа")
 			| edit
 
 		.dropdown(dropdown #dropdown="ag-dropdown" (isOpenChange)="onToggle($event)" [focusOnOpen]="false")
