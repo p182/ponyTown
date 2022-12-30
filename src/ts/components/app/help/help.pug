@@ -5,16 +5,16 @@ h1(focusTitle) Допомога
 	
 		section
 			h2 Контакти
-			p По будь-яким питанням, будь ласка, звертайтеся на пошту #[b {{contactEmail}}]
+			p З будь-яких питань, будь ласка, звертайтеся на пошту #[b {{contactEmail}}]
 
 		section
 			h2 Керування
 
 			ul.spaced-list
 				li
-					b пересування
+					b Пересування
 					.pl-2.mb-1.
-						Use
+						Використовуйте
 						#[kbd-key(title="стрілка вгору"): fa-icon([icon]="upIcon")]
 						#[kbd-key(title="стрілка вліво"): fa-icon([icon]="leftIcon")]
 						#[kbd-key(title="стрілка вниз"): fa-icon([icon]="downIcon")]
@@ -26,11 +26,11 @@ h1(focusTitle) Допомога
 						#[kbd-key(title="D клавіша") D]
 						,
 						#[kbd-key.gamepad.gamepad-stick(title="Gamepad left stick") L#[.t]#[.l]#[.r]#[.b]]
-						або #[b touch and drag] щоб рухатись
+						або #[b торкніться та перетягніть] щоб рухатись
 						#[br]
 						Утримуйте #[kbd-key(title="shift key") shift] щоб йти повільно.
 				li
-					b чат
+					b Чат
 					.pl-2.mb-1.
 						Використовуйте #[kbd-key(title="enter key") enter]
 						або #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
@@ -40,46 +40,46 @@ h1(focusTitle) Допомога
 						або #[kbd-key.gamepad.gamepad-blue(title="Gamepad X button") X]
 						щоб відмінити надсилання повідомлення
 				li.
-					утримуйте #[kbd-key(title="shift key") shift] щоб мати можливість натискати на землю та предмети позаду інших гравців
+					Утримуйте #[kbd-key(title="shift key") shift] щоб натискати на землю та предмети позаду інших гравців
 				li.
-					#[b boop] - 
+					#[b тиць] - 
 					#[kbd-key(title="B key") B] ,
 					#[kbd-key.gamepad.gamepad-red(title="Gamepad B button") B] ,
-					#[b two finger tap]
-					or #[code /boop] command
+					#[b натиснути обома пальцями]
+					або #[code /boop] команду
 				li.
-					#[b interact] or #[b use item] - #[kbd-key(title="E key") E] or
+					#[b взаємодіяти] або #[b використати предмет] - #[kbd-key(title="E key") E] або
 					#[kbd-key.gamepad.gamepad-green(title="Gamepad A button") A]
 				li.
-					#[b land]  or #[b sit down] or #[b lie down] - 
+					#[b приземлитися] або #[b сісти] або #[b лягти] - 
 					#[kbd-key(title="X key") X] ,
 					#[kbd-key.gamepad.gamepad-dpad(title="Gamepad dpad down button") #[.dpad-down]]
-					or #[code /stand] and #[code /sit] and #[code /lie] commands
+					або #[code /stand] і #[code /sit] і #[code /lie] команди
 				li.
-					#[b sit up] or #[b stand up] or #[b fly up] - 
+					#[b підвестися] або #[b встати] або #[b взлетіти] - 
 					#[kbd-key(title="C key") C] ,
 					#[kbd-key.gamepad.gamepad-dpad(title="Gamepad dpad up button") #[.dpad-up]]
-					or #[code /sit] and #[code /stand] and #[code /fly] commands
+					або #[code /sit] і #[code /stand] і #[code /fly] команди
 				li.
-					#[b turn head] - 
+					#[b повернути голову] - 
 					#[kbd-key(title="H key") H]
-					or #[kbd-key.gamepad.gamepad-stick(title="Gamepad right stick") R#[.t]#[.l]#[.r]#[.b]]
-					or #[code /turn] command
+					або #[kbd-key.gamepad.gamepad-stick(title="Gamepad right stick") R#[.t]#[.l]#[.r]#[.b]]
+					або #[code /turn] команду
 				li.
-					#[b zoom in / out] -
-					#[kbd-key(title="P key") P] and #[kbd-key(title="O key") O]
-					or #[kbd-key.gamepad.gamepad-yellow(title="Gamepad Y button") Y]
+					#[b приблизити / віддалити] -
+					#[kbd-key(title="P key") P] і #[kbd-key(title="O key") O]
+					або #[kbd-key.gamepad.gamepad-yellow(title="Gamepad Y button") Y]
 				li.
-					#[b hide all text] -
+					#[b сховати весь текст] -
 					#[kbd-key(title="F2 key") F2]
 				li.
-					#[b hide public chat] -
+					#[b сховати публічний чат] -
 					#[kbd-key(title="F3 key") F3]
 				li.
-					#[b see through objects] -
+					#[b бачити крізь предмети] -
 					#[kbd-key(title="F4 key") F4]
 				li
-					| #[b fullscreen] - 
+					| #[b повноекранний режим] - 
 					span(*ngIf="!mac")
 						| #[kbd-key(title="F11 key") F11]
 					span(*ngIf="mac")
@@ -102,17 +102,17 @@ h1(focusTitle) Допомога
 			p У чаті гри доступні такі команди:
 
 			ul.spaced-list
-				li <code>/help</code>, <code>/h</code> or <code>/?</code> - список усіх доступних команд
+				li <code>/help</code>, <code>/h</code> або <code>/?</code> - список усіх доступних команд
 				li
-					| <code>/roll</code>, <code>/rand</code> or <code>/random</code> - кинути випадкове число від 1 до 100
+					| <code>/roll</code>, <code>/rand</code> або <code>/random</code> - кинути випадкове число від 1 до 100
 					ul.spaced-list
 						li використовуйте <code>/roll 10</code> щоб кинути число від 1 до 10
 						li використовуйте <code>/roll 5-10</code> щоб кинути число від 5 до 10
-				li <code>/say</code> or <code>/s</code> - говорити в публічний чат (можна використовувати для переходу з паті-чату)
-				li <code>/party</code> or <code>/p</code> - говорити в паті-чат
-				li <code>/think</code> or <code>/t</code> - думати
+				li <code>/say</code> або <code>/s</code> - говорити в публічний чат (можна використовувати для переходу з паті-чату)
+				li <code>/party</code> або <code>/p</code> - говорити в паті-чат
+				li <code>/think</code> або <code>/t</code> - думати
 				li <code>/whisper &lt;name&gt;</code> or <code>/w &lt;name&gt;</code> - прошепотіти до гравця (ви також можете натиснути на ім'я гравця в журналі чату)
-				li <code>/reply</code> or <code>/r</code> - відповісти на останній вхідний шепіт
+				li <code>/reply</code> або <code>/r</code> - відповісти на останній вхідний шепіт
 				li <code>/e</code> - установити постійний вираз мордашки <code>/e :)</code>
 				li <code>/unstuck</code> - скинути позицію до точки появи та покинути гру
 				li <code>/leave</code> - покинути гру
@@ -122,13 +122,13 @@ h1(focusTitle) Допомога
 				li <code>/droptoy</code> - скинути іграшку
 				li <code>/open</code> - розпакувати подарунок
 				li <code>/toys</code> - показати кількість зібраних іграшок
-				li <code>/boop</code> or <code>/)</code> - зробити тиць. Можна також використовувати: <code>/) XD</code>
+				li <code>/boop</code> або <code>/)</code> - зробити тиць. Можна також використовувати: <code>/) XD</code>
 				li <code>/lie</code> - лягти або сісти
 				li <code>/sit</code> - сісти або встати
 				li <code>/stand</code> - встати або приземлитися
 				li <code>/fly</code> - взлетіти або приземлитися
-				li <code>/sleep</code> or <code>/zzz</code> - заснути. Можна також використовувати: <code>/zzz :)</code>
-				li <code>/love</code> or <code>/&lt;3</code> - пускає серця над головою. Можна також використовувати: <code>/love :)</code>
+				li <code>/sleep</code> або <code>/zzz</code> - заснути. Можна також використовувати: <code>/zzz :)</code>
+				li <code>/love</code> або <code>/&lt;3</code> - пускає серця над головою. Можна також використовувати: <code>/love :)</code>
 				li <code>/cry</code> - заплакати. Можна також використовувати: <code>/cry :D</code>
 				li <code>/blush</code> - червоніти. Можна також використовувати: <code>/blush :D</code>
 				li.
@@ -209,9 +209,9 @@ h1(focusTitle) Допомога
 			section
 				h4 Екран чорний або блимає після приєднання до гри
 				p.text-fading.
-					TЗазвичай це спричинено застарілими графічними драйверами або браузером.
+					Зазвичай це спричинено застарілими графічними драйверами або браузером.
 					Перевірте, чи є ваш браузер в #[a(href="https://updatemybrowser.org/") up to date] і перевірте
-					ч є нові оновлення для вашої відеокарти або пристрою.
+					чи немає нових оновлень для вашої відеокарти або пристрою.
 				p.text-fading.
 					Якщо ваш браузер уже оновлений, спробуйте встановити інший браузер.
 					Ми рекомендуємо користуватися #[a(href="https://www.google.com/chrome/") Chrome]
@@ -247,7 +247,7 @@ h1(focusTitle) Допомога
 					користуватися #[b Chrome] або #[b Edge] браузерами для найкращої продуктивності.
 
 			section
-				h4 Чому я не можу створити кілька облікових записів?
+				h4 Чому я не можу створити кілька облікових записів
 				p.text-fading.
 					Це обмеження діє, щоб захистити вас і саму гру від інших гравців у грі.
 				p.text-fading.
