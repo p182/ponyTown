@@ -1,17 +1,17 @@
 ng-template(#descriptionTooltip)
 	.text-left
-		p Description and tags help you organize and search for your ponies.
-		p Use # tags to be able to quickly find specific ponies like #oc #winter or #unicorn
+		p Опис і теґи допоможуть вам упорядковувати та шукати своїх поні.
+		p Використовуйте теґи #, щоб швидко знаходити певних поні, як-от #oc #різдво або #єдиноріг
 		p
-			| Use @ tags to sort your ponies. @top to put them at the start of the list, @end at the end,
-			| and @1 @2 @3 ... to order them manually.
+			| Використовуйте теґи @, щоб сортувати своїх поні. @top, щоб розмістити їх на початку списку, @end у кінці,
+			| і @1 @2 @3 ... щоб упорядкувати їх вручну.
 
 page-loader(*ngIf="!playing")
 
 .row(*ngIf="!playing && !loading")
 	.col-lg-6.text-center
-		h1.sr-only(focusTitle) Characters
-		h2.sr-only Character selection
+		h1.sr-only(focusTitle) Персонажі
+		h2.sr-only Вибір персонажа
 		.mx-auto(style="max-width: 400px;")
 			support-button.mb-3
 			install-button.mb-3
