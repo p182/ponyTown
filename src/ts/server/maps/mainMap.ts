@@ -1500,6 +1500,9 @@ export function createMainMap(world: World): ServerMap {
 
 	map.flags |= MapFlags.EdibleGrass;
 
+	if (DEVELOPMENT) {
+	map.tilesLocked = false;
+	}
 	// spawns
 
 	map.spawnArea = rect(51, 21, 8, 8);
