@@ -1,6 +1,6 @@
 .modal-header.d-none.d-sm-block.d-none-for-low-height
 	h4.modal-title(labelledBy=".modal")
-		| Settings
+		| Налаштування
 
 .modal-body.modal-checkboxes
 	tabset(type="pills")
@@ -9,18 +9,18 @@
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.ignorePartyInvites"
-						help="Useful when other players bother you with unwanted party invites (does not apply to friends)")
-						| Ignore party invites
+						help="Корисно, коли інші гравці турбують вас небажаними запрошеннями до паті (не стосується друзів)")
+						| Ігнорувати запрошення до паті
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.ignoreFriendInvites"
-						help="Useful when other players bother you with unwanted friend requests")
-						| Ignore friend requests
+						help="Корисно, коли інші гравці турбують вас небажаними запитами до друзів")
+						| Ігнорувати запити до друзів
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.seeThroughObjects"
-						help="Makes all obstacles transparent")
-						| See through obstacles
+						help="Робить прозорими всі перешкоди")
+						| Бачити скрізь перешкоди
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.walkByDefault"
