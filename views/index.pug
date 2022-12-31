@@ -72,8 +72,8 @@ html(lang="en")
 		if socketOptions
 			script#socket-options(type="text/plain")!=socketOptions
 
-		if production
+		
 			script(src=script async)
-		else
+		//-
 			script(src="http://localhost:8091/assets/scripts/vendor.js")
 			script(src="http://localhost:8091" + script.replace('/adm/', '/'))
