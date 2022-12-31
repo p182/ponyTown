@@ -1498,8 +1498,12 @@ export function createMainMap(world: World): ServerMap {
 	const mapSize = 20;
 	const map = createServerMap('', MapType.None, mapSize, mapSize, TileType.Grass);
 
+	if (DEVELOPMENT) {
+	map.flags |= MapFlags.EdibleGrass | MapFlags.EditableWalls | MapFlags.EditableEntities | MapFlags.EditableTiles;
+	}
+	else{
 	map.flags |= MapFlags.EdibleGrass;
-
+	}
 	if (DEVELOPMENT) {
 	map.tilesLocked = false;
 	}
