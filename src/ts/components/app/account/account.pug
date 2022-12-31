@@ -4,7 +4,7 @@ h1(focusTitle) Налаштування облікового запису
 	.col-md-6
 		form(name="form" (submit)="submit()" style="max-width: 400px; margin-bottom: 100px")
 			.form-group
-				h3 Account details
+				h3 Деталі облікового запису
 			.form-group
 				label(for="account-id") Ідентифікатор (ID) облікового запису
 				input#account-id.form-control([value]="account?.id" readonly)
@@ -115,7 +115,7 @@ h1(focusTitle) Налаштування облікового запису
 		div(style="margin-bottom: 100px;")
 			.form-group
 				.float-right
-					span.text-muted Page: {{page + 1}}
+					span.text-muted Сторінка: {{page + 1}}
 					button.btn.btn-sm.btn-outline-secondary.ml-2((click)="page = page - 1; pageChanged()" [disabled]="!hides || page === 0")
 						| Попередня сторінка
 					button.btn.btn-sm.btn-outline-secondary.ml-1((click)="page = page + 1; pageChanged()" [disabled]="!hides || hides.length < hidesPerPage")
