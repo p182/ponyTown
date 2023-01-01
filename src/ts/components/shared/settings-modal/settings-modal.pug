@@ -24,62 +24,62 @@
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.walkByDefault"
-						help="Uses walking speed by default and run when pressing shift key")
-						| Prefer walking to running
+						help="Використовує швидкість ходьби за замовчуванням і біжить при натисканні клавіші shift")
+						| Віддайте перевагу ходьбі, ніж бігу
 
-		tab(title="Graphics" [icon]="graphicsIcon")
+		tab(title="Графіка" [icon]="graphicsIcon")
 			div(*tabContent)
 				.form-group
 					custom-checkbox(
 						*ngIf="!lockLowGraphicsMode" [(checked)]="browser.lowGraphicsMode"
-						help="Can improve game performance in some cases")
-						| Low graphics mode
+						help="У деяких випадках може покращити продуктивність гри")
+						| Режим низької графіки
 					custom-checkbox(
 						*ngIf="lockLowGraphicsMode" [checked]="true" [disabled]="true"
-						help="Can improve game performance in some cases")
-						| Low graphics mode
+						help="У деяких випадках може покращити продуктивність гри")
+						| Режим низької графіки
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.brightNight"
-						help="Increases brightness of the game at night and in dark areas")
-						| Brighter darkness
+						help="Збільшує яскравість гри вночі та в темних місцях")
+						| Світліша темрява
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.powerSaving"
-						help="Reduces frame rate to extend battery life and reduce CPU overheating")
-						| Power saving mode
+						help="Зменшує частоту кадрів, щоб подовжити час використання батареї та зменшити перегрів ЦП")
+						| Режим енергозбереження
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.showStats"
-						help="Show rendering and network stats")
-						| Show statistics
+						help="Показати статистику візуалізації та мережі")
+						| Показати статистику
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.showFps"
-						help="Show FPS counter")
-						| Show FPS
+						help="Показати лічильник FPS")
+						| Показати FPS
 
-		tab(title="Chat" [icon]="chatIcon")
+		tab(title="Чат" [icon]="chatIcon")
 			div(*tabContent)
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.ignorePublicChat"
-						help="Don't show any public chat messages, only party chat and whispes will be visible")
-						| Hide all public chat messages
+						help="Не показувати жодних повідомлень публічного чату, буде видно лише паті-чат і шепотіння")
+						| Приховати всі повідомлення публічного чату
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.ignoreNonFriendWhispers"
-						help="Don't show any whispers from players who are not on your friends list")
-						| Only allow whispers from friends
+						help="Не показувати шепіт від гравців, яких немає у вашому списку друзів")
+						| Дозволити шепіт лише від друзів
 				.form-group
-					label#chatlog-opacity-label Chatlog background opacity
+					label#chatlog-opacity-label Налаштування прозорості фону журналу чату
 					div
 						slider-bar.mr-2(
 							[(value)]="account.chatlogOpacity" style="max-width: 300px" labelledBy="chatlog-opacity-label")
 						| {{(account.chatlogOpacity / 100) | percent}}
-					small.form-text.text-muted.mt-0 Changes chatlog background to make it more readable or less obtrusive.
+					small.form-text.text-muted.mt-0 Змінює фон журналу чату, щоб зробити його більш читабельним або менш помітним.
 				.form-group
-					label#chatlog-range-label Chatlog range
+					label#chatlog-range-label Налаштування діапазону повідомлень
 					div
 						slider-bar.mr-2(
 							[(value)]="account.chatlogRange" [min]="minChatlogRange" [max]="maxChatlogRange" [step]="1"
@@ -87,44 +87,44 @@
 							style="max-width: 300px" labelledBy="chatlog-range-label")
 						| {{chatlogRangeText}}
 					small.form-text.text-muted.mt-0
-						| Only show messages in chatlog from players near you (doesn't affect party chat or whispers).
+						| Показувати в журналі чату повідомлення лише від гравців поблизу вас (не впливає на паті-чат чи шепіт).
 
 		tab(title="Filters" [icon]="filtersIcon")
 			div(*tabContent)
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.filterCyrillic"
-						help="Hide all messages containing cyrillic alphabet")
-						| Filter cyrillic chat
+						help="Приховати всі повідомлення, що містять кирилицю")
+						| Фільтр кириличного чату (нашо?)
 				.form-group
 					custom-checkbox(
 						[(checked)]="account.filterSwearWords"
-						help="Censors swear words and other harmful phrases in the chat")
-						| Filter bad words
+						help="Приховує погані слова і шкідливі фрази в чаті")
+						| Фільтр поганих слів
 				.form-group
-					label.mb-1 Custom chat filter
+					label.mb-1 Словник чат-фільтру
 					small.form-text.text-muted.mt-0.mb-2
-						| Space separated list of words to filter.
-						| All chat messages containing listed words will be hidden.
-						| Does not affect party chat or whispers from friends.
+						| Слова повинні бути розділені пробілами
+						| Усі повідомлення чату, що містять слова зі списку, будуть приховані.
+						| Не впливає на паті-чат або шепіт від друзів
 					textarea.form-control(rows="5" [(ngModel)]="account.filterWords")
 
-		tab(title="Controls" [icon]="controlsIcon")
+		tab(title="Елементи управління" [icon]="controlsIcon")
 			div(*tabContent)
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.disableGamepad"
-						help="Useful if gamepad controls are causing issues with the game")
-						| Disable gamepad controls
+						help="Корисно, якщо елементи керування геймпада спричиняють проблеми з грою")
+						| Вимкнути елементи керування геймпада
 				.form-group
 					custom-checkbox(
 						[(checked)]="browser.disableFKeys"
-						help="Useful if you're using function keys in a way that conflicts with game controls")
-						| Disable function keys (F1-F12)
+						help="Корисно, якщо ви використовуєте функціональні клавіші не за призначенням гри")
+						| Вимкнути функціональні клавіші (F1-F12)
 
 .modal-footer.d-flex
 	button.btn.btn-wide.btn-outline-secondary.d-none.d-sm-block((click)="reset()")
-		| Reset
+		| Скинути
 	button.btn.btn-outline-secondary.d-none.d-sm-block((click)="export()" title="Export settings")
 		fa-icon([icon]="exportIcon" [fixedWidth]="true")
 	button.btn.btn-outline-secondary.d-none.d-sm-block((click)="importFile.click()" title="Import settings")
@@ -132,6 +132,6 @@
 		input.d-none(#importFile type="file" (change)="import(importFile.files[0])")
 	.flex-grow-1
 	button.btn.btn-wide.btn-outline-secondary((click)="cancel()")
-		| Cancel
+		| Скасувати
 	button.btn.btn-wide.btn-outline-secondary.ml-2((click)="ok()")
-		| OK
+		| Готово
