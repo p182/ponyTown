@@ -26,11 +26,11 @@ page-loader(*ngIf="!playing")
 
 			.form-group.text-center
 				button.btn.btn-lg.btn-default([disabled]="!canDuplicate" (click)="duplicate()" aria-label="Duplicate character")
-					| Duplicate
+					| Скопіювати
 				button.btn.btn-lg.btn-default.ml-2([disabled]="!canRevert" (click)="revert()" aria-label="Revert changes")
-					| Revert
+					| Повернути
 				button.btn.btn-lg.btn-default.ml-2([disabled]="!canSave" (click)="save()" aria-label="Save character")
-					| Save
+					| Зберегти
 
 			play-box(label="Save & Play" [(error)]="error")
 			play-notice
@@ -38,7 +38,7 @@ page-loader(*ngIf="!playing")
 	.col-lg-6.character-tabs([setOutlineHidden]="!customOutlines" [class.character-tab-warning]="updateWarning")
 		h2.sr-only Character customization
 		tabset(type="pills" *ngIf="loaded" saveActiveTab="character-active-tab" label="Character customization")
-			tab(title="body")
+			tab(title="тіло")
 				.character-tab(*tabContent)
 					div(*ngIf="account?.supporter")
 						.row.form-group
@@ -49,34 +49,34 @@ page-loader(*ngIf="!playing")
 						hr.my-2
 
 					.row.form-group
-						label.col-sm-4.col-form-label Advanced options
+						label.col-sm-4.col-form-label Розширені опції
 						.col-sm-8.text-muted.pt-1
 							custom-checkbox([(checked)]="pony.respawnAtSpawn")
-								| always respawn at spawn point
+								| завжди з'являтися на спавні
 							custom-checkbox([(checked)]="info.customOutlines")
-								| allow custom outlines
+								| увімкнути власні контури
 							custom-checkbox([(checked)]="info.freeOutlines" (checkedChange)="freeOutlinesChanged($event)")
-								| don't darken outlines
+								| не затемнювати контури
 							custom-checkbox(
 								[(checked)]="info.darkenLockedOutlines" [disabled]="!info.freeOutlines"
 								(checkedChange)="darkenLockedOutlinesChanged($event)")
-								| darken locked outlines
+								| затемнювати замкнуті контури
 
 					.row.form-group(*ngIf="debug")
-						label.col-sm-4.col-form-label Debug options
+						label.col-sm-4.col-form-label Параметри налагодження
 						.col-sm-8
-							button.btn.btn-sm.btn-default((click)="addBlush()") Add blush
+							button.btn.btn-sm.btn-default((click)="addBlush()") Додати рум'янець
 
 					.row.form-group
-						label.col-sm-4.col-form-label Export/Import options
+						label.col-sm-4.col-form-label Параметри експорту/імпорту
 						.col-sm-8
-							button.btn.btn-sm.btn-default((click)="exportPony()") Export pony
-							button.btn.btn-sm.btn-default.ml-1((click)="exportPonies()") Export all ponies
-							button.btn.btn-sm.btn-default.ml-1((click)="importFile.click()") Import ponies
+							button.btn.btn-sm.btn-default((click)="exportPony()") Експорт поні
+							button.btn.btn-sm.btn-default.ml-1((click)="exportPonies()") Експорт усіх поні
+							button.btn.btn-sm.btn-default.ml-1((click)="importFile.click()") Імпорт поні
 							input.d-none(#importFile type="file" (change)="importPonies(importFile.files[0])")
 
 					.row.form-group
-						label#social-site-label.col-sm-4.col-form-label Show social site
+						label#social-site-label.col-sm-4.col-form-label Відображати соц. мережу
 						.col-sm-8
 							.dropdown.btn-group(dropdown)
 								button.btn.btn-default.dropdown-toggle(
@@ -102,19 +102,19 @@ page-loader(*ngIf="!playing")
 										strong(*ngIf="!t.id") {{t.name}}
 
 							#social-site-help.text-muted.mt-1
-								| Shows social site next to your name to prove to others that it's your account.
+								| Показує соц. мережу поруч із вашим іменем, щоб довести іншим, що це ваш обліковий запис.
 
 					.row.form-group
 						label.col-sm-4.col-form-label(for="description")
-							| Description
+							| Опис
 							fa-icon.text-muted.ml-2([icon]="infoIcon" [tooltip]="descriptionTooltip" containerClass="tooltip-desc")
 						.col-sm-8
 							input.form-control#description(
-								[(ngModel)]="pony.desc" placeholder="example: with a hat #oc #winter" [maxlength]="maxDescLength")
+								[(ngModel)]="pony.desc" placeholder="приклад: з шарфом #oc #зима" [maxlength]="maxDescLength")
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label(for="frame-input") Animation
+							label(for="frame-input") Анімація
 							check-box.lock-box([icon]="playIcon" [(checked)]="playAnimation" label="Play animation")
 						.col-sm-8
 							.input-group
@@ -143,86 +143,86 @@ page-loader(*ngIf="!playing")
 
 					hr
 					fill-outline(
-						label="Body color" [(fill)]="info.coatFill" [(outline)]="info.coatOutline"
+						label="Колір тіла" [(fill)]="info.coatFill" [(outline)]="info.coatOutline"
 						[(outlineLocked)]="info.lockCoatOutline" [outlineHidden]="!customOutlines" (change)="changed()")
 					hr
 					set-selection(
-						label="Horn" [base]="coatFill" [set]="info.horn" [sets]="horns" [compact]="true" (change)="changed()"
+						label="Ріг" [base]="coatFill" [set]="info.horn" [sets]="horns" [compact]="true" (change)="changed()"
 						[darken]="darken")
 					hr
 					.row.form-group
-						label.col-sm-4.col-form-label Magic color
+						label.col-sm-4.col-form-label Магічне сяйво
 						.col-sm-8
 							color-picker([(color)]="info.magicColor" label="Magic color")
 					hr
 					set-selection(
-						label="Wings" [base]="coatFill" [set]="info.wings" [sets]="wings" [compact]="true" (change)="changed()"
+						label="Крила" [base]="coatFill" [set]="info.wings" [sets]="wings" [compact]="true" (change)="changed()"
 						[darken]="darken")
 					hr
 					set-selection(
-						label="Ears" [base]="coatFill" [set]="info.ears" [sets]="ears" [compact]="true" (change)="changed()"
+						label="Вуха" [base]="coatFill" [set]="info.ears" [sets]="ears" [compact]="true" (change)="changed()"
 						[darken]="darken")
 					hr
 					set-selection(
-						label="Front hooves" [base]="coatFill" [set]="info.frontHooves" [sets]="frontHooves" [compact]="true"
+						label="Передні копита" [base]="coatFill" [set]="info.frontHooves" [sets]="frontHooves" [compact]="true"
 						[darken]="darken" (change)="changed()")
 					hr
 					set-selection(
-						label="Back hooves" [base]="hoovesFill" [set]="info.backHooves" [sets]="backHooves" [compact]="true"
+						label="Задні копита" [base]="hoovesFill" [set]="info.backHooves" [sets]="backHooves" [compact]="true"
 						[darken]="darken" (change)="changed()")
 					hr
 					butt-mark-editor([info]="info" [state]="buttMarkState")
 
-			tab(title="mane")
+			tab(title="грива")
 				.character-tab(*tabContent)
 					set-selection(
-						label="Mane" [base]="maneFill" [set]="info.mane" [sets]="manes" [nonLockable]="true"
+						label="Грива" [base]="maneFill" [set]="info.mane" [sets]="manes" [nonLockable]="true"
 						[darken]="darken" (change)="changed()")
 					hr
 					set-selection(
-						label="Back mane" [base]="maneFill" [set]="info.backMane" [sets]="backManes"
+						label="Задня грива" [base]="maneFill" [set]="info.backMane" [sets]="backManes"
 						[darken]="darken" (change)="changed()")
 
-			tab(title="tail")
+			tab(title="хвіст")
 				.character-tab(*tabContent)
 					set-selection(
-						label="Tail" [base]="maneFill" [set]="info.tail" [sets]="tails" [darken]="darken" (change)="changed()")
+						label="Хвіст" [base]="maneFill" [set]="info.tail" [sets]="tails" [darken]="darken" (change)="changed()")
 					.form-group.text-center
 						button.btn.btn-sm.btn-default((click)="copyCoatColorToTail()" [disabled]="info.tail.lockFills[0]")
-							| Use body color
+							| Використовувати колір тіла
 
-			tab(title="face")
+			tab(title="лице")
 				.character-tab(*tabContent)
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label#eye-color Eye color
+							label#eye-color Колір очей
 							check-box.lock-box(
 								[(checked)]="info.lockEyeColor" [icon]="lockIcon" (checkedChange)="eyeColorLockChanged($event)"
 								label="Lock color for both eyes" title="Lock color for both eyes")
 						.col-sm-8
 							color-picker([(color)]="info.eyeColorRight" (colorChange)="changed()" labelledBy="eye-color")
 					.row.form-group(*ngIf="!info.lockEyeColor")
-						label#eye-color-left.col-sm-4.col-form-label Eye color (left)
+						label#eye-color-left.col-sm-4.col-form-label Колір очей (зліва)
 						.col-sm-8
 							color-picker([(color)]="info.eyeColorLeft" labelledBy="eye-color-left")
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label#eye-whites-label Eye whites
+							label#eye-whites-label Білок очей
 							check-box.lock-box(
 								[(checked)]="lockEyeWhites" [icon]="lockIcon" (checkedChange)="eyeWhiteLockChanged($event)"
 								label="Lock left eye white for both eyes" title="Lock left eye white for both eyes")
 						.col-sm-8
 							color-picker([(color)]="info.eyeWhites" (colorChange)="changed()" labelledBy="eye-whites-label")
 					.row.form-group(*ngIf="info.unlockEyeWhites")
-						label#eye-whites-label-left.col-sm-4.col-form-label Eye whites (left)
+						label#eye-whites-label-left.col-sm-4.col-form-label Білок очей (зліва)
 						.col-sm-8
 							color-picker([(color)]="info.eyeWhitesLeft" labelledBy="eye-whites-label-left")
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label#eyes {{info.lockEyes ? 'Eyes' : 'Right eye'}}
+							label#eyes {{info.lockEyes ? 'Eyes' : 'Праве око'}}
 							check-box.lock-box(
 								[(checked)]="info.lockEyes" [icon]="lockIcon" (checkedChange)="eyeOpennessChanged($event)"
 								label="Lock both eyes" title="Lock both eyes")
@@ -233,7 +233,7 @@ page-loader(*ngIf="!playing")
 								(selectedChange)="eyeOpennessChanged(info.lockEyes)" aria-labelledby="eyes")
 					.row.form-group(*ngIf="!info.lockEyes")
 						.col-sm-4
-							label#left-eye Left eye
+							label#left-eye Ліве око
 						.col-sm-8
 							sprite-selection(
 								[(selected)]="info.eyeOpennessLeft" [sprites]="eyesLeft" [fill]="info.eyeColorLeft" [darken]="darken"
@@ -241,7 +241,7 @@ page-loader(*ngIf="!playing")
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label Eyeshadow
+							label Тіні для повік
 							check-box.lock-box(
 								[(checked)]="info.eyeshadow" (checkedChange)="characterPreview.blink()"
 								label="Use eye shadow" title="Use eye shadow")
@@ -249,7 +249,7 @@ page-loader(*ngIf="!playing")
 							color-picker([(color)]="info.eyeshadowColor" [isDisabled]="!info.eyeshadow" label="Eyeshadow color")
 
 					.row.form-group
-						label#eyelashes.col-sm-4.col-form-label Eyelashes
+						label#eyelashes.col-sm-4.col-form-label Вії
 						.col-sm-8
 							sprite-selection(
 								[(selected)]="info.eyelashes" [sprites]="eyelashes" [fill]="info.eyeColorRight" [darken]="darken"
@@ -257,89 +257,89 @@ page-loader(*ngIf="!playing")
 
 					.row.form-group
 						.col-sm-4.col-lock-box
-							label#eyelashes-label Eyelash color
+							label#eyelashes-label Колір вій
 							check-box.lock-box(
 								[(checked)]="lockEyelashColor" [icon]="lockIcon" (checkedChange)="eyelashLockChanged($event)"
 								label="Lock eyelash color for both eyes" title="Lock eyelash color for both eyes")
 						.col-sm-8
 							color-picker([(color)]="info.eyelashColor" (colorChange)="changed()" labelledBy="eyelashes-label")
 					.row.form-group(*ngIf="!lockEyelashColor")
-						label#eyelashes-label-left.col-sm-4.col-form-label Eyelash color (left)
+						label#eyelashes-label-left.col-sm-4.col-form-label Колір вій (зліва)
 						.col-sm-8
 							color-picker([(color)]="info.eyelashColorLeft" labelledBy="eyelashes-label-left")
 
 					hr
 					set-selection(
-						label="Muzzle" base="info.coatFill" [set]="info.nose" [sets]="noses" [darken]="darken"
+						label="Мордашка" base="info.coatFill" [set]="info.nose" [sets]="noses" [darken]="darken"
 						[compact]="true" (change)="changed(); updateMuzzles()")
 					hr
 					set-selection(
-						label="Markings" [base]="coatFill" [set]="info.head" [sets]="heads" [darken]="darken"
+						label="Забарвлення" [base]="coatFill" [set]="info.head" [sets]="heads" [darken]="darken"
 						[onlyPatterns]="true" (change)="changed()")
 					hr
 					.row.form-group
-						label#fangs.col-sm-4.col-form-label Fangs
+						label#fangs.col-sm-4.col-form-label Ікла
 						.col-sm-8
 							sprite-selection(
 								[(selected)]="info.fangs" [sprites]="fangs" [fill]="info.nose.fills" [darken]="darken"
 								[outline]="info.nose.outlines" [circle]="info.coatFill" aria-labelledby="fangs")
 					.row.form-group
-						label#expression.col-sm-4.col-form-label(for="#expression-selection") Expression
+						label#expression.col-sm-4.col-form-label(for="#expression-selection") Вирази
 						.col-sm-8
 							sprite-selection#expression-selection(
 								[(selected)]="info.muzzle" [sprites]="muzzles" [fill]="info.nose.fills" [darken]="darken"
 								[outline]="info.nose.outlines" [circle]="info.coatFill" [limit]="9" aria-labelledby="expression")
 					hr
 					set-selection(
-						label="Facial hair" [base]="maneFill" [set]="info.facialHair" [sets]="facialHair" [darken]="darken"
+						label="Вуса і бородки" [base]="maneFill" [set]="info.facialHair" [sets]="facialHair" [darken]="darken"
 						(change)="changed()")
 
-			tab(title="other")
+			tab(title="інше")
 				.character-tab(*tabContent)
 					tabset.accessories-tabset(saveActiveTab="character-active-accessory-tab" label="Character accessories")
 						tab(title="head")
 							.accessory-tab(*tabContent)
 								set-selection(
-									label="Head accessories" [set]="info.headAccessory" [sets]="headAccessories" [darken]="darken"
+									label="Головні аксесуари" [set]="info.headAccessory" [sets]="headAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 								hr
 								set-selection(
-									label="Ear accessories" [set]="info.earAccessory" [sets]="earAccessories" [darken]="darken"
+									label="Вушні аксесуари" [set]="info.earAccessory" [sets]="earAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 								hr
 								set-selection(
-									label="Face accessories" [set]="info.faceAccessory" [sets]="faceAccessories" [darken]="darken"
+									label="Аксесуари для лиця" [set]="info.faceAccessory" [sets]="faceAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 
-						tab(title="neck")
+						tab(title="шия")
 							.accessory-tab(*tabContent)
 								set-selection(
-									label="Neck accessories" [set]="info.neckAccessory" [sets]="neckAccessories" [darken]="darken"
+									label="Шийні аксесуари" [set]="info.neckAccessory" [sets]="neckAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 
-						tab(title="legs")
+						tab(title="ноги")
 							.accessory-tab(*tabContent)
 								.row.form-group
 									label.col-sm-4.col-form-label Use the same accessory
 									.col-sm-8.text-muted.pt-1
 										.mb-2
 											custom-checkbox([(checked)]="info.lockBackLegAccessory")
-												| for front and back legs
+												| для передніх і задніх ніг
 										.mb-2
 											custom-checkbox([(checked)]="lockFrontLegAccessory")
-												| for both front legs
+												| для обох передніх ніг
 										.mb-2
 											custom-checkbox([(checked)]="lockBackLegAccessory" [disabled]="info.lockBackLegAccessory")
-												| for both back legs
+												| для обох задніх ніг
 
 								set-selection(
-									[label]="info.lockFrontLegAccessories ? 'Front leg accessory' : 'Front leg accessory (left)'"
+									[label]="info.lockFrontLegAccessories ? 'Аксесуар для передньої ноги' : 'Аксесуар для передньої ноги (зліва)'"
 									[set]="info.frontLegAccessory" [sets]="frontLegAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 								hr
 								div(*ngIf="info.unlockFrontLegAccessory")
 									set-selection(
-										label="Front leg accessory (right)"
+										label="Аксесуар для передньої ноги (справа)"
 										[set]="info.frontLegAccessoryRight" [sets]="frontLegAccessories" [darken]="darken"
 										[nonLockable]="true" (change)="changed()")
 									hr
@@ -347,43 +347,43 @@ page-loader(*ngIf="!playing")
 									custom-checkbox([(checked)]="info.lockBackLegAccessory") use the same accessory for back legs
 								div(*ngIf="!info.lockBackLegAccessory")
 									set-selection(
-										[label]="info.lockBackLegAccessories ? 'Back leg accessory' : 'Back leg accessory (left)'"
+										[label]="info.lockBackLegAccessories ? 'Аксесуар для задньої ноги' : 'Аксесуар для задньої ноги (зліва)'"
 										[set]="info.backLegAccessory" [sets]="backLegAccessories" [darken]="darken"
 										[nonLockable]="true" (change)="changed()")
 									hr
 								div(*ngIf="!info.lockBackLegAccessory && info.unlockBackLegAccessory")
 									set-selection(
-										label="Back leg accessory (right)"
+										label="Аксесуар для задньої ноги (справа)"
 										[set]="info.backLegAccessoryRight" [sets]="backLegAccessories" [darken]="darken"
 										[nonLockable]="true" (change)="changed()")
 
-						tab(title="chest")
+						tab(title="груди")
 							.accessory-tab(*tabContent)
 								set-selection(
-									label="Chest accessories" [set]="info.chestAccessory" [sets]="chestAccessories" [darken]="darken"
+									label="Нагрудні аксесуари" [set]="info.chestAccessory" [sets]="chestAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 								set-selection(
-									*ngIf="hasSleeves(info.chestAccessory.type)" label="Sleeves" [set]="info.sleeveAccessory" [darken]="darken"
+									*ngIf="hasSleeves(info.chestAccessory.type)" label="Рукава" [set]="info.sleeveAccessory" [darken]="darken"
 									[sets]="sleeveAccessories" (change)="changed()")
 
-						tab(title="back")
+						tab(title="зад")
 							.accessory-tab(*tabContent)
 								set-selection(
-									label="Back accessories" [set]="info.backAccessory" [sets]="backAccessories" [darken]="darken"
+									label="Аксесуари для заду" [set]="info.backAccessory" [sets]="backAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 
-						tab(title="waist")
+						tab(title="талія")
 							.accessory-tab(*tabContent)
 								set-selection(
-									label="Waist accessories" [set]="info.waistAccessory" [sets]="waistAccessories" [darken]="darken"
+									label="Аксесуари для талії" [set]="info.waistAccessory" [sets]="waistAccessories" [darken]="darken"
 									[nonLockable]="true" (change)="changed()")
 
-						tab(title="other")
+						tab(title="інше")
 							.accessory-tab(*tabContent)
 								.form-group.d-flex.justify-content-center.pt-2
-									custom-checkbox([(checked)]="previewExtra") show preview
+									custom-checkbox([(checked)]="previewExtra") показати іграшку
 									em.text-muted.ml-2
-										| (you have to enable these accessories in-game)
+										| (ви повинні ввімкнути ці аксесуари в грі)
 								set-selection(
-									label="Extra accessories" [set]="info.extraAccessory" [sets]="extraAccessories"
+									label="Додаткові аксесуари" [set]="info.extraAccessory" [sets]="extraAccessories"
 									[darken]="darken" (change)="changed()")
