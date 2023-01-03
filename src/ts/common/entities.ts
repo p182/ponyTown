@@ -2352,6 +2352,12 @@ export const placeableEntities: { type: number; name: string; }[] = [
 	{ type: window1.type, name: 'Window' },
 	{ type: bookshelf.type, name: 'Bookshelf' },
 	{ type: rock.type, name: 'Rock' },
+	{ type: pine1.type, name: 'Pine'},
+	{ type: crystals5.type, name: 'Crystals'},
+	{ type: bunny.type, name: 'Bunny'},
+	{ type: triggerDoor.type, name:'Trigger House'},
+	{ type: triggerHouseDoor.type, name:'Trigger House Door'},
+	{ type: house.type, name:'House'}
 ];
 
 export const fruits = [
