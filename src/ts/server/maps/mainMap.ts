@@ -1499,6 +1499,7 @@ export function createMainMap(world: World): ServerMap {
 	const map = createServerMap('', MapType.None, mapSize, mapSize, TileType.Grass);
 
 	if (DEVELOPMENT) {
+	map.editableEntityLimit = 300000;
 	map.flags |= MapFlags.EdibleGrass | MapFlags.EditableWalls | MapFlags.EditableEntities | MapFlags.EditableTiles;
 	}
 	else{
