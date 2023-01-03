@@ -9,8 +9,8 @@
 				.flex-grow-1 Друзі
 				.dropdown(dropdown)
 					button.dropdown-toggle.no-arrow(dropdownToggle)
-						span.text-success(*ngIf="!hidden") online
-						span.text-muted(*ngIf="hidden") offline
+						span.text-success(*ngIf="!hidden") у мережі
+						span.text-muted(*ngIf="hidden") не в мережі
 						fa-icon.ml-2([icon]="cogIcon")
 					.dropdown-menu.dropdown-menu-right(*dropdownMenu)
 						button.dropdown-item((click)="setStatus('online')")
