@@ -35,7 +35,8 @@
 			"name": "Основний сервер",
 			"desc": "Тестовий сервер",
 			"flags": {
-				"test": true
+				"test": true,
+				"editor": true
 			}
 		}
 	]
