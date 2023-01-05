@@ -150,7 +150,7 @@ function shouldNotBeCalled() {
 }
 
 function isValidMapForEditing(map: ServerMap, client: IClient, checkTimeout: boolean, onlyLeader: boolean) {
-	if (map.id !== 'house') {
+	if (!DEVELOPMENT && map.id !== 'house') {
 		saySystem(client, 'Can only be done inside the house');
 		return false;
 	}
