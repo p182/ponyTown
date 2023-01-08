@@ -3,9 +3,9 @@
 	"twitterLink": "https://twitter.com/PonyTownUkraine",
 	"supporterLink": "https://war.ukraine.ua/donate/",
 	"contactEmail": "ffoxy2870@gmail.com",
-	"port": 8094,
+	"port": 8090,
 	"adminPort": 8091,
-	"host": "https://uapt.ddns.net:8090/",
+	"host": "http://localhost:8090/",
 	"local": "localhost:8090",
 	"adminLocal": "localhost:8091",
 	"secret": "gfhfdshtrdhgedryhe4t3y5uwjthr",
@@ -23,13 +23,17 @@
                 "twitter": {
                          "consumerKey": "pcD9Y7XLlsEw4baN7SXmUCDwK",
                          "consumerSecret": "a0g5K8Dpwf9d49t8dL745BD9NE8CJS9g0gjre3NK27M4m6bYyk"
-                }
+                },
+				"discord": {
+					"clientID": "1061579572614807653",
+					"clientSecret": "hl1RvESNuDC_GSggnVSZyX9nCjx6jcyE"
+				  }
 	},
 	"assetsPath": "assets-source",
 	"servers": [
 		{
-			"id": "test",
-			"port": 8094,
+					"id": "test",
+			"port": 8090,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
 			"name": "Основний сервер",
