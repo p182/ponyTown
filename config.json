@@ -24,15 +24,15 @@
                          "consumerKey": "pcD9Y7XLlsEw4baN7SXmUCDwK",
                          "consumerSecret": "a0g5K8Dpwf9d49t8dL745BD9NE8CJS9g0gjre3NK27M4m6bYyk"
                 },
-				"discord": {
-					"clientID": "1061579572614807653",
-					"clientSecret": "hl1RvESNuDC_GSggnVSZyX9nCjx6jcyE"
-				  }
+		"discord": {
+			"clientID": "1061579572614807653",
+			"clientSecret": "hl1RvESNuDC_GSggnVSZyX9nCjx6jcyE"
+	    	}
 	},
 	"assetsPath": "assets-source",
 	"servers": [
 		{
-					"id": "test",
+			"id": "test",
 			"port": 8090,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
