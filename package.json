@@ -46,7 +46,9 @@
     "latest-angular": "npm i @angular/common@latest @angular/compiler@latest @angular/core@latest @angular/forms@latest @angular/platform-browser@latest @angular/platform-browser-dynamic@latest @angular/router@latest @angular/animations@latest @angular/compiler-cli@latest @angular/platform-server@latest @angular/cdk@latest --save",
     "update-fontawesome": "npm update @fortawesome/fontawesome-svg-core @fortawesome/free-brands-svg-icons @fortawesome/free-solid-svg-icons @fortawesome/angular-fontawesome --save"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/passport-discord": "^0.1.6"
+  },
   "dependencies": {
     "@angular/animations": "^8.2.4",
     "@angular/cdk": "^8.1.4",
@@ -160,6 +162,7 @@
     "parallel-webpack": "^2.4.0",
     "passport": "^0.4.0",
     "passport-deviantart": "0.0.5",
+    "passport-discord": "^0.1.4",
     "passport-github2": "^0.1.11",
     "passport-local": "^1.0.0",
     "passport-patreon": "^1.0.1",
