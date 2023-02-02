@@ -1,4 +1,4 @@
-import { arrayTest } from "../components/tools/tools-perf/tools-perf";
+
 
 export interface Credit {
 	name: string;
