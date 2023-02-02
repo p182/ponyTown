@@ -42,7 +42,19 @@
 				"test": true,
 				"editor": true
 			}
+		},
+		{
+		"id": "test",
+			"port": 8090,
+			"path": "/s00/ws",
+			"local": "localhost:8090",
+			"name": "Roleplay server",
+			"desc": "",
+			"flags": {
+				"test": true,
+				"editor": true
+	        }
 		}
-	]
+    ]
 }
 

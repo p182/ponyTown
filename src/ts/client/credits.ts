@@ -1,3 +1,5 @@
+import { arrayTest } from "../components/tools/tools-perf/tools-perf";
+
 export interface Credit {
 	name: string;
 	title: string;
@@ -26,6 +28,15 @@ export const CREDITS: Credit[] = [
 ];
 
 export const CONTRIBUTORS: Contributors[] = [
+	{
+        group: 'Contributors from community',
+		contributors: [
+			{ name: 'HALt', links: ['@shifty.d:matrix.org']},
+			{ name: 'Ґotemo Ślimak', links: ['https://t.me/dibaraban']},
+			{ name: '𐌄𐌊𐌡і ', links: ['https://t.me/ekllyy']},
+			{ name: 'This list is not full, and will be updated', links: ['']},
+		],
+	},
 	{
 		group: 'Artists & Animators',
 		contributors: [

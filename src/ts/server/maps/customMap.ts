@@ -1,12 +1,13 @@
 import * as fs from 'fs';
 import * as entities from '../../common/entities';
 import { rect } from '../../common/rect';
-import { TileType, MapType } from '../../common/interfaces';
+import { TileType, MapType, MapFlags } from '../../common/interfaces';
 import { createServerMap, deserializeMap } from '../serverMap';
 import { World, goToMap } from '../world';
 import { createSign } from '../controllerUtils';
 import { ServerEntity } from '../serverInterfaces';
 import { pathTo } from '../paths';
+
 
 // load tile data
 // To customize the map use in-game editor tools to change tiles, then use `/savemap custom` command,
@@ -17,7 +18,17 @@ const mapData = JSON.parse(fs.readFileSync(pathTo('src', 'maps', 'custom.json'),
 export function createCustomMap(world: World) {
 	// size: 4 by 4 regions -> 32 by 32 tiles
 	// default tiles: grass
-	const map = createServerMap('custom', MapType.None, 4, 4, TileType.Grass);
+	const map = createServerMap('custom', MapType.None, 32, 32, TileType.Grass);
+	if (DEVELOPMENT) {
+		map.editableEntityLimit = 300000;
+		map.flags |= MapFlags.EdibleGrass | MapFlags.EditableWalls | MapFlags.EditableEntities | MapFlags.EditableTiles;
+		}
+		else{
+		map.flags |= MapFlags.EdibleGrass;
+		}
+		if (DEVELOPMENT) {
+		map.tilesLocked = false;
+		}
 
 	// initialize tiles
 	deserializeMap(map, mapData);
