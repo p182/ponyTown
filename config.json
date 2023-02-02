@@ -33,7 +33,7 @@
 	"servers": [
 		{
 			"id": "test",
-			"port": 8090,
+			"port": 8094,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
 			"name": "Основний сервер",
@@ -45,7 +45,7 @@
 		},
 		{
 		"id": "test",
-			"port": 8090,
+			"port": 8094,
 			"path": "/s00/ws",
 			"local": "localhost:8090",
 			"name": "Roleplay server",
