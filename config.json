@@ -44,9 +44,9 @@
 			}
 		},
 		{
-		"id": "test",
+		"id": "roleplay",
 			"port": 8094,
-			"path": "/s00/ws",
+			"path": "/s01/ws",
 			"local": "localhost:8090",
 			"name": "Roleplay server",
 			"desc": "",
