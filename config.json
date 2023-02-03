@@ -49,7 +49,7 @@
 			"path": "/s01/ws",
 			"local": "localhost:8090",
 			"name": "Roleplay server",
-			"desc": "",
+			"desc": "test",
 			"flags": {
 				"test": true,
 				"editor": true
