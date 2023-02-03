@@ -1,10 +1,15 @@
+#### v23.02-hotfix
+- Fixed PWA
+- Added supporter tag changes
+- Added roleplay server 
+
 #### v23.02-stable
 - First downstream update
 - Roleplay server(WIP)
-- Fixed and improved PWA client(?)
+- Fixed and improved PWA client
 - Updated contributors list
 - Server now include 3 versions, -stable, -hotfix and -devel(WIP)
-- Supporter tag now will be updated every season(WIP, will be in next hotfix update)
+- Supporter tag now will be updated every season
 - Added ability to customize custom map(you can build your own entire map for roleplay)
 
 #### v0.53.1
