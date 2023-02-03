@@ -37,10 +37,10 @@ export const FRIENDS_COLOR = 0x71ff7fff;
 
 export const SUPPORTER1_COLOR = PATREON_COLOR;
 export const SUPPORTER2_COLOR = 0xffa32bff;
-export const SUPPORTER3_COLOR = 0xffcf00ff;
+export const SUPPORTER3_COLOR = 0x00ffffff;
 
 export const SUPPORTER2_BANDS = [0xffdfc1ff, 0xffcd99ff, 0xff9f3bff, 0xd97e09ff];
-export const SUPPORTER3_BANDS = [0xffffffff, 0xfffda4ff, 0xffea3bff, 0xfdbb0bff];
+export const SUPPORTER3_BANDS = [0xffffffff, 0xa4ffff, 0x69ffff, 0x1dfcfc];
 
 // game
 
