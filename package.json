@@ -1,6 +1,6 @@
 {
   "name": "pony-town",
-  "version": "23.02-stable",
+  "version": "0.53.1-alpha",
   "description": "A game of ponies building a town",
   "main": "pony-town.js",
   "scripts": {
